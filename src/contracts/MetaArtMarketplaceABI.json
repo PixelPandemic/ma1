@@ -1,0 +1,12 @@
+[
+  "function getDirectDeposit(address _nftContract, uint256 _tokenId) external view returns (address)",
+  "function setDirectDeposit(address _nftContract, uint256 _tokenId, address _depositor) external",
+  "function withdrawNFT(address _nftContract, uint256 _tokenId) external",
+  "function listNFT(address _nftContract, uint256 _tokenId, uint256 _price) external",
+  "function listDirectDeposit(address _nftContract, uint256 _tokenId, uint256 _price) external",
+  "function buyNFT(address _nftContract, uint256 _tokenId) external payable",
+  "function fetchMarketItems() external view returns (tuple(uint256 itemId, address nftContract, uint256 tokenId, address seller, address owner, uint256 price, bool sold)[] memory)",
+  "function fetchItemsCreated(address _seller) external view returns (tuple(uint256 itemId, address nftContract, uint256 tokenId, address seller, address owner, uint256 price, bool sold)[] memory)",
+  "function fetchMyNFTs(address _owner) external view returns (tuple(uint256 itemId, address nftContract, uint256 tokenId, address seller, address owner, uint256 price, bool sold)[] memory)",
+  "function onERC721Received(address, address, uint256, bytes) external returns (bytes4)"
+]

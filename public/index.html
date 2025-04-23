@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Meta ART - NFT Marketplace with Staking Rewards" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <!--
+      ВАЖНО: Мы используем 'unsafe-eval' в CSP, потому что Spline Viewer требует его для работы.
+      Это создает потенциальный риск безопасности. В идеале следует:
+      1. Связаться с разработчиками Spline для создания версии без использования eval()
+      2. Рассмотреть альтернативные решения для 3D-анимации
+      3. Регулярно обновлять зависимости для минимизации рисков
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://unpkg.com https://*.spline.design 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://*.spline.design https://*.blockpi.network https://*.infura.io wss://*.spline.design https://ipfs.io https://*.alchemyapi.io; img-src 'self' https://ipfs.io https://*.spline.design data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; worker-src 'self' blob:;"
+    />
+    <title>Meta ART</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+      /* Скрываем надпись "Built with Spline" - все возможные селекторы */
+      spline-viewer::part(lib),
+      spline-viewer::shadow-dom(#lib),
+      spline-viewer div[class*="lib"],
+      spline-viewer div[class*="footer"],
+      spline-viewer div[class*="bottom"],
+      spline-viewer a[href*="spline"],
+      spline-viewer a[href*="app.spline"],
+      spline-viewer a,
+      spline-viewer div:last-child {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+        bottom: -9999px !important;
+      }
+
+      /* Стили для Spline-viewer */
+      spline-viewer {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      /* Перекрывающий элемент для нижней части */
+      body::after {
+        content: "";
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 30px; /* Высота перекрывающего элемента */
+        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+        z-index: 9999;
+      }
+
+      /* Стили для мобильных устройств */
+      @media (max-width: 576px) {
+        html, body {
+          height: 100%;
+          overflow: hidden;
+        }
+
+        /* Дополнительные стили для мобильных устройств */
+        #root {
+          height: 100%;
+          overflow: hidden;
+        }
+
+        /* Увеличиваем высоту перекрывающего элемента для мобильных устройств */
+        body::after {
+          height: 50px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+    <script>
+      // Скрипт для скрытия надписи "Built with Spline"
+      document.addEventListener('DOMContentLoaded', function() {
+        // Функция для скрытия надписи
+        function hideSplineFooter() {
+          // Попытка найти и скрыть все возможные элементы
+          const splineViewer = document.querySelector('spline-viewer');
+          if (splineViewer) {
+            // Попытка получить доступ к shadow DOM
+            if (splineViewer.shadowRoot) {
+              const shadowElements = splineViewer.shadowRoot.querySelectorAll('a, div[class*="lib"], div[class*="footer"], div[class*="bottom"]');
+              shadowElements.forEach(el => {
+                el.style.display = 'none';
+                el.style.opacity = '0';
+                el.style.visibility = 'hidden';
+                el.style.pointerEvents = 'none';
+                el.style.height = '0';
+                el.style.width = '0';
+                el.style.position = 'absolute';
+                el.style.bottom = '-9999px';
+              });
+            }
+          }
+        }
+
+        // Вызываем функцию сразу и с задержкой
+        hideSplineFooter();
+        setTimeout(hideSplineFooter, 500);
+        setTimeout(hideSplineFooter, 1000);
+        setTimeout(hideSplineFooter, 2000);
+
+        // Также добавляем наблюдатель за изменениями в DOM
+        const observer = new MutationObserver(function(mutations) {
+          hideSplineFooter();
+        });
+
+        // Начинаем наблюдение за изменениями в DOM
+        observer.observe(document.body, { childList: true, subtree: true });
+      });
+    </script>
+  </body>
+</html>

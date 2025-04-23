@@ -1,0 +1,525 @@
+/* Глобальные стили для предотвращения мигания элементов */
+
+/* Базовые стили для всех устройств */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-family: 'Rajdhani', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Скрываем надпись "Built with Spline" - все возможные селекторы */
+spline-viewer::part(lib),
+spline-viewer::shadow-dom(#lib),
+spline-viewer div[class*="lib"],
+spline-viewer div[class*="footer"],
+spline-viewer div[class*="bottom"],
+spline-viewer a[href*="spline"],
+spline-viewer a[href*="app.spline"],
+spline-viewer a,
+spline-viewer div:last-child {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  bottom: -9999px !important;
+}
+
+/* Стили для Spline-viewer */
+spline-viewer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* Перекрывающий элемент для нижней части */
+body::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px; /* Высота перекрывающего элемента */
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  z-index: 9999;
+}
+
+/* Дополнительные стили для контейнера Spline */
+.spline-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.spline-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  z-index: 9999;
+}
+
+/* Скрываем все возможные варианты надписи "Built with Spline" */
+.spline-container a,
+.spline-container div[class*="lib"],
+.spline-container div[class*="footer"],
+.spline-container div[class*="bottom"],
+.spline-container a[href*="spline"],
+.spline-container a[href*="app.spline"],
+.spline-container div:last-child {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  bottom: -9999px !important;
+}
+
+/* Предотвращение горизонтальной прокрутки */
+body {
+  position: relative;
+  overflow-x: hidden; /* Убираем горизонтальную прокрутку */
+  overflow-y: auto; /* Разрешаем вертикальную прокрутку */
+  padding-bottom: 0; /* Убираем отступ снизу */
+  margin-bottom: 0; /* Убираем отступ снизу */
+  height: auto;
+  min-height: 100vh;
+}
+
+/* Стили для основного контейнера */
+.main-container {
+  width: 100%;
+  min-height: 150vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: transparent;
+  box-sizing: border-box;
+  height: auto;
+}
+
+/* Стили для контейнера с контентом */
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  min-height: 80vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
+}
+
+/* Стили для основной карточки удалены */
+
+/* Стили для карточки приветствия */
+.welcome-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Отключаем анимацию для карточек */
+.card {
+  animation: none !important;
+  transition: none !important;
+  min-height: auto; /* Убираем фиксированную минимальную высоту */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Плавное появление элементов вместо мигания */
+.card:hover {
+  /* Убрали эффект поднятия */
+}
+
+/* Отключаем мигание для всех элементов с классом no-flicker */
+.no-flicker {
+  animation: none !important;
+  transition: none !important;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Стили для предотвращения мигания при обновлении данных */
+.tabs-container {
+  /* Убрали минимальную высоту */
+}
+
+/* Стили для заголовка с градиентом */
+.title-container {
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.title-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ff00cc, #3333ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  word-break: break-word;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  color: #3b3a3a;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-top: 5px;
+  line-height: 1;
+  word-break: break-word;
+}
+
+.subtitle span {
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.subtitle:hover span {
+  color: #ff00cc;
+}
+
+.subtitle:hover span:nth-child(odd) {
+  transform: translateY(-2px);
+}
+
+.subtitle:hover span:nth-child(even) {
+  transform: translateY(2px);
+}
+
+/* Адаптивные стили для контейнеров */
+.responsive-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 15px;
+  margin-bottom: 0; /* Убираем отступ снизу */
+}
+
+/* Стили для десктопов */
+.desktop-view .responsive-container {
+  width: 90%;
+  min-width: 1000px;
+  padding: 0 30px;
+  padding-bottom: 0; /* Убираем отступ снизу */
+  margin-bottom: 0; /* Убираем отступ снизу */
+}
+
+/* Адаптивные стили для карточек */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  padding-bottom: 0; /* Убираем отступ снизу */
+  margin: 20px auto 0; /* Убираем отступ снизу */
+  background-color: rgba(252, 6, 6, 0);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  min-height: auto; /* Убираем минимальную высоту */
+}
+
+/* Адаптивные стили для кнопок */
+.responsive-button {
+  width: auto;
+  min-width: 120px;
+  padding: 8px 16px;
+  white-space: nowrap;
+}
+
+/* Адаптивные стили для изображений */
+.responsive-image {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Адаптивные стили для форм */
+.responsive-form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.responsive-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Адаптивные стили для таблиц */
+.responsive-table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+/* Адаптивные стили для модальных окон */
+.responsive-modal {
+  width: 90%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Адаптивные стили для вкладок */
+.responsive-tabs {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Стили для iOS */
+.ios-fix {
+  padding-bottom: 0; /* Убираем отступ снизу */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Стили для Android */
+.android-fix {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Медиа-запросы для различных устройств */
+
+/* Мобильные устройства (портретная ориентация) */
+@media (max-width: 576px) {
+  .title-container {
+    padding: 0.3rem 0.8rem;
+  }
+
+  .gradient-text {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 0.5rem;
+  }
+
+  .tabs-container {
+    width: 100%;
+  }
+}
+
+/* Мобильные устройства (альбомная ориентация) */
+@media (min-width: 577px) and (max-width: 767px) {
+  .title-container {
+    padding: 0.4rem 1rem;
+  }
+
+  .gradient-text {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 0.55rem;
+  }
+
+  .tabs-container {
+    width: 100%;
+  }
+}
+
+/* Планшеты */
+@media (min-width: 768px) and (max-width: 991px) {
+  .gradient-text {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 0.6rem;
+  }
+}
+
+/* Десктопы и ноутбуки */
+@media (min-width: 992px) {
+  .gradient-text {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.65rem;
+  }
+
+  .tabs-container {
+    width: 100%;
+  }
+
+  /* Возвращаем нормальные размеры для десктопов */
+  .chakra-tabs__tab {
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .chakra-button {
+    font-size: 1rem;
+  }
+
+  .chakra-heading {
+    font-size: 1.5rem;
+  }
+
+  .chakra-text {
+    font-size: 1rem;
+  }
+
+  /* Стили для карточек на десктопах */
+  .card {
+    max-width: 300px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Стили для ориентации экрана */
+@media (orientation: landscape) and (max-height: 500px) {
+  .title-container {
+    margin: 0.2rem 0;
+  }
+
+  .gradient-text {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.45rem;
+  }
+}
+
+/* Специальные стили для десктопов */
+.desktop-view .responsive-container {
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.desktop-view .tabs-container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.desktop-view .chakra-tabs__tab {
+  font-size: 1rem;
+  padding: 1rem 1.5rem;
+}
+
+.desktop-view .chakra-button {
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+}
+
+.desktop-view .chakra-heading {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.desktop-view .chakra-text {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.desktop-view .card {
+  min-width: 300px;
+  max-width: 100%;
+  margin: 10px;
+  margin-bottom: 0; /* Убираем отступ снизу */
+  transition: box-shadow 0.3s ease;
+  background-color: rgba(253, 251, 251, 0.9);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  min-height: auto; /* Убираем минимальную высоту */
+  display: flex;
+  flex-direction: column;
+}
+
+.desktop-view .card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.desktop-view .chakra-card {
+  width: 100%;
+  min-width: 280px;
+}
+
+.desktop-view .chakra-card__body {
+  padding: 20px;
+}
+
+.desktop-view .chakra-tabs__tablist {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Стили для активной вкладки */
+.chakra-tabs__tab[aria-selected=true] {
+  background-color: white;
+  color: #553c9a;
+  border-color: #d6bcfa;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.desktop-view .chakra-tabs__tab-panel {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}

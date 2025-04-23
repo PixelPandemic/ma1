@@ -1,0 +1,166 @@
+/* Стили для кнопки с эффектом переливания */
+.shimmer-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  z-index: 1;
+  border: none !important;
+}
+
+.shimmer-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shimmer 3s infinite;
+  z-index: -1;
+}
+
+.shimmer-button:hover::before {
+  animation: shimmer 1.5s infinite;
+}
+
+.stake-button {
+  background: linear-gradient(45deg, #b0006d, #079ea3, #00b09b, #0325e4, #00d4ff) !important;
+  background-size: 400% 400% !important;
+  animation: gradient 8s ease infinite;
+  color: white !important;
+  font-weight: bold !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.stake-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0.6;
+  transform: translateX(-100%);
+  animation: diamond-sparkle 3s infinite;
+}
+
+.auction-button {
+  background: linear-gradient(45deg, #6f00ff, #8400ff71, #0059ff, #00c3ff, #a6ff00) !important;
+  background-size: 400% 400% !important;
+  animation: gradient 8s ease infinite;
+  color: white !important;
+  font-weight: bold !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.auction-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0.6;
+  transform: translateX(-100%);
+  animation: diamond-sparkle 3s infinite;
+}
+
+.unstake-button {
+  background: linear-gradient(45deg, #e53e3e, #f56565, #e53e3e, #fc8181, #feb2b2) !important;
+  background-size: 400% 400% !important;
+  animation: gradient 8s ease infinite;
+  color: white !important;
+  font-weight: bold !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.unstake-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0.6;
+  transform: translateX(-100%);
+  animation: diamond-sparkle 3s infinite;
+}
+
+.unstake-button:hover {
+  background: linear-gradient(45deg, #feb2b2, #fc8181, #e53e3e, #f56565, #e53e3e) !important;
+  background-size: 400% 400% !important;
+  animation: gradient 4s ease infinite;
+}
+
+@keyframes diamond-sparkle {
+  0% {
+    transform: translateX(-100%) rotate(0deg);
+  }
+  20%, 100% {
+    transform: translateX(100%) rotate(0deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-150%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(150%) rotate(30deg);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Эффект при наведении */
+.shimmer-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.stake-button:hover {
+  background: linear-gradient(45deg, #00d4ff, #3cba92, #00b09b, #96c93d, #00b09b) !important;
+  background-size: 400% 400% !important;
+  animation: gradient 4s ease infinite;
+}
+
+.auction-button:hover {
+  background: linear-gradient(45deg, #9701fa, #9225f89d, #5900ffd0, #a03bffc4, #9900ff) !important;
+  background-size: 400% 400% !important;
+  animation: gradient 4s ease infinite;
+}
+
+.stake-button:hover::after,
+.auction-button:hover::after {
+  animation: diamond-sparkle 1.5s infinite;
+}
+
+/* Эффект при нажатии */
+.shimmer-button:active {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important;
+}

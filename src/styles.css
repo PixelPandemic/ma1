@@ -1,0 +1,323 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo:wght@100;200;300;400;500;600;700&family=Syncopate:wght@400;700&family=Jura:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600&display=swap');
+
+:root {
+  font-size: 16px;
+}
+
+html {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#root {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  min-height: 100vh;
+  color: #333; /* Изменили цвет текста на темно-серый */
+  width: 100%;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Медиа-запросы для разных размеров экрана */
+@media (max-width: 576px) {
+  :root {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 767px) {
+  :root {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+.gradient-text {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem; /* Уменьшили размер шрифта */
+  background: linear-gradient(
+    to right,
+    #ff0000, /* красный */
+    #ff8000, /* оранжевый */
+    #ffff00, /* желтый */
+    #00ff00, /* зеленый */
+    #00ffff, /* голубой */
+    #0000ff, /* синий */
+    #8000ff, /* фиолетовый */
+    #ff0080  /* розовый */
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.329);
+  animation: gradient 8s ease infinite;
+  letter-spacing: 1px;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.title-container {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  position: relative;
+  margin: 0.5rem 0;
+}
+
+/* Убрали эффект увеличения для title-container:hover */
+
+.title-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #333;
+  text-transform: uppercase;
+  margin-top: 2px; /* Минимальный отступ сверху */
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 1px 4px;
+  border-radius: 4px;
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between; /* Растягиваем буквы по ширине */
+  letter-spacing: 1px;
+}
+
+.subtitle span {
+  display: inline-block;
+}
+
+/* Стили для контейнеров */
+.chakra-container {
+  backdrop-filter: blur(10px);
+  background-color: rgba(107, 6, 165, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 20px;
+}
+
+/* Стили для карточек */
+.card {
+  background: rgba(8, 8, 8, 0.39);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(200000px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  overflow: visible;
+  min-height: auto;
+}
+
+.card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Стили для кнопок */
+/* Убрали transition для chakra-button */
+
+.chakra-button:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Стили для кнопки Connect MetaMask */
+.connect-metamask-btn {
+  background: linear-gradient(135deg, #4fd1c5, #b23898) !important;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  border: none !important;
+  padding: 0.8rem 1.5rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  animation: buttonPulse 2s infinite;
+}
+
+.connect-metamask-btn::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: skewX(-30deg);
+  transition: 0.5s;
+  opacity: 0;
+}
+
+@keyframes buttonPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(79, 209, 197, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(79, 209, 197, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(79, 209, 197, 0);
+  }
+}
+
+.connect-metamask-btn:hover {
+  background: linear-gradient(135deg, #ddf503, #8b16a3) !important; /* Ярко-зеленый цвет */
+  box-shadow: 0 5px 15px rgba(167, 197, 34, 0.4) !important;
+}
+
+.connect-metamask-btn:hover::before {
+  opacity: 1;
+  left: 100%;
+  transition: 0.7s;
+}
+
+.connect-metamask-btn:active {
+  box-shadow: 0 2px 5px rgba(154, 197, 34, 0.4) !important;
+}
+
+/* Стили для вкладок */
+.tabs-container {
+  width: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+/* Стили для фиксированных вкладок */
+.sticky-tabs {
+  position: fixed !important;
+  top: 130px !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 99 !important;
+  backdrop-filter: blur(10px) !important;
+  margin-bottom: 20px !important;
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.tabs-container .chakra-tabs__tab {
+  background: rgb(8, 8, 8);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fdfafa;
+  font-weight: 600;
+}
+
+.tabs-container .chakra-tabs__tab:hover {
+  background: rgba(3, 245, 124, 0);
+}
+
+.tabs-container .chakra-tabs__tab[aria-selected="true"] {
+  background: rgba(128, 90, 213, 0.6);
+  border-color: rgba(128, 90, 213, 0.8);
+  color: rgb(2, 241, 150);
+}
+
+.tabs-container .chakra-tabs__tab-panel {
+  background: rgba(7, 7, 7, 0.185);
+  backdrop-filter: blur(5px);
+  border-radius: 0 0 16px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: none;
+  padding: 20px;
+  color: #333;
+  overflow: visible;
+  min-height: calc(100vh - 200px);
+  max-height: none;
+  margin-bottom: 50px;
+  padding-bottom: 70px;
+}
+
+/* Стили для панелей вкладок с фиксированным заголовком */
+.tab-panels-with-fixed-header {
+  margin-top: 90px;
+}
+
+/* Стили для прогресс-бара */
+.chakra-progress__track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.chakra-progress__bar {
+  background: linear-gradient(to right, #805AD5, #B794F4);
+}
+
+/* Стили для инструкции в MintNFT */
+.chakra-form__helper-text {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+.instruction-box {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+  display: block !important;
+  margin-bottom: 20px !important;
+  padding-bottom: 15px !important;
+}
+
+/* Стили для карточки Mint NFT удалены */
+
