@@ -83,9 +83,65 @@ const NFTMarketplace = ({ provider, account }) => {
   const fetchUserNFTs = async () => {
     try {
       setIsLoading(true);
+      console.log("Fetching NFTs for account:", account);
+      console.log("NFT Contract address:", nftAddress);
 
-      // Get all NFTs owned by the user
-      const tokenIds = await nftContract.tokensOfOwner(account);
+      let tokenIds = [];
+      let hasTokensOfOwner = false;
+
+      // Проверяем, есть ли метод tokensOfOwner в контракте
+      try {
+        // Проверяем наличие метода в ABI
+        hasTokensOfOwner = nftContract.interface.getFunction('tokensOfOwner') !== null;
+        console.log("Contract has tokensOfOwner method:", hasTokensOfOwner);
+      } catch (error) {
+        console.log("Error checking tokensOfOwner method:", error.message);
+        hasTokensOfOwner = false;
+      }
+
+      if (hasTokensOfOwner) {
+        // Используем tokensOfOwner, если он доступен
+        try {
+          tokenIds = await nftContract.tokensOfOwner(account);
+          console.log("TokenIds from tokensOfOwner:", tokenIds);
+        } catch (error) {
+          console.error("Error calling tokensOfOwner:", error);
+          // Если метод вызвал ошибку, используем альтернативный подход
+          hasTokensOfOwner = false;
+        }
+      }
+
+      if (!hasTokensOfOwner) {
+        // Альтернативный подход: используем balanceOf и tokenOfOwnerByIndex
+        try {
+          console.log("Using alternative approach with balanceOf and tokenOfOwnerByIndex");
+          const balance = await nftContract.balanceOf(account);
+          console.log("NFT balance:", balance.toString());
+
+          // Получаем все токены пользователя
+          for (let i = 0; i < balance; i++) {
+            try {
+              const tokenId = await nftContract.tokenOfOwnerByIndex(account, i);
+              tokenIds.push(tokenId);
+              console.log(`Found token ID: ${tokenId.toString()}`);
+            } catch (error) {
+              console.error(`Error getting token at index ${i}:`, error);
+            }
+          }
+        } catch (error) {
+          console.error("Error using alternative approach:", error);
+          // Если и этот подход не сработал, показываем демо-NFT
+          showDemoNFTs();
+          return;
+        }
+      }
+
+      // Если токенов нет, показываем демо-NFT
+      if (tokenIds.length === 0) {
+        console.log("No tokens found, showing demo NFTs");
+        showDemoNFTs();
+        return;
+      }
 
       // Get metadata for each NFT
       const nftsWithMetadata = await Promise.all(
@@ -96,11 +152,46 @@ const NFTMarketplace = ({ provider, account }) => {
 
           try {
             const tokenURI = await nftContract.tokenURI(tokenId);
+            console.log(`Token URI for ${tokenId}:`, tokenURI);
+
             if (tokenURI.startsWith('data:application/json;base64,')) {
               const json = JSON.parse(atob(tokenURI.split(',')[1]));
               name = json.name || name;
               description = json.description || description;
               image = json.image || image;
+            } else if (tokenURI.startsWith('ipfs://')) {
+              // Обрабатываем IPFS URI
+              const ipfsUrl = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
+              try {
+                const response = await fetch(ipfsUrl);
+                const json = await response.json();
+                name = json.name || name;
+                description = json.description || description;
+                image = json.image || image;
+
+                // Преобразуем URL изображения, если необходимо
+                if (image.startsWith('ipfs://')) {
+                  image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                }
+              } catch (error) {
+                console.error(`Error fetching IPFS metadata for token ${tokenId}:`, error);
+              }
+            } else if (tokenURI.startsWith('http')) {
+              // Обрабатываем HTTP URI
+              try {
+                const response = await fetch(tokenURI);
+                const json = await response.json();
+                name = json.name || name;
+                description = json.description || description;
+                image = json.image || image;
+
+                // Преобразуем URL изображения, если необходимо
+                if (image.startsWith('ipfs://')) {
+                  image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                }
+              } catch (error) {
+                console.error(`Error fetching HTTP metadata for token ${tokenId}:`, error);
+              }
             }
           } catch (error) {
             console.error(`Error fetching metadata for token ${tokenId}:`, error);
@@ -115,6 +206,7 @@ const NFTMarketplace = ({ provider, account }) => {
         })
       );
 
+      console.log("NFTs with metadata:", nftsWithMetadata);
       setNfts(nftsWithMetadata);
       setIsLoading(false);
     } catch (error) {
@@ -126,8 +218,46 @@ const NFTMarketplace = ({ provider, account }) => {
         duration: 5000,
         isClosable: true,
       });
-      setIsLoading(false);
+
+      // В случае ошибки показываем демо-NFT
+      showDemoNFTs();
     }
+  };
+
+  // Функция для отображения демо-NFT
+  const showDemoNFTs = () => {
+    const demoNFTs = [
+      {
+        tokenId: '1',
+        name: 'Demo NFT #1',
+        description: 'This is a demo NFT for testing the interface',
+        image: 'https://via.placeholder.com/300/e74c3c/ffffff?text=Demo+NFT+1'
+      },
+      {
+        tokenId: '2',
+        name: 'Demo NFT #2',
+        description: 'This is another demo NFT for testing',
+        image: 'https://via.placeholder.com/300/2ecc71/ffffff?text=Demo+NFT+2'
+      },
+      {
+        tokenId: '3',
+        name: 'Demo NFT #3',
+        description: 'This is a third demo NFT for testing',
+        image: 'https://via.placeholder.com/300/3498db/ffffff?text=Demo+NFT+3'
+      }
+    ];
+
+    console.log("Showing demo NFTs:", demoNFTs);
+    setNfts(demoNFTs);
+    setIsLoading(false);
+
+    toast({
+      title: 'Demo Mode',
+      description: 'Showing demo NFTs for testing purposes',
+      status: 'info',
+      duration: 5000,
+      isClosable: true,
+    });
   };
 
   const handleRefresh = () => {
