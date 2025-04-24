@@ -2,6 +2,12 @@ const axios = require('axios');
 
 // Обработчик запросов к OpenRouter API
 exports.handler = async function(event, context) {
+  // Логируем информацию о запросе
+  console.log('Netlify Function: openrouter.js handler called');
+  console.log('Environment variables available:', Object.keys(process.env).filter(key => key.includes('OPENROUTER') || key.includes('URL')));
+  console.log('HTTP Method:', event.httpMethod);
+  console.log('Path:', event.path);
+  console.log('Headers:', JSON.stringify(event.headers));
   // Проверяем, что запрос использует метод POST
   if (event.httpMethod !== 'POST') {
     return {
@@ -38,10 +44,12 @@ exports.handler = async function(event, context) {
     console.log('Sending request to OpenRouter API with messages:', JSON.stringify(messages));
 
     // Получаем API ключ из переменных окружения
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    // Проверяем обе возможные переменные окружения (с префиксом REACT_APP_ и без)
+    const apiKey = process.env.REACT_APP_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
       throw new Error('OpenRouter API key is not set in environment variables');
     }
+    console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
     // Отправляем запрос к OpenRouter API
     const response = await axios.post(
@@ -56,7 +64,7 @@ exports.handler = async function(event, context) {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': process.env.URL || 'https://meta-art-nft.com', // Используем URL из переменных окружения или значение по умолчанию
+          'HTTP-Referer': process.env.URL || 'https://masnp.netlify.app', // Используем URL из переменных окружения или значение по умолчанию
           'X-Title': 'Meta ART NFT Marketplace'
         }
       }
@@ -83,7 +91,7 @@ exports.handler = async function(event, context) {
     // Возвращаем ошибку
     return {
       statusCode: 500,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: errorMessage,
         details: errorDetails
       }),
