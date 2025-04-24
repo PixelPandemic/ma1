@@ -65,7 +65,8 @@ const AIAgent = ({ isMobile }) => {
     {
       role: 'assistant',
       content: 'Hello! I am the Meta ART AI Assistant. How can I help you with NFTs, auctions, or staking today? You can select a topic or ask me any question about the platform.',
-      suggestedTopics: topics // Предлагаем все темы
+      suggestedTopics: topics, // Предлагаем все темы
+      isInitialMessage: true // Пометка, что это начальное сообщение
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,6 +86,20 @@ const AIAgent = ({ isMobile }) => {
       }, 100);
     }
   }, [messages, isLoading]); // Прокручиваем при изменении сообщений или статуса загрузки
+
+  // Эффект для обновления начального сообщения при изменении режима Super Power
+  useEffect(() => {
+    // Обновляем начальное сообщение при изменении режима Super Power
+    setMessages(prevMessages => {
+      return prevMessages.map(msg => {
+        // Если это начальное сообщение, обновляем флаг isEnhanced
+        if (msg.isInitialMessage) {
+          return { ...msg, isEnhanced: aiPowerMode };
+        }
+        return msg;
+      });
+    });
+  }, [aiPowerMode]); // Запускаем эффект при изменении режима Super Power
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
@@ -106,8 +121,10 @@ const AIAgent = ({ isMobile }) => {
       const assistantMessage = {
         role: 'assistant',
         content: response,
-        // Добавляем предложение всех тем
-        suggestedTopics: topics
+        // Добавляем предложение всех тем только если не включен режим Super Power
+        suggestedTopics: topics,
+        // Если включен режим Super Power, помечаем сообщение как enhanced
+        isEnhanced: aiPowerMode
       };
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
       setIsLoading(false);
@@ -251,8 +268,10 @@ Please try again later when the connection to OpenRouter is restored.`;
           const assistantMessage = {
             role: 'assistant',
             content: response,
-            // Добавляем предложение всех тем
-            suggestedTopics: topics
+            // Добавляем предложение всех тем только если не включен режим Super Power
+            suggestedTopics: topics,
+            // Если включен режим Super Power, помечаем сообщение как enhanced
+            isEnhanced: aiPowerMode
           };
           setMessages(prevMessages => [...prevMessages, assistantMessage]);
           setIsLoading(false);
@@ -362,8 +381,8 @@ Please try again later when the connection to OpenRouter is restored.`;
                       {message.content}
                     </Text>
 
-                    {/* Предложенные темы в сообщении - показываем только если это не ответ в режиме Super Power */}
-                    {message.suggestedTopics && message.suggestedTopics.length > 0 && !message.isEnhanced && (
+                    {/* Предложенные темы в сообщении - показываем только если не включен режим Super Power */}
+                    {message.suggestedTopics && message.suggestedTopics.length > 0 && !message.isEnhanced && !aiPowerMode && (
                       <Box mt={3} p={3} bg="rgba(76, 29, 149, 0.05)" borderRadius="md" boxShadow="sm" width="100%" maxWidth="100%" mx="auto">
                         <Text fontSize="xs" mb={3} color="purple.200" fontWeight="bold" textAlign="center">
                           Select a topic to learn more:
