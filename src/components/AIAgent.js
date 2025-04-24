@@ -572,16 +572,33 @@ Please try again later when the connection is restored.`;
 
       <Box mt={8} p={isMobile ? 3 : 4} borderRadius="md" bg="rgba(0, 0, 0, 0.2)">
         <Heading size="sm" mb={2} color="#4A5568" fontSize={isMobile ? "xs" : "sm"}>About AI Assistant</Heading>
-        <Text fontSize={isMobile ? "xs" : "sm"} color="#4A5568" wordBreak="normal" overflowWrap="break-word" whiteSpace="pre-wrap" maxWidth="100%" overflow="visible">
-          The Meta ART AI Assistant can help you with information about the platform, NFTs, auctions, staking, and rewards.
-          Click on a topic button to learn more, or ask any question about the platform.
-        </Text>
-        <Flex mt={2} flexWrap="wrap" gap={2}>
-          <Badge colorScheme="purple" fontSize={isMobile ? "xs" : "sm"}>NFTs</Badge>
-          <Badge colorScheme="teal" fontSize={isMobile ? "xs" : "sm"}>Auctions</Badge>
-          <Badge colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>Staking</Badge>
-          <Badge colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>Rewards</Badge>
-        </Flex>
+        {aiPowerMode ? (
+          <>
+            <Text fontSize={isMobile ? "xs" : "sm"} color="#4A5568" wordBreak="normal" overflowWrap="break-word" whiteSpace="pre-wrap" maxWidth="100%" overflow="visible">
+              In Super Power mode, the AI Assistant can help with a wide range of tasks beyond the Meta ART platform.
+              Ask questions on any topic, request code examples, or get help with planning and organization.
+            </Text>
+            <Flex mt={2} flexWrap="wrap" gap={2}>
+              <Badge colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>Information</Badge>
+              <Badge colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>Code</Badge>
+              <Badge colorScheme="purple" fontSize={isMobile ? "xs" : "sm"}>Planning</Badge>
+              <Badge colorScheme="teal" fontSize={isMobile ? "xs" : "sm"}>Assistance</Badge>
+            </Flex>
+          </>
+        ) : (
+          <>
+            <Text fontSize={isMobile ? "xs" : "sm"} color="#4A5568" wordBreak="normal" overflowWrap="break-word" whiteSpace="pre-wrap" maxWidth="100%" overflow="visible">
+              The Meta ART AI Assistant can help you with information about the platform, NFTs, auctions, staking, and rewards.
+              Click on a topic button to learn more, or ask any question about the platform.
+            </Text>
+            <Flex mt={2} flexWrap="wrap" gap={2}>
+              <Badge colorScheme="purple" fontSize={isMobile ? "xs" : "sm"}>NFTs</Badge>
+              <Badge colorScheme="teal" fontSize={isMobile ? "xs" : "sm"}>Auctions</Badge>
+              <Badge colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>Staking</Badge>
+              <Badge colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>Rewards</Badge>
+            </Flex>
+          </>
+        )}
       </Box>
     </Box>
   );
