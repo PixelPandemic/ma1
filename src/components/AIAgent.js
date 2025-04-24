@@ -171,7 +171,7 @@ const AIAgent = ({ isMobile }) => {
               const assistantMessage = {
                 role: 'assistant',
                 content: response,
-                suggestedTopics: topics,
+                // Не добавляем suggestedTopics для ответов в режиме Super Power
                 isEnhanced: true // Пометка, что это ответ в режиме Super Power
               };
               setMessages(prevMessages => [...prevMessages, assistantMessage]);
@@ -194,7 +194,7 @@ Please try again later when the connection to OpenRouter is restored.`;
               const fallbackMessage = {
                 role: 'assistant',
                 content: fallbackResponse,
-                suggestedTopics: topics,
+                // Не добавляем suggestedTopics для ответов в режиме Super Power
                 isEnhanced: true
               };
               setMessages(prevMessages => [...prevMessages, fallbackMessage]);
@@ -362,8 +362,8 @@ Please try again later when the connection to OpenRouter is restored.`;
                       {message.content}
                     </Text>
 
-                    {/* Предложенные темы в сообщении */}
-                    {message.suggestedTopics && message.suggestedTopics.length > 0 && (
+                    {/* Предложенные темы в сообщении - показываем только если это не ответ в режиме Super Power */}
+                    {message.suggestedTopics && message.suggestedTopics.length > 0 && !message.isEnhanced && (
                       <Box mt={3} p={3} bg="rgba(76, 29, 149, 0.05)" borderRadius="md" boxShadow="sm" width="100%" maxWidth="100%" mx="auto">
                         <Text fontSize="xs" mb={3} color="purple.200" fontWeight="bold" textAlign="center">
                           Select a topic to learn more:
