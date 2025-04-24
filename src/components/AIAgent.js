@@ -92,9 +92,16 @@ const AIAgent = ({ isMobile }) => {
     // Обновляем начальное сообщение при изменении режима Super Power
     setMessages(prevMessages => {
       return prevMessages.map(msg => {
-        // Если это начальное сообщение, обновляем флаг isEnhanced
+        // Если это начальное сообщение, обновляем флаг isEnhanced и содержимое
         if (msg.isInitialMessage) {
-          return { ...msg, isEnhanced: aiPowerMode };
+          const standardMessage = 'Hello! I am the Meta ART AI Assistant. How can I help you with NFTs, auctions, or staking today? You can select a topic or ask me any question about the platform.';
+          const superPowerMessage = '[Super Power]\n\n🚀 Welcome to the enhanced AI mode! I am now connected to advanced AI capabilities through OpenRouter.\n\nIn this mode, I can:\n• Provide detailed answers about NFTs, blockchain, and crypto\n• Help with complex questions about the Meta ART platform\n• Assist with technical blockchain topics\n• Answer general questions on virtually any subject\n\nFeel free to ask me anything - I\'m here to help with enhanced capabilities!';
+
+          return {
+            ...msg,
+            isEnhanced: aiPowerMode,
+            content: aiPowerMode ? superPowerMessage : standardMessage
+          };
         }
         return msg;
       });
