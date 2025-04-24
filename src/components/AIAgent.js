@@ -147,9 +147,10 @@ const AIAgent = ({ isMobile }) => {
           // Добавляем инструкции для модели
           const systemMessage = {
             role: 'system',
-            content: `You are an AI assistant for the Meta ART NFT Marketplace on Polygon Amoy testnet. 
-            Provide helpful information about NFTs, auctions, staking, and the platform. 
-            Be concise but informative. The platform features include:
+            content: `You are an AI assistant for the Meta ART NFT Marketplace on Polygon Amoy testnet.
+            You can provide helpful information about NFTs, auctions, staking, and the platform, but you can also answer general questions on any topic.
+
+            When answering questions about the Meta ART platform, be concise but informative. The platform features include:
             - NFT minting and auctions
             - Staking NFTs for ART token rewards (10 tokens per hour, +10 for each subsequent hour)
             - ART token with a total supply of 100,000,000,000,000
@@ -157,7 +158,10 @@ const AIAgent = ({ isMobile }) => {
             - 10% commission for 'buy now' feature
             - Fee collector address: 0x98a68E9f8DCB48c717c4cA1D7c0435CFd897393f
             - Marketplace address: 0x075643E563c95A23064D3a75aa3407681ebF1eAD
-            - Polygon Amoy testnet integration`
+            - Polygon Amoy testnet integration
+
+            For questions not related to the platform, provide helpful and accurate information to the best of your ability.
+            Always start your response with "[Super Power]" to indicate that you're using the enhanced AI capabilities.`
           };
 
           // Отправляем запрос к OpenRouter API
@@ -177,16 +181,16 @@ const AIAgent = ({ isMobile }) => {
               console.error('Error getting AI response:', error);
               showNotification(`Failed to get a response from OpenRouter: ${error.message}`, 'error');
               setIsLoading(false);
-              
+
               // Фоллбэк на случай ошибки API
-              const fallbackResponse = `[Super Power Mode] 
+              const fallbackResponse = `[Super Power Mode]
 
 I apologize, but I couldn't connect to the OpenRouter service at the moment. Error: ${error.message}
 
-You asked about "${input}". The Meta ART platform offers NFT minting, auctions, and staking features. 
+You asked about "${input}". The Meta ART platform offers NFT minting, auctions, and staking features.
 
 Please try again later when the connection to OpenRouter is restored.`;
-              
+
               const fallbackMessage = {
                 role: 'assistant',
                 content: fallbackResponse,
@@ -339,7 +343,9 @@ Please try again later when the connection to OpenRouter is restored.`;
                   />
                   <Box width="calc(100% - 24px)" overflow="visible" maxWidth="100%">
                     {message.isEnhanced && (
-                      <Badge colorScheme="green" mb={1} fontSize="xs">Super Power</Badge>
+                      <Badge colorScheme="green" mb={1} fontSize="xs" px={2} py={1} borderRadius="md" boxShadow="0 0 5px #48BB78">
+                        Super Power AI
+                      </Badge>
                     )}
                     <Text
                       wordBreak="normal"
@@ -458,7 +464,7 @@ Please try again later when the connection to OpenRouter is restored.`;
         {/* Input area */}
         <VStack spacing={1} width="100%" maxWidth={isMobile ? "100%" : "800px"} mx="auto">
           <HStack spacing={2} width="100%">
-          <Tooltip 
+          <Tooltip
             label={aiPowerMode ? "OFF Super Power" : "ON Super Power"}
             placement="top"
             hasArrow
@@ -489,7 +495,7 @@ Please try again later when the connection to OpenRouter is restored.`;
               ml={2}
               p={2}
               borderRadius="md"
-              bg={notification.status === 'success' ? 'green.500' : 
+              bg={notification.status === 'success' ? 'green.500' :
                  notification.status === 'error' ? 'red.500' : 'blue.500'}
               color="white"
               fontWeight="medium"
