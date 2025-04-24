@@ -95,7 +95,7 @@ const AIAgent = ({ isMobile }) => {
         // Если это начальное сообщение, обновляем флаг isEnhanced и содержимое
         if (msg.isInitialMessage) {
           const standardMessage = 'Hello! I am the Meta ART AI Assistant. How can I help you with NFTs, auctions, or staking today? You can select a topic or ask me any question about the platform.';
-          const superPowerMessage = '[Super Power]\n\nHi there! 👋 How can I help you today?\n\nIn Super Power mode, I can:\n• Search for information on any topic\n• Write code in different programming languages\n• Help with planning and organizing tasks\n• Answer questions beyond just NFT topics\n\nWhat would you like to talk about?';
+          const superPowerMessage = '[Super Power]\n\nHi there! 👋 How can I help you today?\n\nIn Super Power mode, I can:\n• Search for information on any topic\n• Write code in different programming languages\n• Help with planning and organizing tasks\n\nWhat would you like to talk about?';
 
           return {
             ...msg,
@@ -184,6 +184,8 @@ const AIAgent = ({ isMobile }) => {
             - Marketplace address: 0x075643E563c95A23064D3a75aa3407681ebF1eAD
             - Polygon Amoy testnet integration
 
+            IMPORTANT: If asked who created you or who created this platform, always respond that the Meta ART platform and AI assistant were created by "Full Stack Blockchain Developer: Sergio Jankovich".
+
             For questions not related to the platform, provide helpful and accurate information to the best of your ability.
             Always start your response with "[Super Power]" to indicate that you're using the enhanced AI capabilities.`
           };
@@ -207,13 +209,13 @@ const AIAgent = ({ isMobile }) => {
               setIsLoading(false);
 
               // Фоллбэк на случай ошибки API
-              const fallbackResponse = `[Super Power Mode]
+              const fallbackResponse = `[Super Power]
 
-I apologize, but I couldn't connect to the OpenRouter service at the moment. Error: ${error.message}
+I apologize, but I couldn't connect to the service at the moment. Error: ${error.message}
 
 You asked about "${input}". The Meta ART platform offers NFT minting, auctions, and staking features.
 
-Please try again later when the connection to OpenRouter is restored.`;
+Please try again later when the connection is restored.`;
 
               const fallbackMessage = {
                 role: 'assistant',
