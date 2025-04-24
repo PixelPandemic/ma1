@@ -95,7 +95,7 @@ const AIAgent = ({ isMobile }) => {
         // Если это начальное сообщение, обновляем флаг isEnhanced и содержимое
         if (msg.isInitialMessage) {
           const standardMessage = 'Hello! I am the Meta ART AI Assistant. How can I help you with NFTs, auctions, or staking today? You can select a topic or ask me any question about the platform.';
-          const superPowerMessage = '[Super Power]\n\nПривет! 👋 Чем я могу помочь вам сегодня?\n\nВ режиме Super Power я могу:\n• Искать информацию на любую тему\n• Писать код на разных языках программирования\n• Помогать с планированием и организацией задач\n• Отвечать на вопросы, не ограничиваясь темой NFT\n\nО чём хотите поговорить?';
+          const superPowerMessage = '[Super Power]\n\nHi there! 👋 How can I help you today?\n\nIn Super Power mode, I can:\n• Search for information on any topic\n• Write code in different programming languages\n• Help with planning and organizing tasks\n• Answer questions beyond just NFT topics\n\nWhat would you like to talk about?';
 
           return {
             ...msg,
