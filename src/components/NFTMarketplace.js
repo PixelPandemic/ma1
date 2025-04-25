@@ -31,15 +31,17 @@ const NFTMarketplace = ({ provider, account }) => {
   const [isLandscape] = useMediaQuery("(orientation: landscape) and (max-height: 500px)");
   const [isDesktop] = useMediaQuery("(min-width: 992px)");
 
-  // Contract addresses - in a real app, these would come from environment variables
-  const stakingAddress = process.env.REACT_APP_STAKING_CONTRACT_ADDRESS || "0x1234567890123456789012345678901234567890";
-  const nftAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS || "0x2345678901234567890123456789012345678901";
-  const artTokenAddress = process.env.REACT_APP_ART_TOKEN_ADDRESS || "0x3456789012345678901234567890123456789012";
+  // Contract addresses from environment variables
+  const stakingAddress = process.env.REACT_APP_STAKING_CONTRACT_ADDRESS;
+  const nftAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
+  const artTokenAddress = process.env.REACT_APP_ART_TOKEN_ADDRESS;
+  const auctionAddress = process.env.REACT_APP_AUCTION_ADDRESS;
 
   // Log contract addresses for debugging
   console.log('Staking Contract Address:', stakingAddress);
   console.log('NFT Contract Address:', nftAddress);
   console.log('ART Token Address:', artTokenAddress);
+  console.log('Auction Contract Address:', auctionAddress);
 
   useEffect(() => {
     const initializeContracts = async () => {
@@ -451,6 +453,7 @@ const NFTMarketplace = ({ provider, account }) => {
                 provider={provider}
                 account={account}
                 nftContract={nftContract}
+                auctionAddress={auctionAddress}
                 isMobile={isMobile}
                 isTablet={isTablet}
                 isLandscape={isLandscape}

@@ -37,7 +37,7 @@ import { ethers } from 'ethers';
 // Импортируем ABI для взаимодействия с контрактом аукционов
 import NFTAuctionABI from '../contracts/NFTAuctionABI.json';
 
-const AuctionNFTs = ({ provider, account, nftContract }) => {
+const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bidAmount, setBidAmount] = useState('');
@@ -52,8 +52,8 @@ const AuctionNFTs = ({ provider, account, nftContract }) => {
 
   const toast = useToast();
 
-  // Адрес контракта аукционов из .env
-  const AUCTION_ADDRESS = process.env.REACT_APP_AUCTION_ADDRESS;
+  // Адрес контракта аукционов из props
+  console.log('AuctionNFTs - Auction contract address:', auctionAddress);
 
   // Состояние для отслеживания обновлений
   const [updateTrigger, setUpdateTrigger] = useState(0);
@@ -70,7 +70,7 @@ const AuctionNFTs = ({ provider, account, nftContract }) => {
     if (provider && account) {
       try {
         const auctionContract = new ethers.Contract(
-          AUCTION_ADDRESS,
+          auctionAddress,
           NFTAuctionABI,
           provider
         );
@@ -131,7 +131,7 @@ const AuctionNFTs = ({ provider, account, nftContract }) => {
 
       // Создаем экземпляр контракта аукционов
       const signer = provider.getSigner();
-      const auctionContract = new ethers.Contract(AUCTION_ADDRESS, NFTAuctionABI, signer);
+      const auctionContract = new ethers.Contract(auctionAddress, NFTAuctionABI, signer);
 
       try {
         // Получаем активные аукционы
@@ -269,7 +269,7 @@ const AuctionNFTs = ({ provider, account, nftContract }) => {
 
       // Создаем экземпляр контракта аукционов
       const signer = provider.getSigner();
-      const auctionContract = new ethers.Contract(AUCTION_ADDRESS, NFTAuctionABI, signer);
+      const auctionContract = new ethers.Contract(auctionAddress, NFTAuctionABI, signer);
 
       const bidAmountWei = ethers.utils.parseEther(bidAmount);
 
@@ -359,7 +359,7 @@ const AuctionNFTs = ({ provider, account, nftContract }) => {
 
       // Создаем экземпляр контракта аукционов
       const signer = provider.getSigner();
-      const auctionContract = new ethers.Contract(AUCTION_ADDRESS, NFTAuctionABI, signer);
+      const auctionContract = new ethers.Contract(auctionAddress, NFTAuctionABI, signer);
 
       // Рассчитываем цену с 10% комиссией
       const currentBid = selectedAuction.currentBid;
@@ -495,7 +495,7 @@ const AuctionNFTs = ({ provider, account, nftContract }) => {
 
       // Создаем экземпляр контракта аукционов
       const signer = provider.getSigner();
-      const auctionContract = new ethers.Contract(AUCTION_ADDRESS, NFTAuctionABI, signer);
+      const auctionContract = new ethers.Contract(auctionAddress, NFTAuctionABI, signer);
 
       toast({
         title: "Ending auction",
