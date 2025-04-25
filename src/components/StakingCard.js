@@ -3,7 +3,7 @@ import { Box, Text, Button, VStack, HStack, Heading, useToast, Modal, ModalOverl
 import ShimmerButton from './ShimmerButton';
 import { ethers } from 'ethers';
 
-const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSuccess }) => {
+const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSuccess, isMobile, isTablet, isLandscape }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
   const [isAuctioning, setIsAuctioning] = useState(false);
@@ -276,7 +276,7 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
 
       toast({
         title: 'Auction Created',
-        description: `Auction for ${nft.name} has been created with starting price ${price} ETH and duration ${auctionDuration} hours`,
+        description: `Auction for ${nft.name} has been created with starting price ${price} MATIC and duration ${auctionDuration} hours`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -309,13 +309,16 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
     }
   };
 
+  // Установка значения isMobile по умолчанию, если оно не передано
+  const mobileCheck = isMobile !== undefined ? isMobile : window.innerWidth <= 576;
+
   return (
-    <Box borderWidth="1px" borderRadius="lg" p={4} className="card" color="#333" style={{ animation: 'none' }} width="100%" boxShadow="0 8px 16px rgba(0, 0, 0, 0.1)" bg="rgba(0, 0, 0, 0.82)" minHeight="400px" display="flex" flexDirection="column">
-      <VStack spacing={4} width="100%" flex="1">
-        <Box height="180px" display="flex" alignItems="center" justifyContent="center" width="100%" overflow="hidden" borderRadius="md" bg="rgba(240, 240, 240, 0.5)">
+    <Box borderWidth="1px" borderRadius="lg" p={mobileCheck ? 2 : 4} className="card" color="#333" style={{ animation: 'none' }} width="100%" boxShadow="0 8px 16px rgba(0, 0, 0, 0.1)" bg="rgba(0, 0, 0, 0.82)" minHeight={mobileCheck ? "350px" : "400px"} display="flex" flexDirection="column" maxWidth="100%">
+      <VStack spacing={mobileCheck ? 2 : 4} width="100%" flex="1">
+        <Box height={mobileCheck ? "150px" : "180px"} display="flex" alignItems="center" justifyContent="center" width="100%" overflow="hidden" borderRadius="md" bg="rgba(240, 240, 240, 0.5)">
           <img src={nft.image} alt={nft.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
         </Box>
-        <Text fontSize="md" fontWeight="bold" width="100%" textAlign="center" color="#333" noOfLines={1} overflow="hidden" textOverflow="ellipsis">{nft.name}</Text>
+        <Text fontSize={mobileCheck ? "sm" : "md"} fontWeight="bold" width="100%" textAlign="center" color="#333" noOfLines={1} overflow="hidden" textOverflow="ellipsis">{nft.name}</Text>
 
         <Box width="100%" px={2}>
           <Text fontSize="xs" color="#4A5568" mb={1}>
@@ -336,15 +339,15 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
           )}
         </Box>
 
-        <VStack spacing={3} width="full">
+        <VStack spacing={mobileCheck ? 2 : 3} width="full">
           <ShimmerButton
             colorScheme="green"
             onClick={stakeNFT}
             isLoading={isLoading || isApproving}
             loadingText={isApproving ? "Approving" : "Staking"}
             width="full"
-            height="40px"
-            fontSize="sm"
+            height={mobileCheck ? "36px" : "40px"}
+            fontSize={mobileCheck ? "xs" : "sm"}
             borderRadius="md"
             boxShadow="md"
             _hover={{ boxShadow: 'lg' }}
@@ -360,8 +363,8 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
               onAuctionModalOpen();
             }}
             width="full"
-            height="40px"
-            fontSize="sm"
+            height={mobileCheck ? "36px" : "40px"}
+            fontSize={mobileCheck ? "xs" : "sm"}
             borderRadius="md"
             boxShadow="md"
             _hover={{ boxShadow: 'lg' }}
@@ -381,10 +384,10 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
             <ModalBody>
               <Text mb={4}>Set auction parameters for {nft.name}</Text>
               <FormControl mb={4}>
-                <FormLabel>Starting Price (ETH)</FormLabel>
+                <FormLabel>Starting Price (MATIC)</FormLabel>
                 <NumberInput defaultValue={0.1} min={0.001} precision={3} value={price || '0.1'} onChange={(valueString) => setPrice(valueString)}>
                   <NumberInputField
-                    placeholder="Enter starting price in ETH"
+                    placeholder="Enter starting price in MATIC"
                   />
                   <NumberInputStepper>
                     <NumberIncrementStepper />

@@ -143,72 +143,79 @@ const NFTMarketplace = ({ provider, account }) => {
         return;
       }
 
-      // Get metadata for each NFT
-      const nftsWithMetadata = await Promise.all(
-        tokenIds.map(async (tokenId) => {
-          let name = `NFT #${tokenId.toString()}`;
-          let description = "";
-          let image = "https://via.placeholder.com/200";
+      try {
+        // Get metadata for each NFT
+        const nftsWithMetadata = await Promise.all(
+          tokenIds.map(async (tokenId) => {
+            let name = `NFT #${tokenId.toString()}`;
+            let description = "";
+            let image = "/no-image.svg";
 
-          try {
-            const tokenURI = await nftContract.tokenURI(tokenId);
-            console.log(`Token URI for ${tokenId}:`, tokenURI);
+            try {
+              const tokenURI = await nftContract.tokenURI(tokenId);
+              console.log(`Token URI for ${tokenId}:`, tokenURI);
 
-            if (tokenURI.startsWith('data:application/json;base64,')) {
-              const json = JSON.parse(atob(tokenURI.split(',')[1]));
-              name = json.name || name;
-              description = json.description || description;
-              image = json.image || image;
-            } else if (tokenURI.startsWith('ipfs://')) {
-              // Обрабатываем IPFS URI
-              const ipfsUrl = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
-              try {
-                const response = await fetch(ipfsUrl);
-                const json = await response.json();
+              if (tokenURI.startsWith('data:application/json;base64,')) {
+                const json = JSON.parse(atob(tokenURI.split(',')[1]));
                 name = json.name || name;
                 description = json.description || description;
                 image = json.image || image;
+              } else if (tokenURI.startsWith('ipfs://')) {
+                // Обрабатываем IPFS URI
+                const ipfsUrl = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                try {
+                  const response = await fetch(ipfsUrl);
+                  const json = await response.json();
+                  name = json.name || name;
+                  description = json.description || description;
+                  image = json.image || image;
 
-                // Преобразуем URL изображения, если необходимо
-                if (image.startsWith('ipfs://')) {
-                  image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                  // Преобразуем URL изображения, если необходимо
+                  if (image.startsWith('ipfs://')) {
+                    image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                  }
+                } catch (error) {
+                  console.error(`Error fetching IPFS metadata for token ${tokenId}:`, error);
                 }
-              } catch (error) {
-                console.error(`Error fetching IPFS metadata for token ${tokenId}:`, error);
-              }
-            } else if (tokenURI.startsWith('http')) {
-              // Обрабатываем HTTP URI
-              try {
-                const response = await fetch(tokenURI);
-                const json = await response.json();
-                name = json.name || name;
-                description = json.description || description;
-                image = json.image || image;
+              } else if (tokenURI.startsWith('http')) {
+                // Обрабатываем HTTP URI
+                try {
+                  const response = await fetch(tokenURI);
+                  const json = await response.json();
+                  name = json.name || name;
+                  description = json.description || description;
+                  image = json.image || image;
 
-                // Преобразуем URL изображения, если необходимо
-                if (image.startsWith('ipfs://')) {
-                  image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                  // Преобразуем URL изображения, если необходимо
+                  if (image.startsWith('ipfs://')) {
+                    image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                  }
+                } catch (error) {
+                  console.error(`Error fetching HTTP metadata for token ${tokenId}:`, error);
                 }
-              } catch (error) {
-                console.error(`Error fetching HTTP metadata for token ${tokenId}:`, error);
               }
+            } catch (error) {
+              console.error(`Error fetching metadata for token ${tokenId}:`, error);
             }
-          } catch (error) {
-            console.error(`Error fetching metadata for token ${tokenId}:`, error);
-          }
 
-          return {
-            tokenId: tokenId.toString(),
-            name,
-            description,
-            image
-          };
-        })
-      );
+            return {
+              tokenId: tokenId.toString(),
+              name,
+              description,
+              image
+            };
+          })
+        );
 
-      console.log("NFTs with metadata:", nftsWithMetadata);
-      setNfts(nftsWithMetadata);
-      setIsLoading(false);
+        console.log("NFTs with metadata:", nftsWithMetadata);
+        setNfts(nftsWithMetadata);
+      } catch (error) {
+        console.error("Error processing NFT metadata:", error);
+        // Show demo NFTs in case of error
+        showDemoNFTs();
+      } finally {
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("Error fetching NFTs:", error);
       toast({
@@ -231,19 +238,19 @@ const NFTMarketplace = ({ provider, account }) => {
         tokenId: '1',
         name: 'Demo NFT #1',
         description: 'This is a demo NFT for testing the interface',
-        image: 'https://via.placeholder.com/300/e74c3c/ffffff?text=Demo+NFT+1'
+        image: '/demo-nft-1.svg'
       },
       {
         tokenId: '2',
         name: 'Demo NFT #2',
         description: 'This is another demo NFT for testing',
-        image: 'https://via.placeholder.com/300/2ecc71/ffffff?text=Demo+NFT+2'
+        image: '/demo-nft-2.svg'
       },
       {
         tokenId: '3',
         name: 'Demo NFT #3',
         description: 'This is a third demo NFT for testing',
-        image: 'https://via.placeholder.com/300/3498db/ffffff?text=Demo+NFT+3'
+        image: '/demo-nft-3.svg'
       }
     ];
 
@@ -425,15 +432,16 @@ const NFTMarketplace = ({ provider, account }) => {
                 <Box className="card-container" width="100%" minHeight="500px">
                   <Grid
                     templateColumns={{
-                      base: "repeat(1, 1fr)",
-                      sm: "repeat(2, 1fr)",
-                      md: "repeat(3, 1fr)",
-                      lg: "repeat(4, 1fr)",
-                      xl: "repeat(5, 1fr)"
+                      base: "repeat(1, minmax(0, 1fr))",
+                      sm: "repeat(2, minmax(0, 1fr))",
+                      md: "repeat(3, minmax(0, 1fr))",
+                      lg: "repeat(4, minmax(0, 1fr))",
+                      xl: "repeat(5, minmax(0, 1fr))"
                     }}
                     gap={isMobile ? 2 : 4}
                     width="100%"
                     className="responsive-grid"
+                    px={isMobile ? 1 : 3}
                   >
                   {nfts.map((nft) => (
                     <StakingCard

@@ -94,13 +94,20 @@
     <div id="root"></div>
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
     <script>
-      // Скрипт для скрытия надписи "Built with Spline"
+      // Скрипт для скрытия надписи "Built with Spline" и обработки ошибок WebGL
       document.addEventListener('DOMContentLoaded', function() {
         // Функция для скрытия надписи
         function hideSplineFooter() {
           // Попытка найти и скрыть все возможные элементы
           const splineViewer = document.querySelector('spline-viewer');
           if (splineViewer) {
+            // Добавляем обработчик ошибок для Spline
+            splineViewer.addEventListener('error', function(e) {
+              console.log('Spline error handled:', e);
+              // Скрываем spline-viewer при ошибке
+              splineViewer.style.opacity = '0.5';
+            });
+
             // Попытка получить доступ к shadow DOM
             if (splineViewer.shadowRoot) {
               const shadowElements = splineViewer.shadowRoot.querySelectorAll('a, div[class*="lib"], div[class*="footer"], div[class*="bottom"]');
@@ -131,6 +138,17 @@
 
         // Начинаем наблюдение за изменениями в DOM
         observer.observe(document.body, { childList: true, subtree: true });
+
+        // Подавляем ошибки WebGL в консоли
+        const originalConsoleError = console.error;
+        console.error = function() {
+          if (arguments[0] && typeof arguments[0] === 'string' &&
+              (arguments[0].includes('WebGL') || arguments[0].includes('GL_INVALID'))) {
+            // Игнорируем ошибки WebGL
+            return;
+          }
+          originalConsoleError.apply(console, arguments);
+        };
       });
     </script>
   </body>

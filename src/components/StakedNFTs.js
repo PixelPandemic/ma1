@@ -70,18 +70,42 @@ const StakedNFTs = ({ stakingContract, nftContract, account }) => {
     try {
       setLoading(true);
 
-      // Get staked NFT IDs
-      const tokenIds = await stakingContract.getStakedNFTs(account);
-
-      if (tokenIds.length === 0) {
-        setStakedNFTs([]);
+      // Проверяем, что контракт стейкинга и аккаунт определены
+      if (!stakingContract || !account) {
+        console.error('Staking contract or account not defined');
+        toast({
+          title: 'Error',
+          description: 'Staking contract or account not defined',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
         setLoading(false);
         return;
       }
 
-      // Get total rewards
-      const rewards = await stakingContract.getTotalRewards(account);
-      setTotalRewards(ethers.utils.formatEther(rewards));
+      console.log('Fetching staked NFTs for account:', account);
+      console.log('Staking contract address:', stakingContract.address);
+
+      // Get staked NFT IDs
+      let tokenIds;
+      try {
+        tokenIds = await stakingContract.getStakedNFTs(account);
+        console.log('Staked token IDs:', tokenIds.map(id => id.toString()));
+
+        if (tokenIds.length === 0) {
+          setStakedNFTs([]);
+          setLoading(false);
+          return;
+        }
+
+        // Get total rewards
+        const rewards = await stakingContract.getTotalRewards(account);
+        setTotalRewards(ethers.utils.formatEther(rewards));
+      } catch (contractError) {
+        console.error('Error calling staking contract:', contractError);
+        throw new Error(`Error calling staking contract: ${contractError.message}`);
+      }
 
       // Get details for each staked NFT
       const nftsWithDetails = await Promise.all(
@@ -90,7 +114,7 @@ const StakedNFTs = ({ stakingContract, nftContract, account }) => {
 
           // Get NFT metadata
           let name = `NFT #${tokenId.toString()}`;
-          let image = 'https://via.placeholder.com/200';
+          let image = '/no-image.svg';
 
           try {
             const tokenURI = await nftContract.tokenURI(tokenId);
@@ -124,9 +148,21 @@ const StakedNFTs = ({ stakingContract, nftContract, account }) => {
       setStakedNFTs(nftsWithDetails);
     } catch (error) {
       console.error('Error fetching staked NFTs:', error);
+
+      // Получаем более подробную информацию об ошибке
+      let errorMessage = error.message || 'Unknown error';
+      if (error.data) {
+        console.log('Error data:', error.data);
+        errorMessage += ` (${error.data})`;
+      }
+      if (error.error) {
+        console.log('Inner error:', error.error);
+        errorMessage += ` - ${error.error.message || JSON.stringify(error.error)}`;
+      }
+
       toast({
         title: 'Error',
-        description: 'Failed to fetch staked NFTs',
+        description: `Failed to fetch staked NFTs: ${errorMessage}`,
         status: 'error',
         duration: 5000,
         isClosable: true,

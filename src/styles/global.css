@@ -164,6 +164,9 @@ body {
   min-height: auto; /* Убираем фиксированную минимальную высоту */
   display: flex;
   flex-direction: column;
+  max-width: 100%; /* Ensure cards don't overflow container */
+  width: 100%; /* Full width on mobile */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 /* Плавное появление элементов вместо мигания */
@@ -268,13 +271,15 @@ body {
   gap: 20px;
   justify-content: center;
   width: 100%;
-  padding: 20px;
+  padding: 10px;
   padding-bottom: 0; /* Убираем отступ снизу */
-  margin: 20px auto 0; /* Убираем отступ снизу */
+  margin: 10px auto 0; /* Убираем отступ снизу */
   background-color: rgba(252, 6, 6, 0);
   border-radius: 10px;
   backdrop-filter: blur(5px);
   min-height: auto; /* Убираем минимальную высоту */
+  box-sizing: border-box; /* Include padding in width calculation */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 /* Адаптивные стили для кнопок */
@@ -355,6 +360,21 @@ body {
 
   .tabs-container {
     width: 100%;
+  }
+
+  .responsive-grid {
+    padding: 0 5px !important;
+  }
+
+  .card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 5px 0 !important;
+  }
+
+  .card-container {
+    padding: 5px !important;
+    gap: 10px !important;
   }
 }
 

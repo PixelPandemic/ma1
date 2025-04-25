@@ -201,6 +201,8 @@ function App() {
             zIndex: -1,
             overflow: 'hidden'
           }}
+          onError={(e) => console.log('Spline loading error:', e)}
+          loading-status="lazy"
         ></spline-viewer>
         {/* Дополнительный перекрывающий элемент для нижней части */}
         <Box
