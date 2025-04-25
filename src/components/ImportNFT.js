@@ -271,7 +271,7 @@ const ImportNFT = ({ provider, account }) => {
                   tokenId: tokenId.toString(),
                   name: nftName,
                   description: metadata.description || 'No description available',
-                  image: imageUrl || 'https://via.placeholder.com/150?text=No+Image',
+                  image: imageUrl || '/no-image.svg',
                   contractAddress: contractAddress,
                   contractName: contractInfo.name || 'Unknown Contract'
                 };
@@ -294,7 +294,7 @@ const ImportNFT = ({ provider, account }) => {
                 tokenId: tokenId.toString(),
                 name: `${contractInfo.name || 'NFT'} #${tokenId}`,
                 description: 'This is a demo NFT for testing the interface',
-                image: 'https://via.placeholder.com/300/3498db/ffffff?text=Demo+NFT',
+                image: '/demo-nft-3.svg',
                 contractAddress: contractAddress,
                 contractName: contractInfo.name || 'Unknown Contract'
               };
@@ -318,7 +318,7 @@ const ImportNFT = ({ provider, account }) => {
             tokenId: '1',
             name: 'Demo NFT #1',
             description: 'This is a demo NFT for testing the interface',
-            image: 'https://via.placeholder.com/300/e74c3c/ffffff?text=Demo+NFT+1',
+            image: '/demo-nft-1.svg',
             contractAddress: META_ART_NFT_ADDRESS,
             contractName: 'Demo NFT Collection'
           },
@@ -326,7 +326,7 @@ const ImportNFT = ({ provider, account }) => {
             tokenId: '2',
             name: 'Demo NFT #2',
             description: 'This is another demo NFT for testing',
-            image: 'https://via.placeholder.com/300/2ecc71/ffffff?text=Demo+NFT+2',
+            image: '/demo-nft-2.svg',
             contractAddress: META_ART_NFT_ADDRESS,
             contractName: 'Demo NFT Collection'
           }
@@ -352,7 +352,7 @@ const ImportNFT = ({ provider, account }) => {
           tokenId: '1',
           name: 'Demo NFT #1',
           description: 'This is a demo NFT for testing the interface',
-          image: 'https://via.placeholder.com/300/e74c3c/ffffff?text=Demo+NFT+1',
+          image: '/demo-nft-1.svg',
           contractAddress: META_ART_NFT_ADDRESS,
           contractName: 'Demo NFT Collection'
         },
@@ -360,7 +360,7 @@ const ImportNFT = ({ provider, account }) => {
           tokenId: '2',
           name: 'Demo NFT #2',
           description: 'This is another demo NFT for testing',
-          image: 'https://via.placeholder.com/300/2ecc71/ffffff?text=Demo+NFT+2',
+          image: '/demo-nft-2.svg',
           contractAddress: META_ART_NFT_ADDRESS,
           contractName: 'Demo NFT Collection'
         }
@@ -591,7 +591,7 @@ const ImportNFT = ({ provider, account }) => {
 
       toast({
         title: 'Auction Created',
-        description: `Your NFT ${nft.name} is now on auction with starting price ${startingPrice} ETH!`,
+        description: `Your NFT ${nft.name} is now on auction with starting price ${startingPrice} MATIC!`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -801,7 +801,7 @@ const ImportNFT = ({ provider, account }) => {
                 </Box>
 
                 <FormControl mb={4}>
-                  <FormLabel>Starting Price (ETH)</FormLabel>
+                  <FormLabel>Starting Price (MATIC)</FormLabel>
                   <NumberInput
                     defaultValue={0.1}
                     min={0.001}
