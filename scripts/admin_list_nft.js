@@ -17,10 +17,10 @@ async function main() {
 
   // Параметры для вызова функции adminListNFT
   const tokenId = 1; // ID токена
-  const price = hre.ethers.utils.parseEther("0.1"); // Цена в MATIC
+  const price = hre.ethers.utils.parseEther("0.1"); // Цена в ETH
   const seller = deployer.address; // Адрес продавца (владелец контракта)
 
-  console.log(`Listing NFT #${tokenId} for sale at ${hre.ethers.utils.formatEther(price)} MATIC`);
+  console.log(`Listing NFT #${tokenId} for sale at ${hre.ethers.utils.formatEther(price)} ETH`);
 
   // Вызываем функцию adminListNFT
   const tx = await marketplace.adminListNFT(nftContractAddress, tokenId, price, seller);

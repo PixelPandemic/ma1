@@ -300,7 +300,7 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
             // Получаем метаданные NFT
             let name = `NFT #${tokenId}`;
             let description = "";
-            let image = "/no-image.svg";
+            let image = "https://via.placeholder.com/200";
 
             try {
               const tokenURI = await nftContract.tokenURI(tokenId);
@@ -369,14 +369,14 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
       const price = nft.price;
 
       // Подтверждаем покупку
-      const confirmBuy = window.confirm(`Are you sure you want to buy ${nft.name} for ${ethers.utils.formatEther(price)} MATIC?`);
+      const confirmBuy = window.confirm(`Are you sure you want to buy ${nft.name} for ${ethers.utils.formatEther(price)} ETH?`);
       if (!confirmBuy) {
         setBuyingId(null);
         return;
       }
 
       // Вызываем функцию buyNFT
-      console.log(`Buying NFT #${nft.id} for ${ethers.utils.formatEther(price)} MATIC`);
+      console.log(`Buying NFT #${nft.id} for ${ethers.utils.formatEther(price)} ETH`);
       console.log(`NFT Contract: ${NFT_ADDRESS}`);
       console.log(`Token ID: ${nft.id}`);
       console.log(`Price in Wei: ${price.toString()}`);
@@ -388,7 +388,7 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
 
       toast({
         title: "Success",
-        description: `You have successfully purchased ${nft.name} for ${ethers.utils.formatEther(price)} MATIC`,
+        description: `You have successfully purchased ${nft.name} for ${ethers.utils.formatEther(price)} ETH`,
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -419,7 +419,7 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
       const signer = provider.getSigner();
 
       // Запрашиваем цену у пользователя
-      let price = prompt("Enter price in MATIC:", "0.1");
+      let price = prompt("Enter price in ETH:", "0.1");
       if (!price) {
         setListingId(null);
         return;
@@ -446,7 +446,7 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
       if (priceFloat <= 0 || priceFloat > 1000) {
         toast({
           title: "Error",
-          description: `Price must be greater than 0 and less than 1000 MATIC.`,
+          description: `Price must be greater than 0 and less than 1000 ETH.`,
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -458,7 +458,7 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
       try {
         // Конвертируем цену в wei
         const priceInWei = ethers.utils.parseEther(price);
-        console.log(`Price in MATIC: ${price}, Price in Wei: ${priceInWei.toString()}`);
+        console.log(`Price in ETH: ${price}, Price in Wei: ${priceInWei.toString()}`);
 
         // Создаем экземпляр контракта NFT
         const nftContract = new ethers.Contract(
@@ -520,7 +520,7 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
         }
 
         // Вызываем функцию listNFT, так как NFT уже находится на маркетплейсе
-        console.log(`Listing NFT #${nft.id} for ${price} MATIC`);
+        console.log(`Listing NFT #${nft.id} for ${price} ETH`);
         console.log(`NFT Contract: ${NFT_ADDRESS}`);
         console.log(`Token ID: ${nft.id}`);
         console.log(`Price in Wei: ${priceInWei.toString()}`);
@@ -574,7 +574,7 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
 
         toast({
           title: "Success",
-          description: `NFT ${nft.name} has been listed for sale at ${price} MATIC`,
+          description: `NFT ${nft.name} has been listed for sale at ${price} ETH`,
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -654,7 +654,7 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
                 </Badge>
 
                 <Badge colorScheme="green" fontSize="md" mb={3} display="block">
-                  {ethers.utils.formatEther(nft.price)} MATIC
+                  {ethers.utils.formatEther(nft.price)} ETH
                 </Badge>
 
                 {nft.seller.toLowerCase() !== account.toLowerCase() ? (

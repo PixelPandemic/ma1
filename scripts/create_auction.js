@@ -38,7 +38,7 @@ async function main() {
   // Если NFT не одобрен, одобряем его
   if (!isApprovedForAll && approvedAddress.toLowerCase() !== auctionContractAddress.toLowerCase()) {
     console.log("Approving NFT for auction contract...");
-
+    
     // Сначала пробуем одобрить конкретный токен
     try {
       const approveTx = await nftContract.approve(auctionContractAddress, tokenId, { gasLimit: 500000 });
@@ -46,7 +46,7 @@ async function main() {
       console.log("NFT approved successfully!");
     } catch (approveError) {
       console.error("Error approving specific token:", approveError);
-
+      
       // Если не удалось одобрить конкретный токен, пробуем одобрить все токены
       console.log("Trying to approve all tokens...");
       const approveAllTx = await nftContract.setApprovalForAll(auctionContractAddress, true, { gasLimit: 500000 });
@@ -59,13 +59,13 @@ async function main() {
   const auctionContract = await hre.ethers.getContractAt("NFTAuction", auctionContractAddress);
 
   // Параметры аукциона
-  const startingPrice = hre.ethers.utils.parseEther("0.1"); // 0.1 MATIC
+  const startingPrice = hre.ethers.utils.parseEther("0.1"); // 0.1 ETH
   const duration = 3600; // 1 час в секундах
 
   console.log("Creating auction with parameters:");
   console.log("- NFT Contract:", nftContractAddress);
   console.log("- Token ID:", tokenId);
-  console.log("- Starting Price:", hre.ethers.utils.formatEther(startingPrice), "MATIC");
+  console.log("- Starting Price:", hre.ethers.utils.formatEther(startingPrice), "ETH");
   console.log("- Duration:", duration, "seconds");
 
   // Создаем аукцион

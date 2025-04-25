@@ -505,7 +505,7 @@ const WalletNFTs = ({ provider, account, stakingContract, nftContract }) => {
 
       toast({
         title: 'Auction Created',
-        description: `Your NFT ${nft.name} is now on auction with starting price ${startingPrice} MATIC!`,
+        description: `Your NFT ${nft.name} is now on auction with starting price ${startingPrice} ETH!`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -747,7 +747,7 @@ const WalletNFTs = ({ provider, account, stakingContract, nftContract }) => {
                 ) : (
                   <>
                     <FormControl mb={4}>
-                      <FormLabel>Starting Price (MATIC)</FormLabel>
+                      <FormLabel>Starting Price (ETH)</FormLabel>
                       <NumberInput
                         defaultValue={0.1}
                         min={0.001}
