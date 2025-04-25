@@ -282,26 +282,6 @@ const ImportNFT = ({ provider, account }) => {
                 console.error(`Error processing NFT at index ${i}:`, error);
               }
             }
-          } else {
-            // Альтернативный подход: создаем тестовые NFT для демонстрации
-            console.log(`Using alternative approach for contract ${contractAddress}`);
-
-            // Создаем демо-NFT для тестирования интерфейса
-            for (let i = 0; i < balance.toNumber(); i++) {
-              const tokenId = i + 1; // Просто используем индекс как ID
-
-              const nftData = {
-                tokenId: tokenId.toString(),
-                name: `${contractInfo.name || 'NFT'} #${tokenId}`,
-                description: 'This is a demo NFT for testing the interface',
-                image: 'https://via.placeholder.com/300/3498db/ffffff?text=Demo+NFT',
-                contractAddress: contractAddress,
-                contractName: contractInfo.name || 'Unknown Contract'
-              };
-
-              console.log('ImportNFT - Adding demo NFT data:', nftData);
-              allNFTs.push(nftData);
-            }
           }
         } catch (error) {
           console.error(`Error fetching NFTs from contract ${contractAddress}:`, error);
@@ -312,32 +292,12 @@ const ImportNFT = ({ provider, account }) => {
       setWalletNFTs(allNFTs);
 
       if (allNFTs.length === 0) {
-        // Добавляем демо-NFT для тестирования интерфейса
-        const demoNFTs = [
-          {
-            tokenId: '1',
-            name: 'Demo NFT #1',
-            description: 'This is a demo NFT for testing the interface',
-            image: 'https://via.placeholder.com/300/e74c3c/ffffff?text=Demo+NFT+1',
-            contractAddress: META_ART_NFT_ADDRESS,
-            contractName: 'Demo NFT Collection'
-          },
-          {
-            tokenId: '2',
-            name: 'Demo NFT #2',
-            description: 'This is another demo NFT for testing',
-            image: 'https://via.placeholder.com/300/2ecc71/ffffff?text=Demo+NFT+2',
-            contractAddress: META_ART_NFT_ADDRESS,
-            contractName: 'Demo NFT Collection'
-          }
-        ];
-
-        console.log('No NFTs found, adding demo NFTs:', demoNFTs);
-        setWalletNFTs(demoNFTs);
+        console.log('No NFTs found');
+        setWalletNFTs([]);
 
         toast({
-          title: 'Demo Mode',
-          description: 'No real NFTs found. Showing demo NFTs for testing.',
+          title: 'No NFTs Found',
+          description: 'No NFTs found in your wallet. Try minting or importing NFTs.',
           status: 'info',
           duration: 5000,
           isClosable: true,
@@ -346,33 +306,14 @@ const ImportNFT = ({ provider, account }) => {
     } catch (error) {
       console.error('Error fetching NFTs:', error);
 
-      // В случае ошибки показываем демо-NFT
-      const demoNFTs = [
-        {
-          tokenId: '1',
-          name: 'Demo NFT #1',
-          description: 'This is a demo NFT for testing the interface',
-          image: 'https://via.placeholder.com/300/e74c3c/ffffff?text=Demo+NFT+1',
-          contractAddress: META_ART_NFT_ADDRESS,
-          contractName: 'Demo NFT Collection'
-        },
-        {
-          tokenId: '2',
-          name: 'Demo NFT #2',
-          description: 'This is another demo NFT for testing',
-          image: 'https://via.placeholder.com/300/2ecc71/ffffff?text=Demo+NFT+2',
-          contractAddress: META_ART_NFT_ADDRESS,
-          contractName: 'Demo NFT Collection'
-        }
-      ];
-
-      console.log('Error fetching NFTs, showing demo NFTs:', demoNFTs);
-      setWalletNFTs(demoNFTs);
+      // В случае ошибки показываем пустой список
+      console.log('Error fetching NFTs, showing empty list');
+      setWalletNFTs([]);
 
       toast({
         title: 'Error Fetching NFTs',
-        description: 'Failed to fetch real NFTs. Showing demo NFTs for testing.',
-        status: 'warning',
+        description: 'Failed to fetch NFTs from your wallet. Please try again later.',
+        status: 'error',
         duration: 5000,
         isClosable: true,
       });

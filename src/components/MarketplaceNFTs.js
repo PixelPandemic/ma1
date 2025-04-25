@@ -89,28 +89,6 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
 
       console.log("Found token IDs:", tokenIds.map(id => id.toString()));
 
-      // Проверяем конкретный tokenId 3 (Baby Monsta #3)
-      try {
-        const owner = await nftContract.ownerOf(3);
-        console.log("Owner of token ID 3:", owner);
-        if (owner.toLowerCase() === MARKETPLACE_ADDRESS.toLowerCase()) {
-          console.log("Token ID 3 is on the marketplace!");
-          if (!tokenIds.some(id => id.toString() === '3')) {
-            tokenIds.push(ethers.BigNumber.from(3));
-          }
-        }
-      } catch (error) {
-        console.error("Error checking token ID 3:", error);
-      }
-
-      // Добавляем токен Baby Monsta #1, который был отправлен на маркетплейс
-      console.log("Adding Baby Monsta tokens");
-
-      // Проверяем и добавляем Baby Monsta #1
-      if (!tokenIds.some(id => id.toString() === '1')) {
-        tokenIds.push(ethers.BigNumber.from(1));
-      }
-
       // Получаем метаданные для каждого токена и проверяем, принадлежит ли он текущему пользователю
       const nftsWithMetadata = await Promise.all(
         tokenIds.map(async (tokenId) => {
@@ -173,14 +151,12 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
               }
             } catch (error) {
               console.error(`Error getting tokenURI for token ${tokenId}:`, error);
-              // Используем запасные данные для Baby Monsta #1
-              if (tokenId.toString() === '1') {
-                name = 'Baby Monsta #1';
-                description = 'A cute baby monster NFT that was sent to the marketplace';
-                image = 'https://ipfs.io/ipfs/bafybeihqgim3ai2jqs5bsd2gao6gxgiecmjgc5ja2hldw3ni2bn4n7wksi';
-                // Устанавливаем текущего пользователя как владельца
-                depositor = account;
-              }
+              // Используем запасные данные для NFT
+              name = `NFT #${tokenId.toString()}`;
+              description = 'No description available';
+              image = '/no-image.svg';
+              // Устанавливаем текущего пользователя как владельца
+              depositor = account;
             }
           } catch (error) {
             console.error(`Error fetching metadata for token ${tokenId}:`, error);
@@ -330,18 +306,9 @@ const MarketplaceNFTs = ({ provider, account, nftContract }) => {
         }
       }
 
-      // Если не удалось получить данные из событий, используем демо-данные
+      // Если не удалось получить данные из событий, показываем пустой список
       if (listedNFTsData.length === 0) {
-        // Демо-данные для тестирования
-        listedNFTsData.push({
-          id: "1",
-          name: "Baby Monsta #1",
-          description: "A cute baby monster NFT",
-          image: "https://ipfs.io/ipfs/bafybeihqgim3ai2jqs5bsd2gao6gxgiecmjgc5ja2hldw3ni2bn4n7wksi",
-          price: ethers.utils.parseEther("0.1"),
-          seller: "0x98a68E9f8DCB48c717c4cA1D7c0435CFd897393f",
-          isListed: true
-        });
+        console.log("No listed NFTs found");
       }
 
       setListedNFTs(listedNFTsData);

@@ -130,16 +130,18 @@ const NFTMarketplace = ({ provider, account }) => {
           }
         } catch (error) {
           console.error("Error using alternative approach:", error);
-          // Если и этот подход не сработал, показываем демо-NFT
-          showDemoNFTs();
+          // Если и этот подход не сработал, показываем пустой список
+          setNfts([]);
+          setIsLoading(false);
           return;
         }
       }
 
-      // Если токенов нет, показываем демо-NFT
+      // Если токенов нет, показываем пустой список
       if (tokenIds.length === 0) {
-        console.log("No tokens found, showing demo NFTs");
-        showDemoNFTs();
+        console.log("No tokens found, showing empty list");
+        setNfts([]);
+        setIsLoading(false);
         return;
       }
 
@@ -211,8 +213,8 @@ const NFTMarketplace = ({ provider, account }) => {
         setNfts(nftsWithMetadata);
       } catch (error) {
         console.error("Error processing NFT metadata:", error);
-        // Show demo NFTs in case of error
-        showDemoNFTs();
+        // Show empty list in case of error
+        setNfts([]);
       } finally {
         setIsLoading(false);
       }
@@ -226,46 +228,13 @@ const NFTMarketplace = ({ provider, account }) => {
         isClosable: true,
       });
 
-      // В случае ошибки показываем демо-NFT
-      showDemoNFTs();
+      // В случае ошибки показываем пустой список
+      setNfts([]);
+      setIsLoading(false);
     }
   };
 
-  // Функция для отображения демо-NFT
-  const showDemoNFTs = () => {
-    const demoNFTs = [
-      {
-        tokenId: '1',
-        name: 'Demo NFT #1',
-        description: 'This is a demo NFT for testing the interface',
-        image: '/demo-nft-1.svg'
-      },
-      {
-        tokenId: '2',
-        name: 'Demo NFT #2',
-        description: 'This is another demo NFT for testing',
-        image: '/demo-nft-2.svg'
-      },
-      {
-        tokenId: '3',
-        name: 'Demo NFT #3',
-        description: 'This is a third demo NFT for testing',
-        image: '/demo-nft-3.svg'
-      }
-    ];
 
-    console.log("Showing demo NFTs:", demoNFTs);
-    setNfts(demoNFTs);
-    setIsLoading(false);
-
-    toast({
-      title: 'Demo Mode',
-      description: 'Showing demo NFTs for testing purposes',
-      status: 'info',
-      duration: 5000,
-      isClosable: true,
-    });
-  };
 
   const handleRefresh = () => {
     setRefreshTrigger(prev => prev + 1);

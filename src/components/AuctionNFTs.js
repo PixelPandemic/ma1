@@ -198,16 +198,10 @@ const AuctionNFTs = ({ provider, account, nftContract }) => {
               }
             } catch (error) {
               console.error(`Error getting tokenURI for token ${auction.tokenId}:`, error);
-              // Используем запасные данные для Baby Monsta
-              if (auction.tokenId.toString() === '3') {
-                name = 'Baby Monsta #3';
-                description = 'A cute baby monster NFT';
-                image = 'https://ipfs.io/ipfs/bafybeihqgim3ai2jqs5bsd2gao6gxgiecmjgc5ja2hldw3ni2bn4n7wksi';
-              } else if (auction.tokenId.toString() === '2') {
-                name = 'Baby Monsta #2';
-                description = 'Another cute baby monster NFT';
-                image = 'https://ipfs.io/ipfs/bafybeihqgim3ai2jqs5bsd2gao6gxgiecmjgc5ja2hldw3ni2bn4n7wksi';
-              }
+              // Используем запасные данные для NFT
+              name = `NFT #${auction.tokenId.toString()}`;
+              description = 'No description available';
+              image = '/no-image.svg';
             }
 
             return {
@@ -235,39 +229,9 @@ const AuctionNFTs = ({ provider, account, nftContract }) => {
       } catch (contractError) {
         console.error("Error fetching from contract, using mock data:", contractError);
 
-        // Если контракт не работает, используем тестовые данные
-        const now = Math.floor(Date.now() / 1000);
-
-        const mockAuctions = [
-          {
-            id: '1',
-            name: 'Baby Monsta #3',
-            description: 'A cute baby monster NFT',
-            image: 'https://ipfs.io/ipfs/bafybeihqgim3ai2jqs5bsd2gao6gxgiecmjgc5ja2hldw3ni2bn4n7wksi',
-            seller: account,
-            tokenId: '3',
-            startingPrice: ethers.utils.parseEther('0.1'),
-            currentBid: ethers.utils.parseEther('0.15'),
-            highestBidder: '0x1234567890123456789012345678901234567890',
-            endTime: now + 3600, // 1 час от текущего времени
-            ended: false
-          },
-          {
-            id: '2',
-            name: 'Baby Monsta #2',
-            description: 'Another cute baby monster NFT',
-            image: 'https://ipfs.io/ipfs/bafybeihqgim3ai2jqs5bsd2gao6gxgiecmjgc5ja2hldw3ni2bn4n7wksi',
-            seller: account,
-            tokenId: '2',
-            startingPrice: ethers.utils.parseEther('0.2'),
-            currentBid: ethers.utils.parseEther('0.2'),
-            highestBidder: ethers.constants.AddressZero,
-            endTime: now + 7200, // 2 часа от текущего времени
-            ended: false
-          }
-        ];
-
-        setAuctions(mockAuctions);
+        // Если контракт не работает, показываем пустой список
+        console.log("No active auctions found");
+        setAuctions([]);
       }
 
       // Снимаем флаг загрузки только если он был установлен
