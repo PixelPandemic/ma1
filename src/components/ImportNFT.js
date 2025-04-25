@@ -532,7 +532,7 @@ const ImportNFT = ({ provider, account }) => {
 
       toast({
         title: 'Auction Created',
-        description: `Your NFT ${nft.name} is now on auction with starting price ${startingPrice} ETH!`,
+        description: `Your NFT ${nft.name} is now on auction with starting price ${startingPrice} MATIC!`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -742,7 +742,7 @@ const ImportNFT = ({ provider, account }) => {
                 </Box>
 
                 <FormControl mb={4}>
-                  <FormLabel>Starting Price (ETH)</FormLabel>
+                  <FormLabel>Starting Price (MATIC)</FormLabel>
                   <NumberInput
                     defaultValue={0.1}
                     min={0.001}
