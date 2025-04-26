@@ -6,8 +6,7 @@ import {
   RainbowKitProvider,
   darkTheme,
 } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import { http } from 'wagmi/transport';
+import { WagmiProvider, http } from 'wagmi';
 import {
   mainnet,
   polygon,
