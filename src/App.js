@@ -417,7 +417,7 @@ function App() {
                 minHeight="70vh"
                 overflowY="auto"
               >
-                <NFTMarketplace provider={provider} account={account} />
+                <NFTMarketplace />
               </Box>
             ) : (
               <Box
