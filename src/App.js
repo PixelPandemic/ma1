@@ -7,6 +7,8 @@ import NFTMarketplace from './components/NFTMarketplace';
 import './styles/global.css';
 // Импортируем адаптивные стили для мультиплатформенности
 import './styles/responsive.css';
+// Импортируем стили для всплывающих окон и уведомлений
+import './styles/notifications.css';
 
 function App() {
   const [provider, setProvider] = useState(null);
@@ -298,7 +300,7 @@ function App() {
             top="0"
             left="0"
             right="0"
-            zIndex="100"
+            zIndex="95" /* Уменьшаем z-index, чтобы всплывающие окна были поверх */
           >
             <Box
               maxW={isMobile ? "100%" : isTablet ? "95%" : "1200px"}

@@ -323,7 +323,7 @@ const NFTMarketplace = ({ provider, account }) => {
           top="170px"
           left="0"
           right="0"
-          zIndex="99"
+          zIndex="90"
           maxWidth="1400px"
           margin="0 auto"
         >

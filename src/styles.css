@@ -248,7 +248,7 @@ body {
   top: 130px !important;
   left: 0 !important;
   right: 0 !important;
-  z-index: 99 !important;
+  z-index: 90 !important; /* Уменьшаем z-index, чтобы всплывающие окна были поверх */
   backdrop-filter: blur(10px) !important;
   margin-bottom: 20px !important;
   width: 100% !important;

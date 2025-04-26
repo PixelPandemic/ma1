@@ -200,6 +200,7 @@ body {
     left: 0;
     right: 0;
     width: 100%;
+    z-index: 90 !important; /* Уменьшаем z-index, чтобы всплывающие окна были поверх */
   }
 
   .tab-panels-with-fixed-header {

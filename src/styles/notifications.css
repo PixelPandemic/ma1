@@ -1,0 +1,108 @@
+/* Стили для всплывающих окон и уведомлений */
+
+/* Увеличиваем z-index для всех всплывающих окон */
+.chakra-toast-container {
+  z-index: 9999 !important; /* Очень высокий z-index для toast-уведомлений */
+}
+
+.chakra-toast {
+  z-index: 9999 !important;
+}
+
+/* Стили для модальных окон */
+.chakra-modal {
+  z-index: 9998 !important; /* Высокий z-index для модальных окон */
+}
+
+.chakra-modal__overlay {
+  z-index: 9998 !important;
+}
+
+.chakra-modal__content-container {
+  z-index: 9998 !important;
+}
+
+.chakra-modal__content {
+  z-index: 9998 !important;
+}
+
+/* Стили для всплывающих меню */
+.chakra-menu {
+  z-index: 9997 !important; /* Высокий z-index для выпадающих меню */
+}
+
+.chakra-menu__menu-list {
+  z-index: 9997 !important;
+}
+
+/* Стили для всплывающих подсказок */
+.chakra-tooltip {
+  z-index: 9996 !important; /* Высокий z-index для подсказок */
+}
+
+/* Стили для уведомлений о переключении сети */
+.network-notification {
+  position: fixed;
+  top: 80px; /* Позиционируем ниже шапки */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999 !important;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeInDown 0.3s ease-out;
+}
+
+/* Анимация появления сверху */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Стили для кастомных toast-уведомлений */
+.custom-toast {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  z-index: 9999 !important;
+}
+
+/* Стили для уведомления о переключении сети */
+.network-switched-notification {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 9999 !important;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+/* Переопределение стилей для всех всплывающих элементов */
+.chakra-portal {
+  z-index: 9995 !important;
+}
+
+/* Стили для всплывающих окон в SimpleMultiWalletConnect */
+.wallet-notification {
+  z-index: 9999 !important;
+}

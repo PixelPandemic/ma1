@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { 
-  Button, 
-  Text, 
-  Box, 
-  HStack, 
-  Badge, 
-  useToast, 
+import {
+  Button,
+  Text,
+  Box,
+  HStack,
+  Badge,
+  useToast,
   Icon,
   Menu,
   MenuButton,
@@ -112,10 +112,10 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
     if (window.ethereum) {
       const chainId = await window.ethereum.request({ method: 'eth_chainId' });
       const chainIdDecimal = parseInt(chainId, 16);
-      
+
       const chain = SUPPORTED_CHAINS.find(c => c.id === chainIdDecimal);
       setCurrentChain(chain || { id: chainIdDecimal, name: 'Unknown Network', color: 'gray' });
-      
+
       return chain;
     }
     return null;
@@ -144,7 +144,7 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: chain.chainId }],
         });
-        
+
         // Обновляем текущую сеть
         setCurrentChain(chain);
         return true;
@@ -164,7 +164,7 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
                 },
               ],
             });
-            
+
             // Обновляем текущую сеть
             setCurrentChain(chain);
             return true;
@@ -180,7 +180,7 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
             return false;
           }
         }
-        
+
         console.error('Error switching chain:', error);
         toast({
           title: 'Network Error',
@@ -208,13 +208,13 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
 
         // Проверяем текущую сеть
         const chain = await checkNetwork();
-        
+
         // Устанавливаем провайдер и аккаунт
         setProvider(provider);
         setAccount(accounts[0]);
         setAddress(accounts[0]);
         setConnected(true);
-        
+
         return true;
       } catch (error) {
         console.error("Error connecting wallet:", error);
@@ -260,7 +260,7 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
     setCurrentChain(null);
     setProvider(null);
     setAccount(null);
-    
+
     toast({
       title: 'Wallet Disconnected',
       description: 'Your wallet has been disconnected from the app',
@@ -281,6 +281,11 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
         status: 'success',
         duration: 3000,
         isClosable: true,
+        position: 'top',
+        className: 'network-switched-notification',
+        containerStyle: {
+          zIndex: 9999
+        }
       });
     }
   };
@@ -305,10 +310,10 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
       ) : (
         <HStack spacing={4}>
           <Menu>
-            <MenuButton 
-              as={Button} 
-              size="sm" 
-              colorScheme={currentChain?.color || 'gray'} 
+            <MenuButton
+              as={Button}
+              size="sm"
+              colorScheme={currentChain?.color || 'gray'}
               rightIcon={<FiChevronDown />}
             >
               {currentChain?.name || 'Unknown Network'}
@@ -317,14 +322,14 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
               <MenuItem fontWeight="bold" isDisabled>Switch Network</MenuItem>
               <Divider my={1} />
               {SUPPORTED_CHAINS.map((chain) => (
-                <MenuItem 
+                <MenuItem
                   key={chain.id}
                   onClick={() => handleSwitchNetwork(chain.id)}
                   isDisabled={currentChain?.id === chain.id}
                 >
                   <Flex align="center">
-                    <Badge 
-                      colorScheme={chain.color} 
+                    <Badge
+                      colorScheme={chain.color}
                       mr={2}
                       px={2}
                       py={1}
@@ -342,11 +347,11 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
               ))}
             </MenuList>
           </Menu>
-          
+
           <Text fontWeight="medium" color="white">
             {formatAddress(address)}
           </Text>
-          
+
           <Box
             as="button"
             onClick={disconnectWallet}
@@ -355,11 +360,11 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
             transition="all 0.2s"
             _hover={{ opacity: 1 }}
           >
-            <Icon 
-              as={FiPower} 
-              w={5} 
-              h={5} 
-              color="white" 
+            <Icon
+              as={FiPower}
+              w={5}
+              h={5}
+              color="white"
             />
           </Box>
         </HStack>
