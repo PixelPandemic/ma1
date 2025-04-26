@@ -28,7 +28,7 @@ if (typeof window !== 'undefined') {
 
 
 // Инициализация Reown AppKit
-initReownAppKit();
+initReownAppKit(wagmiConfig);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

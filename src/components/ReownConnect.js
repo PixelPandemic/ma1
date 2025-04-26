@@ -31,7 +31,7 @@ const SUPPORTED_CHAINS = [
 ];
 
 // Инициализация Reown AppKit
-export const initReownAppKit = () => {
+export const initReownAppKit = (wagmiConfig) => {
   const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID;
 
   if (!projectId) {
@@ -39,18 +39,27 @@ export const initReownAppKit = () => {
     return;
   }
 
-  createAppKit({
-    projectId,
-    metadata: {
-      name: 'Meta ART',
-      description: 'NFT Marketplace with Staking Rewards',
-      url: 'https://masnp.netlify.app',
-      icons: ['https://masnp.netlify.app/logo192.png']
-    },
-    adapters: [new WagmiAdapter()],
-    enableAnalytics: false,
-    enableTelemetry: false
-  });
+  if (!wagmiConfig) {
+    console.error('Missing wagmiConfig');
+    return;
+  }
+
+  try {
+    createAppKit({
+      projectId,
+      metadata: {
+        name: 'Meta ART',
+        description: 'NFT Marketplace with Staking Rewards',
+        url: 'https://masnp.netlify.app',
+        icons: ['https://masnp.netlify.app/logo192.png']
+      },
+      adapters: [new WagmiAdapter({ wagmiConfig })],
+      enableAnalytics: false,
+      enableTelemetry: false
+    });
+  } catch (error) {
+    console.error('Error initializing Reown AppKit:', error);
+  }
 };
 
 const ReownConnect = ({ setProvider, setAccount }) => {
