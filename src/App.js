@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ChakraProvider, Box, Button, Center, VStack, useMediaQuery, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
 import Web3ModalConnect from './components/Web3ModalConnect';
 import NFTMarketplace from './components/NFTMarketplace';
+import { blockWalletConnectAnalytics } from './utils/blockAnalytics';
 
 // Импортируем глобальные стили для предотвращения мигания
 import './styles/global.css';
@@ -19,6 +20,11 @@ function App() {
   const [isLandscape, setIsLandscape] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Блокируем аналитические запросы WalletConnect
+  useEffect(() => {
+    blockWalletConnectAnalytics();
+  }, []);
 
   // Определяем размер экрана и ориентацию
   useEffect(() => {

@@ -34,6 +34,12 @@ const wagmiConfig = defaultWagmiConfig({
 // Создаем QueryClient для React Query
 const queryClient = new QueryClient();
 
+// Отключаем аналитику и телеметрию WalletConnect
+if (typeof window !== 'undefined') {
+  window.localStorage.setItem('WALLETCONNECT_DISABLE_ANALYTICS', 'true');
+  window.localStorage.setItem('WALLETCONNECT_DISABLE_TELEMETRY', 'true');
+}
+
 // Инициализация Web3Modal
 createWeb3Modal({
   wagmiConfig,
@@ -49,7 +55,10 @@ createWeb3Modal({
   metadata: {
     ...metadata,
     disableAnalytics: true
-  }
+  },
+  // Отключаем все сетевые запросы для аналитики
+  enableAnalytics: false,
+  enableNetworkView: false
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
