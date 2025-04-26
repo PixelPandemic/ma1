@@ -47,7 +47,7 @@ export const initReownAppKit = () => {
       url: 'https://masnp.netlify.app',
       icons: ['https://masnp.netlify.app/logo192.png']
     },
-    adapters: [WagmiAdapter()],
+    adapters: [new WagmiAdapter()],
     enableAnalytics: false,
     enableTelemetry: false
   });
