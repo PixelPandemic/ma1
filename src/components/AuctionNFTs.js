@@ -752,11 +752,16 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
           ))}
         </Grid>
       ) : (
-        <Box textAlign="center" py={10} bg="gray.50" borderRadius="md">
-          <Heading size="sm">No active auctions</Heading>
+        <Box textAlign="center" py={10} bg="rgba(0, 0, 0, 0.6)" color="white" borderRadius="md" p={4}>
+          <Heading size="sm" mb={3}>No active auctions</Heading>
           <Text mt={2}>
             You can create auctions from the "My NFTs" tab.
           </Text>
+          <Box fontSize="sm" mt={4} p={3} bg="rgba(255, 255, 255, 0.1)" borderRadius="md">
+            <Box fontWeight="bold" mb={2}>Important:</Box>
+            <Box>Make sure you are connected to <strong>Polygon Amoy Testnet</strong> to view active auctions.</Box>
+            <Box mt={2}>If you've just switched networks, try refreshing the page.</Box>
+          </Box>
         </Box>
       )}
 

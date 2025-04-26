@@ -378,8 +378,13 @@ const StakedNFTs = ({ stakingContract, nftContract, account }) => {
       </HStack>
 
       {stakedNFTs.length === 0 ? (
-        <Box textAlign="center" py={10} bg="gray.50" borderRadius="md">
-          <Text color="#4A5568">You don't have any staked NFTs yet.</Text>
+        <Box textAlign="center" py={10} bg="rgba(0, 0, 0, 0.6)" color="white" borderRadius="md" p={4}>
+          <Heading size="sm" mb={3}>You don't have any staked NFTs yet</Heading>
+          <Box fontSize="sm" mt={2} p={3} bg="rgba(255, 255, 255, 0.1)" borderRadius="md">
+            <Box fontWeight="bold" mb={2}>Important:</Box>
+            <Box>Make sure you are connected to <strong>Polygon Amoy Testnet</strong> to view your staked NFTs.</Box>
+            <Box mt={2}>If you've just switched networks, try refreshing the page.</Box>
+          </Box>
         </Box>
       ) : (
         <Grid templateColumns={{

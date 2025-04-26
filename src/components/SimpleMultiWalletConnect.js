@@ -110,13 +110,35 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
   // Проверяем текущую сеть
   const checkNetwork = async () => {
     if (window.ethereum) {
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      const chainIdDecimal = parseInt(chainId, 16);
+      try {
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        const chainIdDecimal = parseInt(chainId, 16);
 
-      const chain = SUPPORTED_CHAINS.find(c => c.id === chainIdDecimal);
-      setCurrentChain(chain || { id: chainIdDecimal, name: 'Unknown Network', color: 'gray' });
+        const chain = SUPPORTED_CHAINS.find(c => c.id === chainIdDecimal);
+        setCurrentChain(chain || { id: chainIdDecimal, name: `Unknown Network (${chainIdDecimal})`, color: 'gray' });
 
-      return chain;
+        // Если сеть не поддерживается, показываем предупреждение
+        if (!chain) {
+          console.warn(`Connected to unsupported network with chainId: ${chainIdDecimal}`);
+          toast({
+            title: 'Unsupported Network',
+            description: `You are connected to an unsupported network (Chain ID: ${chainIdDecimal}). Please switch to Polygon Amoy or another supported network.`,
+            status: 'warning',
+            duration: 5000,
+            isClosable: true,
+            position: 'top',
+            containerStyle: {
+              zIndex: 9999
+            }
+          });
+        }
+
+        return chain;
+      } catch (error) {
+        console.error("Error checking network:", error);
+        setCurrentChain({ id: 0, name: 'Network Error', color: 'red' });
+        return null;
+      }
     }
     return null;
   };

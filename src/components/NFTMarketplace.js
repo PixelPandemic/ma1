@@ -9,6 +9,7 @@ import MarketplaceNFTs from './MarketplaceNFTs';
 import AuctionNFTs from './AuctionNFTs';
 import AIAgent from './AIAgent';
 import SimpleNetworkInfo from './SimpleNetworkInfo';
+import NetworkWarning from './NetworkWarning';
 
 // Import ABIs
 import NFTStakingABI from '../contracts/NFTStakingABI.json';
@@ -50,17 +51,77 @@ const NFTMarketplace = ({ provider, account }) => {
     const initializeContracts = async () => {
       if (provider && account) {
         try {
+          // Проверяем сеть
+          const network = await provider.getNetwork();
+          console.log("Current network:", network);
+
+          // Проверяем, что мы в сети Polygon Amoy (chainId 80002)
+          if (network.chainId !== 80002) {
+            console.warn(`Connected to wrong network: ${network.name} (${network.chainId}). Expected Polygon Amoy (80002)`);
+            toast({
+              title: "Wrong Network",
+              description: `Please connect to Polygon Amoy testnet. Current network: ${network.name || 'Unknown'} (Chain ID: ${network.chainId})`,
+              status: "warning",
+              duration: 7000,
+              isClosable: true,
+              position: "top",
+              containerStyle: {
+                zIndex: 9999
+              }
+            });
+          }
+
           // Initialize contracts with their ABIs
           const signer = provider.getSigner();
 
-          const nftContractInstance = new ethers.Contract(nftAddress, MetaArtNFTABI, signer);
-          setNftContract(nftContractInstance);
+          try {
+            const nftContractInstance = new ethers.Contract(nftAddress, MetaArtNFTABI, signer);
+            // Проверяем, что контракт существует и имеет нужные методы
+            try {
+              const name = await nftContractInstance.name();
+              console.log(`NFT Contract name: ${name}`);
+            } catch (err) {
+              console.warn(`NFT Contract at ${nftAddress} may not be valid: ${err.message}`);
+            }
+            setNftContract(nftContractInstance);
+          } catch (error) {
+            console.error("Error initializing NFT contract:", error);
+            toast({
+              title: "NFT Contract Error",
+              description: `Could not initialize NFT contract: ${error.message}`,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
 
-          const stakingContractInstance = new ethers.Contract(stakingAddress, NFTStakingABI, signer);
-          setStakingContract(stakingContractInstance);
+          try {
+            const stakingContractInstance = new ethers.Contract(stakingAddress, NFTStakingABI, signer);
+            setStakingContract(stakingContractInstance);
+          } catch (error) {
+            console.error("Error initializing Staking contract:", error);
+            toast({
+              title: "Staking Contract Error",
+              description: `Could not initialize Staking contract: ${error.message}`,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
 
-          const artTokenContractInstance = new ethers.Contract(artTokenAddress, ARTTokenABI, signer);
-          setArtTokenContract(artTokenContractInstance);
+          try {
+            const artTokenContractInstance = new ethers.Contract(artTokenAddress, ARTTokenABI, signer);
+            setArtTokenContract(artTokenContractInstance);
+          } catch (error) {
+            console.error("Error initializing ART Token contract:", error);
+            toast({
+              title: "ART Token Contract Error",
+              description: `Could not initialize ART Token contract: ${error.message}`,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
 
           setIsLoading(false);
         } catch (error) {
@@ -71,13 +132,18 @@ const NFTMarketplace = ({ provider, account }) => {
             status: "error",
             duration: 5000,
             isClosable: true,
+            position: "top",
+            containerStyle: {
+              zIndex: 9999
+            }
           });
+          setIsLoading(false);
         }
       }
     };
 
     initializeContracts();
-  }, [provider, account]);
+  }, [provider, account, toast, nftAddress, stakingAddress, artTokenAddress]);
 
   useEffect(() => {
     if (nftContract && stakingContract && account) {
@@ -90,6 +156,46 @@ const NFTMarketplace = ({ provider, account }) => {
       setIsLoading(true);
       console.log("Fetching NFTs for account:", account);
       console.log("NFT Contract address:", nftAddress);
+
+      // Проверяем, что контракт инициализирован
+      if (!nftContract) {
+        console.error("NFT contract is not initialized");
+        toast({
+          title: "Contract Error",
+          description: "NFT contract is not initialized. Please check your connection and try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+          containerStyle: {
+            zIndex: 9999
+          }
+        });
+        setNfts([]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Проверяем сеть
+      try {
+        const network = await provider.getNetwork();
+        if (network.chainId !== 80002) {
+          console.warn(`Connected to wrong network: ${network.name} (${network.chainId}). Expected Polygon Amoy (80002)`);
+          toast({
+            title: "Wrong Network",
+            description: `Please connect to Polygon Amoy testnet to view your NFTs. Current network: ${network.name || 'Unknown'} (Chain ID: ${network.chainId})`,
+            status: "warning",
+            duration: 7000,
+            isClosable: true,
+            position: "top",
+            containerStyle: {
+              zIndex: 9999
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Error checking network:", error);
+      }
 
       let tokenIds = [];
       let hasTokensOfOwner = false;
@@ -113,6 +219,19 @@ const NFTMarketplace = ({ provider, account }) => {
           console.error("Error calling tokensOfOwner:", error);
           // Если метод вызвал ошибку, используем альтернативный подход
           hasTokensOfOwner = false;
+
+          // Показываем уведомление о проблеме
+          toast({
+            title: "Contract Method Error",
+            description: "Could not retrieve NFTs using tokensOfOwner method. Trying alternative approach.",
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+            containerStyle: {
+              zIndex: 9999
+            }
+          });
         }
       }
 
@@ -135,6 +254,20 @@ const NFTMarketplace = ({ provider, account }) => {
           }
         } catch (error) {
           console.error("Error using alternative approach:", error);
+
+          // Показываем уведомление о проблеме
+          toast({
+            title: "NFT Retrieval Error",
+            description: "Could not retrieve your NFTs. Please check that you're connected to the correct network.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
+            containerStyle: {
+              zIndex: 9999
+            }
+          });
+
           // Если и этот подход не сработал, показываем пустой список
           setNfts([]);
           setIsLoading(false);
@@ -220,6 +353,18 @@ const NFTMarketplace = ({ provider, account }) => {
         console.error("Error processing NFT metadata:", error);
         // Show empty list in case of error
         setNfts([]);
+
+        toast({
+          title: "Metadata Error",
+          description: "Could not retrieve NFT metadata. Some NFTs may not display correctly.",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+          containerStyle: {
+            zIndex: 9999
+          }
+        });
       } finally {
         setIsLoading(false);
       }
@@ -231,6 +376,10 @@ const NFTMarketplace = ({ provider, account }) => {
         status: "error",
         duration: 5000,
         isClosable: true,
+        position: "top",
+        containerStyle: {
+          zIndex: 9999
+        }
       });
 
       // В случае ошибки показываем пустой список
@@ -297,6 +446,7 @@ const NFTMarketplace = ({ provider, account }) => {
   return (
     <Box p={0} className="responsive-container" width="100%" overflow="visible">
       <SimpleNetworkInfo />
+      <NetworkWarning provider={provider} />
       <Tabs
         isFitted
         variant="enclosed"
@@ -400,8 +550,13 @@ const NFTMarketplace = ({ provider, account }) => {
                   <Heading size="sm">Loading your NFTs...</Heading>
                 </Box>
               ) : nfts.length === 0 ? (
-                <Box textAlign="center" py={isMobile ? 5 : 10} bg="gray.50" borderRadius="md">
-                  <Heading size="sm">You don't have any NFTs yet</Heading>
+                <Box textAlign="center" py={isMobile ? 5 : 10} bg="rgba(0, 0, 0, 0.6)" color="white" borderRadius="md" p={4}>
+                  <Heading size="sm" mb={3}>You don't have any NFTs yet</Heading>
+                  <Box fontSize="sm" mt={2} p={3} bg="rgba(255, 255, 255, 0.1)" borderRadius="md">
+                    <Box fontWeight="bold" mb={2}>Important:</Box>
+                    <Box>Make sure you are connected to <strong>Polygon Amoy Testnet</strong> to view your NFTs.</Box>
+                    <Box mt={2}>If you've just switched networks, try refreshing the page.</Box>
+                  </Box>
                 </Box>
               ) : (
                 <Box className="card-container" width="100%" minHeight="500px">
