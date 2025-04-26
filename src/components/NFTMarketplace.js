@@ -71,7 +71,7 @@ const NFTMarketplace = ({ provider: externalProvider, account: externalAccount }
 
               // Создаем публичный клиент для чтения данных из блокчейна
               const publicClient = createPublicClient({
-                transport: http()
+                transport: http('https://rpc-amoy.polygon.technology')
               });
 
               // Получаем информацию о сети
