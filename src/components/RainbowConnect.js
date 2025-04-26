@@ -207,23 +207,23 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
               {(() => {
                 if (!connected) {
                   return (
-                    <Button onClick={handleOpenConnectModal} colorScheme="purple">
+                    <CustomButton onClick={handleOpenConnectModal} colorScheme="purple">
                       Connect Wallet
-                    </Button>
+                    </CustomButton>
                   );
                 }
 
                 if (chain.unsupported) {
                   return (
-                    <Button onClick={openChainModal} colorScheme="red">
+                    <CustomButton onClick={openChainModal} colorScheme="red">
                       Wrong network
-                    </Button>
+                    </CustomButton>
                   );
                 }
 
                 return (
                   <Box display="flex" gap="12px">
-                    <Button
+                    <CustomButton
                       onClick={openChainModal}
                       style={{ display: 'flex', alignItems: 'center' }}
                       colorScheme={
@@ -254,14 +254,14 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
                         </Box>
                       )}
                       {chain.name?.includes('Polygon') ? `${chain.name} (POL)` : chain.name}
-                    </Button>
+                    </CustomButton>
 
-                    <Button onClick={openAccountModal}>
+                    <CustomButton onClick={openAccountModal}>
                       {account.displayName}
                       {account.displayBalance
                         ? ` (${account.displayBalance})`
                         : ''}
-                    </Button>
+                    </CustomButton>
                   </Box>
                 );
               })()}
@@ -274,7 +274,7 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
 };
 
 // Компоненты для кастомизации кнопки
-const Button = ({ children, ...props }) => {
+const CustomButton = ({ children, ...props }) => {
   return (
     <Box
       as="button"
