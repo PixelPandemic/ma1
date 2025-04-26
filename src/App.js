@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ChakraProvider, Box, Button, Center, VStack, useMediaQuery, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
-import ReownConnect from './components/ReownConnect';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount, useNetwork } from 'wagmi';
+import { ethers } from 'ethers';
 import NFTMarketplace from './components/NFTMarketplace';
 
 // Импортируем глобальные стили для предотвращения мигания
@@ -19,6 +21,29 @@ function App() {
   const [isLandscape, setIsLandscape] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Получаем данные из RainbowKit/wagmi
+  const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
+
+  // Обновляем провайдер и аккаунт при подключении через RainbowKit
+  useEffect(() => {
+    if (isConnected && address) {
+      // Создаем провайдер, если доступен window.ethereum
+      if (window.ethereum) {
+        try {
+          const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+          setProvider(ethersProvider);
+          setAccount(address);
+        } catch (error) {
+          console.error("Error creating provider:", error);
+        }
+      }
+    } else {
+      setProvider(null);
+      setAccount(null);
+    }
+  }, [isConnected, address]);
 
 
 
@@ -341,7 +366,7 @@ function App() {
                 </div>
               </div>
               <Box ml={isMobile ? "0" : "auto"} mt={isMobile ? 4 : 0} position="relative">
-                <ReownConnect setProvider={setProvider} setAccount={setAccount} />
+                <ConnectButton />
               </Box>
             </Box>
           </Box>
