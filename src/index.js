@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Web3Modal } from '@web3modal/react';
-import { WagmiConfig, createConfig } from 'wagmi';
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
+import { createWeb3Modal } from '@web3modal/wagmi/react';
+import { WagmiConfig } from 'wagmi';
+import { defaultWagmiConfig } from '@web3modal/wagmi/react';
 import { mainnet, polygon, polygonAmoy, bsc } from 'wagmi/chains';
 import App from './App';
 import './styles.css';
@@ -20,7 +20,15 @@ const metadata = {
 
 // Поддерживаемые сети
 const chains = [mainnet, polygon, polygonAmoy, bsc];
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
+  enableWalletConnect: true,
+  enableInjected: true,
+  enableEIP6963: true,
+  enableCoinbase: true
+});
 
 // Инициализация Web3Modal
 createWeb3Modal({
@@ -40,7 +48,6 @@ root.render(
   <React.StrictMode>
     <WagmiConfig config={wagmiConfig}>
       <App />
-      <Web3Modal />
     </WagmiConfig>
   </React.StrictMode>
 );
