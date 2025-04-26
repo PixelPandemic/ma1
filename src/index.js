@@ -4,6 +4,7 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { WagmiConfig } from 'wagmi';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react';
 import { mainnet, polygon, polygonAmoy, bsc } from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import './styles.css';
 
@@ -30,6 +31,9 @@ const wagmiConfig = defaultWagmiConfig({
   enableCoinbase: true
 });
 
+// Создаем QueryClient для React Query
+const queryClient = new QueryClient();
+
 // Инициализация Web3Modal
 createWeb3Modal({
   wagmiConfig,
@@ -47,7 +51,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <WagmiConfig config={wagmiConfig}>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </WagmiConfig>
   </React.StrictMode>
 );
