@@ -17,24 +17,24 @@ export const generateResponse = async (prompt, history = []) => {
   if (IS_DEVELOPMENT) {
     return generateDemoResponse(prompt, history);
   }
-  
+
   // В продакшене пытаемся использовать Netlify Function
   try {
     console.log('Generating response via Netlify Function for prompt:', prompt);
-    
+
     // Отправляем запрос к Netlify Function
     const response = await axios.post(API_URL, {
       prompt,
       history
     });
-    
+
     console.log('Received response from Netlify Function:', response.data);
-    
+
     // Возвращаем текст ответа
     return response.data.choices[0].message.content;
   } catch (error) {
     console.error('Error calling OpenRouter API via Netlify Function:', error);
-    
+
     // Если произошла ошибка, используем фоллбэк с имитацией ответа
     return generateDemoResponse(prompt, history);
   }
@@ -49,14 +49,14 @@ export const generateResponse = async (prompt, history = []) => {
 async function generateDemoResponse(prompt, history = []) {
   console.log('Generating demo response for prompt:', prompt);
   console.log('Using message history:', history);
-  
+
   // Имитируем задержку для реалистичности
   await new Promise(resolve => setTimeout(resolve, 1500));
-  
+
   // Анализируем запрос и генерируем соответствующий ответ
   const lowercasePrompt = prompt.toLowerCase();
   let response = '';
-  
+
   // Проверяем ключевые слова в запросе
   if (lowercasePrompt.includes('nft') || lowercasePrompt.includes('token')) {
     response = `Thank you for your question about NFTs and tokens on the Meta ART platform.
@@ -74,7 +74,7 @@ Key features of our NFT ecosystem:
 4. **ART Token**: Our utility token with a total supply of 100,000,000,000,000 tokens, used for rewards, governance, and transactions.
 
 Would you like more specific information about any of these aspects of our NFT ecosystem?`;
-  } 
+  }
   else if (lowercasePrompt.includes('auction') || lowercasePrompt.includes('sell') || lowercasePrompt.includes('buy')) {
     response = `The Meta ART auction system provides a flexible way to sell your NFTs:
 
@@ -82,7 +82,7 @@ Would you like more specific information about any of these aspects of our NFT e
    - Go to "My NFTs" section
    - Select the NFT you want to auction
    - Click "Auction"
-   - Set a starting price, auction duration, and optional "Buy Now" price
+   - Set a starting price and auction duration
    - Confirm the transaction in your wallet
 
 2. **Auction Features**:
@@ -92,8 +92,8 @@ Would you like more specific information about any of these aspects of our NFT e
    - Automatic transfer to highest bidder when auction ends
 
 3. **Commission Structure**:
-   - 10% platform fee on successful auctions
-   - 5% fee on regular transactions
+   - 5% platform fee on successful auctions
+   - 10% fee for "Buy Now" purchases
 
 The auction system is built on smart contracts, ensuring transparency and security for both sellers and buyers. Would you like more details about a specific aspect of the auction process?`;
   }
@@ -151,7 +151,7 @@ Would you like more information about connecting to the Polygon Amoy network or 
 Meta ART is an NFT marketplace on the Polygon Amoy testnet that offers several key features:
 
 1. **NFT Minting**: Create your own unique digital assets
-2. **NFT Auctions**: Sell your NFTs to the highest bidder with optional "Buy Now" prices
+2. **NFT Auctions**: Sell your NFTs to the highest bidder with "Buy Now" option
 3. **NFT Staking**: Earn ART tokens by staking your NFTs
    - 10 tokens per hour, +10 for each subsequent hour
    - Total ART token supply: 100,000,000,000,000
@@ -163,7 +163,7 @@ The platform uses smart contracts deployed on the Polygon Amoy testnet, providin
 
 Is there something specific about the Meta ART platform you'd like to know more about?`;
   }
-  
+
   console.log('Generated demo response:', response);
   return response;
 }

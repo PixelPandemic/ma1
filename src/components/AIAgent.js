@@ -40,7 +40,7 @@ const topics = [
 
 // Ответы на темы
 const topicResponses = {
-  'auction': 'To auction your NFT on Meta ART:\n\n1. Go to the "My NFTs" section\n2. Find the NFT you want to auction\n3. Click the "Auction" button\n4. Set a starting price, auction duration, and optional "Buy Now" price\n5. Confirm the transaction in your wallet\n\nThe platform charges a 10% commission on successful auctions. Buyers can place bids or use the "Buy Now" option if available.',
+  'auction': 'To auction your NFT on Meta ART:\n\n1. Go to the "My NFTs" section\n2. Find the NFT you want to auction\n3. Click the "Auction" button\n4. Set a starting price and auction duration\n5. Confirm the transaction in your wallet\n\nThe platform charges a 5% commission on successful auctions and 10% for "Buy Now". Buyers can place bids or use the "Buy Now".',
 
   'staking': 'Staking NFTs on Meta ART earns you ART tokens as rewards:\n\n1. Go to the "My NFTs" section\n2. Find the NFT you want to stake\n3. Click the "Stake" button\n4. Confirm the transaction in your wallet\n\nReward structure:\n- 10 ART tokens per hour\n- +10 tokens for each subsequent hour (20 in hour 2, 30 in hour 3, etc.)\n\nYou can unstake your NFT at any time to claim your rewards.',
 
