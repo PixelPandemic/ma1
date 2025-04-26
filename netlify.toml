@@ -1,5 +1,5 @@
 [build]
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "npm install @rainbow-me/rainbowkit@2 wagmi@2 viem@2.x @tanstack/react-query --legacy-peer-deps && npm run build"
   publish = "build"
   functions = "netlify/functions"
 
