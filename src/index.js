@@ -7,16 +7,17 @@ import {
   darkTheme,
 } from '@rainbow-me/rainbowkit';
 import {
-  trustWallet,
-  ledgerWallet,
-  coinbaseWallet,
-  braveWallet,
-  safeWallet,
-  walletConnectWallet,
-  bybitWallet,
-  phantomWallet,
+  // Импорты кошельков в алфавитном порядке
   binanceWallet,
   bitgetWallet,
+  braveWallet,
+  bybitWallet,
+  coinbaseWallet,
+  ledgerWallet,
+  phantomWallet,
+  safeWallet,
+  trustWallet,
+  walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { WagmiProvider, http } from 'wagmi';
 import {
@@ -64,16 +65,17 @@ const config = getDefaultConfig({
     {
       groupName: 'Популярные',
       wallets: [
-        trustWallet,
-        ledgerWallet,
-        coinbaseWallet,
-        braveWallet,
-        safeWallet,
-        walletConnectWallet,
-        bybitWallet,
-        phantomWallet,
+        // Список кошельков в алфавитном порядке
         binanceWallet,
         bitgetWallet,
+        braveWallet,
+        bybitWallet,
+        coinbaseWallet,
+        ledgerWallet,
+        phantomWallet,
+        safeWallet,
+        trustWallet,
+        walletConnectWallet,
       ]
     }
   ]

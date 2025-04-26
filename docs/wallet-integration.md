@@ -57,16 +57,17 @@ import {
   darkTheme,
 } from '@rainbow-me/rainbowkit';
 import {
-  trustWallet,
-  ledgerWallet,
-  coinbaseWallet,
-  braveWallet,
-  safeWallet,
-  walletConnectWallet,
-  bybitWallet,
-  phantomWallet,
+  // Импорты кошельков в алфавитном порядке
   binanceWallet,
   bitgetWallet,
+  braveWallet,
+  bybitWallet,
+  coinbaseWallet,
+  ledgerWallet,
+  phantomWallet,
+  safeWallet,
+  trustWallet,
+  walletConnectWallet,
   // Другие доступные кошельки в RainbowKit v2:
   // injectedWallet,
   // rainbowWallet,
@@ -100,16 +101,17 @@ const config = getDefaultConfig({
     {
       groupName: 'Популярные',
       wallets: [
-        trustWallet,
-        ledgerWallet,
-        coinbaseWallet,
-        braveWallet,
-        safeWallet,
-        walletConnectWallet,
-        bybitWallet,
-        phantomWallet,
+        // Список кошельков в алфавитном порядке
         binanceWallet,
         bitgetWallet,
+        braveWallet,
+        bybitWallet,
+        coinbaseWallet,
+        ledgerWallet,
+        phantomWallet,
+        safeWallet,
+        trustWallet,
+        walletConnectWallet,
       ],
     },
   ],
@@ -152,13 +154,14 @@ wallets: [
   {
     groupName: 'Другие популярные',
     wallets: [
-      braveWallet,
-      safeWallet,
-      walletConnectWallet,
-      bybitWallet,
-      phantomWallet,
+      // Список кошельков в алфавитном порядке
       binanceWallet,
       bitgetWallet,
+      braveWallet,
+      bybitWallet,
+      phantomWallet,
+      safeWallet,
+      walletConnectWallet,
     ],
   },
 ]
