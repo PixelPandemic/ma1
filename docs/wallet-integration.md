@@ -62,10 +62,12 @@ import {
   coinbaseWallet,
   braveWallet,
   safeWallet,
+  walletConnectWallet,
+  bybitWallet,
+  phantomWallet,
   // Другие доступные кошельки в RainbowKit v2:
   // injectedWallet,
   // rainbowWallet,
-  // walletConnectWallet,
   // metaMaskWallet,
   // argentWallet,
   // omniWallet,
@@ -74,6 +76,12 @@ import {
   // tahoWallet,
   // tokenPocketWallet,
   // okxWallet,
+  // zerionWallet,
+  // oneInchWallet,
+  // imTokenWallet,
+  // frontierWallet,
+  // bitgetWallet,
+  // xdefiWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
 // Определяем список цепей
@@ -95,6 +103,9 @@ const config = getDefaultConfig({
         coinbaseWallet,
         braveWallet,
         safeWallet,
+        walletConnectWallet,
+        bybitWallet,
+        phantomWallet,
       ],
     },
   ],
@@ -120,9 +131,36 @@ const config = getDefaultConfig({
 - tokenPocketWallet - TokenPocket
 - okxWallet - OKX Wallet
 
+## Группировка кошельков
+
+Вы можете создавать несколько групп кошельков для лучшей организации:
+
+```javascript
+wallets: [
+  {
+    groupName: 'Рекомендуемые',
+    wallets: [
+      trustWallet,
+      ledgerWallet,
+      coinbaseWallet,
+    ],
+  },
+  {
+    groupName: 'Другие популярные',
+    wallets: [
+      braveWallet,
+      safeWallet,
+      walletConnectWallet,
+      bybitWallet,
+      phantomWallet,
+    ],
+  },
+]
+```
+
 ## Примечание о доступности кошельков
 
-Некоторые кошельки, которые были доступны в RainbowKit v1, могут отсутствовать в RainbowKit v2 или иметь другие имена. Например, Exodus и Phantom не доступны напрямую в RainbowKit v2, но пользователи этих кошельков все равно могут подключиться через WalletConnect.
+В RainbowKit v2 доступно большое количество кошельков. Полный список можно найти в официальной документации: https://www.rainbowkit.com/docs/wallets
 
 ## Примечания
 

@@ -12,6 +12,9 @@ import {
   coinbaseWallet,
   braveWallet,
   safeWallet,
+  walletConnectWallet,
+  bybitWallet,
+  phantomWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { WagmiProvider, http } from 'wagmi';
 import {
@@ -64,6 +67,9 @@ const config = getDefaultConfig({
         coinbaseWallet,
         braveWallet,
         safeWallet,
+        walletConnectWallet,
+        bybitWallet,
+        phantomWallet,
       ]
     }
   ]
