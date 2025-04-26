@@ -44,6 +44,11 @@ createWeb3Modal({
     '--w3m-accent-color': '#805AD5', // purple.500
     '--w3m-background-color': '#4A1D96', // purple.800
     '--w3m-text-color': '#FFFFFF',
+  },
+  // Отключаем аналитику, чтобы избежать ошибок CSP
+  metadata: {
+    ...metadata,
+    disableAnalytics: true
   }
 });
 
