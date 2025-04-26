@@ -53,6 +53,7 @@ root.render(
             overlayBlur: 'small',
           })}
           modalSize="compact" // Компактный размер для лучшего отображения на мобильных устройствах
+          showRecentTransactions={true} // Включаем отображение недавних транзакций
         >
           <App />
         </RainbowKitProvider>

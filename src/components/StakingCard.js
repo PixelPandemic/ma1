@@ -3,6 +3,7 @@ import { Box, Text, Button, VStack, HStack, Heading, useToast, Modal, ModalOverl
 import ShimmerButton from './ShimmerButton';
 import { ethers } from 'ethers';
 import { CONFIG } from '../config';
+import { useTrackTransaction } from '../utils/transactions';
 
 const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSuccess, isMobile, isTablet, isLandscape }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +15,7 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
   const { isOpen: isAuctionModalOpen, onOpen: onAuctionModalOpen, onClose: onAuctionModalClose } = useDisclosure();
 
   const toast = useToast();
+  const trackTransaction = useTrackTransaction();
 
   // Адрес контракта аукциона из config
   const AUCTION_ADDRESS = CONFIG.AUCTION_ADDRESS;
@@ -64,6 +66,14 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
 
       // Используем setApprovalForAll вместо approve
       const tx = await nftContract.setApprovalForAll(targetAddress, true);
+
+      // Отслеживаем транзакцию одобрения в RainbowKit
+      trackTransaction(
+        tx.hash,
+        `Approving NFT ${nft.name || `#${nft.tokenId}`} for contract`,
+        1
+      );
+
       await tx.wait();
 
       toast({
@@ -111,6 +121,14 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
       });
 
       const tx = await stakingContract.stake(nft.tokenId);
+
+      // Отслеживаем транзакцию стейкинга в RainbowKit
+      trackTransaction(
+        tx.hash,
+        `Staking NFT ${nft.name || `#${nft.tokenId}`}`,
+        1
+      );
+
       await tx.wait();
 
       // Отправляем событие обновления списка стейкнутых NFT
@@ -272,6 +290,14 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
       );
 
       console.log('Transaction hash:', tx.hash);
+
+      // Отслеживаем транзакцию создания аукциона в RainbowKit
+      trackTransaction(
+        tx.hash,
+        `Creating auction for NFT ${nft.name || `#${nft.tokenId}`} at ${price} POL`,
+        1
+      );
+
       await tx.wait();
       console.log('Transaction confirmed!');
 

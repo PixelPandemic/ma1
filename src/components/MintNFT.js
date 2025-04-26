@@ -11,6 +11,7 @@ import {
   Text,
   Flex
 } from '@chakra-ui/react';
+import { useTrackTransaction } from '../utils/transactions';
 
 const MintNFT = ({ nftContract, account, onMintSuccess }) => {
   const [name, setName] = useState('');
@@ -18,6 +19,7 @@ const MintNFT = ({ nftContract, account, onMintSuccess }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+  const trackTransaction = useTrackTransaction();
 
   const handleMint = async () => {
     if (!name || !description || !imageUrl) {
@@ -47,6 +49,14 @@ const MintNFT = ({ nftContract, account, onMintSuccess }) => {
 
       // Mint the NFT
       const tx = await nftContract.mintNFT(account, tokenURI);
+
+      // Отслеживаем транзакцию в RainbowKit
+      trackTransaction(
+        tx.hash,
+        `Minting NFT: ${name}`,
+        1 // Ждем 1 подтверждение
+      );
+
       await tx.wait();
 
       toast({

@@ -34,6 +34,7 @@ import {
 } from '@chakra-ui/react';
 import { ethers } from 'ethers';
 import { CONFIG } from '../config';
+import { useTrackTransaction } from '../utils/transactions';
 
 // Импортируем ABI для взаимодействия с контрактом аукционов
 import NFTAuctionABI from '../contracts/NFTAuctionABI.json';
@@ -52,6 +53,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
   const { isOpen: isBuyNowModalOpen, onOpen: onBuyNowModalOpen, onClose: onBuyNowModalClose } = useDisclosure();
 
   const toast = useToast();
+  const trackTransaction = useTrackTransaction();
 
   // Адрес контракта аукционов из props
   console.log('AuctionNFTs - Auction contract address:', auctionAddress);
@@ -297,6 +299,14 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
       try {
         // Вызываем функцию placeBid контракта
         const tx = await auctionContract.placeBid(selectedAuction.id, { value: bidAmountWei });
+
+        // Отслеживаем транзакцию ставки в RainbowKit
+        trackTransaction(
+          tx.hash,
+          `Ставка ${bidAmount} POL на NFT ${selectedAuction.name || `#${selectedAuction.tokenId}`}`,
+          1
+        );
+
         await tx.wait();
 
         // Обновляем список аукционов
@@ -379,6 +389,14 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
         // Вызываем функцию buyNow контракта (предполагается, что такая функция есть в контракте)
         // Если такой функции нет, нужно будет добавить ее в контракт
         const tx = await auctionContract.buyNow(selectedAuction.id, { value: totalPrice });
+
+        // Отслеживаем транзакцию покупки в RainbowKit
+        trackTransaction(
+          tx.hash,
+          `Покупка NFT ${selectedAuction.name || `#${selectedAuction.tokenId}`} за ${ethers.utils.formatEther(totalPrice)} POL`,
+          1
+        );
+
         await tx.wait();
 
         // Обновляем список аукционов
@@ -509,6 +527,14 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
       try {
         // Вызываем функцию endAuction контракта
         const tx = await auctionContract.endAuction(auction.id);
+
+        // Отслеживаем транзакцию завершения аукциона в RainbowKit
+        trackTransaction(
+          tx.hash,
+          `Завершение аукциона NFT ${auction.name || `#${auction.tokenId}`}`,
+          1
+        );
+
         await tx.wait();
 
         // Обновляем список аукционов
