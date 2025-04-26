@@ -75,20 +75,6 @@ const SUPPORTED_CHAINS = [
     blockExplorerUrls: ['https://bscscan.com/'],
     color: 'yellow',
     hoverColor: 'orange.500'
-  },
-  {
-    id: 999999, // Placeholder ID for Solana
-    name: 'Solana',
-    chainId: 'solana',
-    nativeCurrency: {
-      name: 'SOL',
-      symbol: 'SOL',
-      decimals: 9
-    },
-    rpcUrls: ['https://api.mainnet-beta.solana.com'],
-    blockExplorerUrls: ['https://explorer.solana.com/'],
-    color: 'blue',
-    hoverColor: 'blue.600'
   }
 ];
 
