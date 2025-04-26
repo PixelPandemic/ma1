@@ -6,6 +6,13 @@ import {
   RainbowKitProvider,
   darkTheme,
 } from '@rainbow-me/rainbowkit';
+import {
+  trustWallet,
+  ledgerWallet,
+  zerionWallet,
+  exodusWallet,
+  phantomWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 import { WagmiProvider, http } from 'wagmi';
 import {
   mainnet,
@@ -27,7 +34,7 @@ const iconUrl = typeof window !== 'undefined' ? `${window.location.origin}/logo1
 // Определяем список цепей
 const chains = [mainnet, polygon, polygonAmoy, bsc];
 
-// Создаем конфигурацию с правильными метаданными
+// Создаем конфигурацию с правильными метаданными и дополнительными кошельками
 const config = getDefaultConfig({
   appName: 'Meta ART',
   projectId: '386d6f1cb5083b6db1f57fe136dde79e',
@@ -46,7 +53,20 @@ const config = getDefaultConfig({
     description: 'NFT Marketplace with Staking Rewards',
     url: siteUrl,
     icons: [iconUrl]
-  }
+  },
+  // Добавляем дополнительные кошельки
+  wallets: [
+    {
+      groupName: 'Популярные',
+      wallets: [
+        trustWallet,
+        ledgerWallet,
+        zerionWallet,
+        exodusWallet,
+        phantomWallet,
+      ]
+    }
+  ]
 });
 
 // Создаем QueryClient для React Query
