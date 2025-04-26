@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ChakraProvider, Box, Button, Center, VStack, useMediaQuery, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
 import SimpleMultiWalletConnect from './components/SimpleMultiWalletConnect';
 import NFTMarketplace from './components/NFTMarketplace';
+import CurrencyInfo from './components/CurrencyInfo';
 
 // Импортируем глобальные стили для предотвращения мигания
 import './styles/global.css';
@@ -338,8 +339,9 @@ function App() {
                   </div>
                 </div>
               </div>
-              <Box ml={isMobile ? "0" : "auto"} mt={isMobile ? 4 : 0}>
+              <Box ml={isMobile ? "0" : "auto"} mt={isMobile ? 4 : 0} position="relative">
                 <SimpleMultiWalletConnect setProvider={setProvider} setAccount={setAccount} />
+                <CurrencyInfo />
               </Box>
             </Box>
           </Box>

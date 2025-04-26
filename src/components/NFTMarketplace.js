@@ -9,7 +9,6 @@ import MarketplaceNFTs from './MarketplaceNFTs';
 import AuctionNFTs from './AuctionNFTs';
 import AIAgent from './AIAgent';
 import SimpleNetworkInfo from './SimpleNetworkInfo';
-import NetworkWarning from './NetworkWarning';
 
 // Import ABIs
 import NFTStakingABI from '../contracts/NFTStakingABI.json';
@@ -446,7 +445,6 @@ const NFTMarketplace = ({ provider, account }) => {
   return (
     <Box p={0} className="responsive-container" width="100%" overflow="visible">
       <SimpleNetworkInfo />
-      <NetworkWarning provider={provider} />
       <Tabs
         isFitted
         variant="enclosed"

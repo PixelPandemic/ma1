@@ -4,6 +4,7 @@ import {
   Text,
   Box,
   HStack,
+  VStack,
   Badge,
   useToast,
   Icon,
@@ -117,14 +118,29 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
         const chain = SUPPORTED_CHAINS.find(c => c.id === chainIdDecimal);
         setCurrentChain(chain || { id: chainIdDecimal, name: `Unknown Network (${chainIdDecimal})`, color: 'gray' });
 
-        // Если сеть не поддерживается, показываем предупреждение
+        // Если сеть не поддерживается, показываем предупреждение в виде toast
         if (!chain) {
           console.warn(`Connected to unsupported network with chainId: ${chainIdDecimal}`);
+
+          // Показываем уведомление вместо ошибки
           toast({
-            title: 'Unsupported Network',
-            description: `You are connected to an unsupported network (Chain ID: ${chainIdDecimal}). Please switch to Polygon Amoy or another supported network.`,
-            status: 'warning',
-            duration: 5000,
+            title: 'Network Information',
+            description: `All transactions will use this network's native currency. Make sure you have enough funds.`,
+            status: 'info',
+            duration: 7000,
+            isClosable: true,
+            position: 'top',
+            containerStyle: {
+              zIndex: 9999
+            }
+          });
+        } else if (chain.id !== 80002) {
+          // Если сеть поддерживается, но это не Polygon Amoy, показываем предупреждение
+          toast({
+            title: 'Network Information',
+            description: `All transactions will use ${chain.nativeCurrency.symbol} as the native currency. Make sure you have enough funds.`,
+            status: 'info',
+            duration: 7000,
             isClosable: true,
             position: 'top',
             containerStyle: {

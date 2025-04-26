@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Box, Badge, HStack } from '@chakra-ui/react';
+import { Box, Text, Badge } from '@chakra-ui/react';
 
-const SimpleNetworkInfo = () => {
+const CurrencyInfo = () => {
   const [currentChain, setCurrentChain] = useState(null);
 
   useEffect(() => {
@@ -63,27 +63,24 @@ const SimpleNetworkInfo = () => {
 
   return (
     <Box
-      bg="rgba(0, 0, 0, 0.6)"
-      backdropFilter="blur(10px)"
-      p={3}
+      position="absolute"
+      top="100%"
+      left="0"
+      mt="2px"
+      bg="rgba(0, 0, 0, 0.7)"
+      backdropFilter="blur(5px)"
+      p={1.5}
       borderRadius="md"
-      boxShadow="md"
-      mb={4}
-      position="relative"
+      boxShadow="sm"
+      width="auto"
+      maxWidth="100%"
       zIndex="9990"
     >
-      <HStack spacing={3}>
-        <Badge
-          colorScheme={currentChain.color}
-          p={2}
-          borderRadius="md"
-          fontSize="sm"
-        >
-          {currentChain.name}
-        </Badge>
-      </HStack>
+      <Text color="white" fontSize="xs" textAlign="center" whiteSpace="nowrap">
+        Native Currency: <Badge colorScheme="green" ml={1} fontSize="xs">{currentChain.currency}</Badge>
+      </Text>
     </Box>
   );
 };
 
-export default SimpleNetworkInfo;
+export default CurrencyInfo;
