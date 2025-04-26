@@ -60,18 +60,22 @@ const config = getDefaultConfig({
     url: siteUrl,
     icons: [iconUrl]
   },
-  // Добавляем дополнительные кошельки
+  // Добавляем дополнительные кошельки, разделенные на группы для лучшего отображения на мобильных устройствах
   wallets: [
     {
-      groupName: 'Популярные',
+      groupName: 'Основные',
       wallets: [
-        // Список кошельков в алфавитном порядке
         binanceWallet,
         bitgetWallet,
-        braveWallet,
         bybitWallet,
         coinbaseWallet,
         ledgerWallet,
+      ]
+    },
+    {
+      groupName: 'Дополнительные',
+      wallets: [
+        braveWallet,
         phantomWallet,
         safeWallet,
         trustWallet,

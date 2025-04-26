@@ -322,6 +322,41 @@ body {
   margin: 0 auto;
 }
 
+/* Глобальные стили для RainbowKit */
+[data-rk] {
+  --rk-radii-modal: 12px;
+  --rk-fonts-body: 'Rajdhani', sans-serif;
+  --rk-modal-border-radius: 12px;
+  --rk-modal-wallet-grid-gap: 12px;
+}
+
+/* Стили для модального окна RainbowKit */
+[data-rk] div[class*="Dialog-module_dialog"] {
+  max-width: 420px;
+  width: 100%;
+}
+
+/* Стили для сетки кошельков в RainbowKit */
+[data-rk] div[class*="ConnectModal_walletList"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+/* Стили для элементов кошельков в RainbowKit */
+[data-rk] div[class*="ConnectModal_wallet"] {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Стили для названий кошельков в RainbowKit */
+[data-rk] div[class*="ConnectModal_wallet"] div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Адаптивные стили для вкладок */
 .responsive-tabs {
   width: 100%;

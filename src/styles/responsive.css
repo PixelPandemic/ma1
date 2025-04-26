@@ -314,6 +314,47 @@ body {
     max-width: 95vw;
   }
 
+  /* Стили для модального окна RainbowKit */
+  [data-rk] {
+    --rk-radii-modal: 12px;
+    --rk-modal-wallet-grid-gap: 8px !important;
+  }
+
+  /* Уменьшаем размер текста в модальном окне RainbowKit */
+  [data-rk] div[class*="Dialog-module_dialog"] {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Стили для сетки кошельков в RainbowKit */
+  [data-rk] div[class*="ConnectModal_walletList"] {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  /* Стили для элементов кошельков в RainbowKit */
+  [data-rk] div[class*="ConnectModal_wallet"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 8px !important;
+  }
+
+  /* Уменьшаем размер иконок кошельков */
+  [data-rk] div[class*="ConnectModal_wallet"] img {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  /* Уменьшаем размер текста названий кошельков */
+  [data-rk] div[class*="ConnectModal_wallet"] div {
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
   /* Стили для вкладок */
   .chakra-tabs__tablist {
     width: 100%;
