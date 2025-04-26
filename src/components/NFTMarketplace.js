@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Grid, Box, Heading, Tabs, TabList, TabPanels, Tab, TabPanel, Divider, useToast, useMediaQuery, Text } from '@chakra-ui/react';
 import { ethers } from 'ethers';
+import { createPublicClient, http, createWalletClient, custom } from 'viem';
+import { useAccount, useConfig } from 'wagmi';
 import StakingCard from './StakingCard';
 import StakedNFTs from './StakedNFTs';
 import MintNFT from './MintNFT';
@@ -17,7 +19,7 @@ import ARTTokenABI from '../contracts/ARTTokenABI.json';
 // Import config
 import { CONFIG } from '../config';
 
-const NFTMarketplace = ({ provider, account }) => {
+const NFTMarketplace = ({ provider: externalProvider, account: externalAccount }) => {
   const [nfts, setNfts] = useState([]);
   const [stakingContract, setStakingContract] = useState(null);
   const [nftContract, setNftContract] = useState(null);
@@ -26,6 +28,16 @@ const NFTMarketplace = ({ provider, account }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const toast = useToast();
+
+  // Получаем данные из wagmi
+  const { address, isConnected } = useAccount();
+  const wagmiConfig = useConfig();
+
+  // Используем адрес из wagmi, если он доступен, иначе используем переданный извне
+  const account = address || externalAccount;
+
+  // Создаем совместимый с ethers провайдер
+  const [ethersProvider, setEthersProvider] = useState(null);
 
   // Определяем размер экрана для адаптивного дизайна
   const [isMobile] = useMediaQuery("(max-width: 576px)");
@@ -47,74 +59,119 @@ const NFTMarketplace = ({ provider, account }) => {
 
   useEffect(() => {
     const initializeContracts = async () => {
-      if (provider && account) {
+      if (account) {
         try {
-          // Проверяем сеть
-          const network = await provider.getNetwork();
-          console.log("Current network:", network);
-
-          // Проверяем, что мы в сети Polygon Amoy (chainId 80002)
-          if (network.chainId !== 80002) {
-            console.warn(`Connected to wrong network: ${network.name} (${network.chainId}). Expected Polygon Amoy (80002)`);
-            toast({
-              title: "Wrong Network",
-              description: `Please connect to Polygon Amoy testnet. Current network: ${network.name || 'Unknown'} (Chain ID: ${network.chainId})`,
-              status: "warning",
-              duration: 7000,
-              isClosable: true,
-              position: "top",
-              containerStyle: {
-                zIndex: 9999
-              }
-            });
-          }
-
-          // Initialize contracts with their ABIs
-          const signer = provider.getSigner();
-
-          try {
-            const nftContractInstance = new ethers.Contract(nftAddress, MetaArtNFTABI, signer);
-            // Проверяем, что контракт существует и имеет нужные методы
+          // Создаем совместимый с ethers провайдер для работы с существующим кодом
+          if (window.ethereum) {
             try {
-              const name = await nftContractInstance.name();
-              console.log(`NFT Contract name: ${name}`);
-            } catch (err) {
-              console.warn(`NFT Contract at ${nftAddress} may not be valid: ${err.message}`);
+              // Создаем клиент кошелька с помощью viem
+              const walletClient = createWalletClient({
+                transport: custom(window.ethereum)
+              });
+
+              // Создаем публичный клиент для чтения данных из блокчейна
+              const publicClient = createPublicClient({
+                transport: http()
+              });
+
+              // Получаем информацию о сети
+              const chainId = await publicClient.getChainId();
+              console.log("Current chainId:", chainId);
+
+              // Проверяем, что мы в сети Polygon Amoy (chainId 80002)
+              if (chainId !== 80002) {
+                console.warn(`Connected to wrong network: Chain ID ${chainId}. Expected Polygon Amoy (80002)`);
+                toast({
+                  title: "Wrong Network",
+                  description: `Please connect to Polygon Amoy testnet. Current Chain ID: ${chainId}`,
+                  status: "warning",
+                  duration: 7000,
+                  isClosable: true,
+                  position: "top",
+                  containerStyle: {
+                    zIndex: 9999
+                  }
+                });
+              }
+
+              // Создаем совместимый с ethers провайдер
+              const compatProvider = {
+                getSigner: () => ({
+                  getAddress: async () => account,
+                  sendTransaction: async (tx) => {
+                    const hash = await walletClient.sendTransaction({
+                      account,
+                      to: tx.to,
+                      value: tx.value,
+                      data: tx.data,
+                    });
+                    return { hash };
+                  }
+                })
+              };
+
+              // Сохраняем провайдер для использования в других компонентах
+              setEthersProvider(compatProvider);
+
+              // Инициализируем контракты с помощью ethers
+              const signer = compatProvider.getSigner();
+
+              try {
+                const nftContractInstance = new ethers.Contract(nftAddress, MetaArtNFTABI, signer);
+                setNftContract(nftContractInstance);
+              } catch (error) {
+                console.error("Error initializing NFT contract:", error);
+                toast({
+                  title: "NFT Contract Error",
+                  description: `Could not initialize NFT contract: ${error.message}`,
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                });
+              }
+
+              try {
+                const stakingContractInstance = new ethers.Contract(stakingAddress, NFTStakingABI, signer);
+                setStakingContract(stakingContractInstance);
+              } catch (error) {
+                console.error("Error initializing Staking contract:", error);
+                toast({
+                  title: "Staking Contract Error",
+                  description: `Could not initialize Staking contract: ${error.message}`,
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                });
+              }
+
+              try {
+                const artTokenContractInstance = new ethers.Contract(artTokenAddress, ARTTokenABI, signer);
+                setArtTokenContract(artTokenContractInstance);
+              } catch (error) {
+                console.error("Error initializing ART Token contract:", error);
+                toast({
+                  title: "ART Token Contract Error",
+                  description: `Could not initialize ART Token contract: ${error.message}`,
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                });
+              }
+            } catch (error) {
+              console.error("Error creating provider:", error);
+              toast({
+                title: "Provider Error",
+                description: `Could not create provider: ${error.message}`,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
             }
-            setNftContract(nftContractInstance);
-          } catch (error) {
-            console.error("Error initializing NFT contract:", error);
+          } else {
+            console.error("No ethereum provider found");
             toast({
-              title: "NFT Contract Error",
-              description: `Could not initialize NFT contract: ${error.message}`,
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
-          }
-
-          try {
-            const stakingContractInstance = new ethers.Contract(stakingAddress, NFTStakingABI, signer);
-            setStakingContract(stakingContractInstance);
-          } catch (error) {
-            console.error("Error initializing Staking contract:", error);
-            toast({
-              title: "Staking Contract Error",
-              description: `Could not initialize Staking contract: ${error.message}`,
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
-          }
-
-          try {
-            const artTokenContractInstance = new ethers.Contract(artTokenAddress, ARTTokenABI, signer);
-            setArtTokenContract(artTokenContractInstance);
-          } catch (error) {
-            console.error("Error initializing ART Token contract:", error);
-            toast({
-              title: "ART Token Contract Error",
-              description: `Could not initialize ART Token contract: ${error.message}`,
+              title: "Provider Error",
+              description: "No ethereum provider found. Please install MetaMask or another wallet.",
               status: "error",
               duration: 5000,
               isClosable: true,
@@ -141,7 +198,7 @@ const NFTMarketplace = ({ provider, account }) => {
     };
 
     initializeContracts();
-  }, [provider, account, toast, nftAddress, stakingAddress, artTokenAddress]);
+  }, [account, toast, nftAddress, stakingAddress, artTokenAddress, wagmiConfig]);
 
   useEffect(() => {
     if (nftContract && stakingContract && account) {
@@ -174,26 +231,7 @@ const NFTMarketplace = ({ provider, account }) => {
         return;
       }
 
-      // Проверяем сеть
-      try {
-        const network = await provider.getNetwork();
-        if (network.chainId !== 80002) {
-          console.warn(`Connected to wrong network: ${network.name} (${network.chainId}). Expected Polygon Amoy (80002)`);
-          toast({
-            title: "Wrong Network",
-            description: `Please connect to Polygon Amoy testnet to view your NFTs. Current network: ${network.name || 'Unknown'} (Chain ID: ${network.chainId})`,
-            status: "warning",
-            duration: 7000,
-            isClosable: true,
-            position: "top",
-            containerStyle: {
-              zIndex: 9999
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Error checking network:", error);
-      }
+      // Сеть уже проверена в initializeContracts
 
       let tokenIds = [];
       let hasTokensOfOwner = false;
@@ -575,7 +613,7 @@ const NFTMarketplace = ({ provider, account }) => {
                       nft={nft}
                       stakingContract={stakingContract}
                       nftContract={nftContract}
-                      provider={provider}
+                      provider={ethersProvider}
                       onStakeSuccess={handleRefresh}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -603,9 +641,9 @@ const NFTMarketplace = ({ provider, account }) => {
           </TabPanel>
 
           <TabPanel p={isMobile ? 2 : 4} overflow="visible" minHeight="600px" maxHeight="none">
-            {provider && account && nftContract && (
+            {ethersProvider && account && nftContract && (
               <AuctionNFTs
-                provider={provider}
+                provider={ethersProvider}
                 account={account}
                 nftContract={nftContract}
                 auctionAddress={auctionAddress}
@@ -632,9 +670,9 @@ const NFTMarketplace = ({ provider, account }) => {
           </TabPanel>
 
           <TabPanel p={isMobile ? 2 : 4} overflow="visible" minHeight="600px" maxHeight="none">
-            {provider && account && (
+            {ethersProvider && account && (
               <ImportNFT
-                provider={provider}
+                provider={ethersProvider}
                 account={account}
                 isMobile={isMobile}
                 isTablet={isTablet}
