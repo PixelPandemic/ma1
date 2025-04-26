@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { Box, useToast } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useDisconnect, useNetwork } from 'wagmi';
+import { useAccount, useDisconnect, useChainId } from 'wagmi';
 import { ethers } from 'ethers';
 
 const RainbowConnect = ({ setProvider, setAccount }) => {
   const toast = useToast();
   const { address, isConnected } = useAccount();
-  const { chain } = useNetwork();
+  const chainId = useChainId();
   const { disconnect } = useDisconnect();
   const connectButtonRef = useRef(null);
 
@@ -69,10 +69,16 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
           setProvider(ethersProvider);
           setAccount(address);
 
+          // Получаем информацию о сети
+          const networkName = chainId === 1 ? 'Ethereum' :
+                             chainId === 137 ? 'Polygon' :
+                             chainId === 80002 ? 'Polygon Amoy' :
+                             chainId === 56 ? 'Binance Smart Chain' : 'Unknown Network';
+
           // Показываем уведомление об успешном подключении
           toast({
             title: 'Wallet Connected',
-            description: `Connected to ${chain?.name || 'network'} with address ${address.substring(0, 6)}...${address.substring(address.length - 4)}`,
+            description: `Connected to ${networkName} with address ${address.substring(0, 6)}...${address.substring(address.length - 4)}`,
             status: 'success',
             duration: 3000,
             isClosable: true,
@@ -85,7 +91,7 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
       setProvider(null);
       setAccount(null);
     }
-  }, [isConnected, address, chain, setProvider, setAccount, toast]);
+  }, [isConnected, address, chainId, setProvider, setAccount, toast]);
 
   // Добавляем эффект для применения стилей при монтировании компонента
   useEffect(() => {
