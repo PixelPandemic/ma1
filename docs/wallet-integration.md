@@ -59,9 +59,21 @@ import {
 import {
   trustWallet,
   ledgerWallet,
-  zerionWallet,
-  exodusWallet,
-  phantomWallet,
+  coinbaseWallet,
+  braveWallet,
+  safeWallet,
+  // Другие доступные кошельки в RainbowKit v2:
+  // injectedWallet,
+  // rainbowWallet,
+  // walletConnectWallet,
+  // metaMaskWallet,
+  // argentWallet,
+  // omniWallet,
+  // rabbyWallet,
+  // frameWallet,
+  // tahoWallet,
+  // tokenPocketWallet,
+  // okxWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
 // Определяем список цепей
@@ -80,35 +92,37 @@ const config = getDefaultConfig({
       wallets: [
         trustWallet,
         ledgerWallet,
-        zerionWallet,
-        exodusWallet,
-        phantomWallet,
+        coinbaseWallet,
+        braveWallet,
+        safeWallet,
       ],
     },
   ],
 });
 ```
 
-## Список доступных кошельков
+## Список доступных кошельков в RainbowKit v2
 
-- MetaMask (по умолчанию)
-- Rainbow Wallet (по умолчанию)
-- Coinbase Wallet (по умолчанию)
-- WalletConnect (по умолчанию)
-- Trust Wallet
-- Ledger Live
-- Zerion
-- Exodus
-- Phantom
-- Brave Wallet
-- Argent
-- imToken
-- Omni
-- Safe (бывший Gnosis Safe)
-- Taho (бывший Tally Ho)
-- Frontier
-- XDEFI
-- Frame
+- injectedWallet - Автоматически определяет инжектированный кошелек
+- metaMaskWallet - MetaMask
+- coinbaseWallet - Coinbase Wallet
+- walletConnectWallet - WalletConnect
+- rainbowWallet - Rainbow Wallet
+- trustWallet - Trust Wallet
+- ledgerWallet - Ledger Live
+- braveWallet - Brave Wallet
+- safeWallet - Safe (бывший Gnosis Safe)
+- argentWallet - Argent
+- omniWallet - Omni
+- rabbyWallet - Rabby
+- frameWallet - Frame
+- tahoWallet - Taho (бывший Tally Ho)
+- tokenPocketWallet - TokenPocket
+- okxWallet - OKX Wallet
+
+## Примечание о доступности кошельков
+
+Некоторые кошельки, которые были доступны в RainbowKit v1, могут отсутствовать в RainbowKit v2 или иметь другие имена. Например, Exodus и Phantom не доступны напрямую в RainbowKit v2, но пользователи этих кошельков все равно могут подключиться через WalletConnect.
 
 ## Примечания
 

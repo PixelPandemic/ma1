@@ -9,9 +9,9 @@ import {
 import {
   trustWallet,
   ledgerWallet,
-  zerionWallet,
-  exodusWallet,
-  phantomWallet,
+  coinbaseWallet,
+  braveWallet,
+  safeWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { WagmiProvider, http } from 'wagmi';
 import {
@@ -61,9 +61,9 @@ const config = getDefaultConfig({
       wallets: [
         trustWallet,
         ledgerWallet,
-        zerionWallet,
-        exodusWallet,
-        phantomWallet,
+        coinbaseWallet,
+        braveWallet,
+        safeWallet,
       ]
     }
   ]
