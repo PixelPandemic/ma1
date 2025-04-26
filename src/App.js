@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChakraProvider, Box, Button, Center, VStack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import RainbowConnect from './components/RainbowConnect';
 import NFTMarketplace from './components/NFTMarketplace';
 
 // Импортируем глобальные стили для предотвращения мигания
@@ -340,7 +340,7 @@ function App() {
                 </div>
               </div>
               <Box ml={isMobile ? "0" : "auto"} mt={isMobile ? 4 : 0} position="relative">
-                <ConnectButton />
+                <RainbowConnect setProvider={() => {}} setAccount={() => {}} />
               </Box>
             </Box>
           </Box>
