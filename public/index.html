@@ -69,6 +69,43 @@
         z-index: 9999;
       }
 
+      /* Стили для RainbowKit - глобальные настройки */
+      [data-rk] {
+        --rk-radii-modal: 12px !important;
+        --rk-fonts-body: 'Rajdhani', sans-serif !important;
+        --rk-modal-border-radius: 12px !important;
+        --rk-modal-wallet-grid-gap: 12px !important;
+      }
+
+      /* Стили для модального окна RainbowKit */
+      [data-rk] div[class*="Dialog-module_dialog"] {
+        max-width: 420px !important;
+        width: 100% !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+      }
+
+      /* Стили для сетки кошельков в RainbowKit */
+      [data-rk] div[class*="ConnectModal_walletList"] {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+        gap: 12px !important;
+        width: 100% !important;
+      }
+
+      /* Стили для элементов кошельков в RainbowKit */
+      [data-rk] div[class*="ConnectModal_wallet"] {
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      /* Стили для названий кошельков в RainbowKit */
+      [data-rk] div[class*="ConnectModal_wallet"] div {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+
       /* Стили для мобильных устройств */
       @media (max-width: 576px) {
         html, body {
@@ -85,6 +122,30 @@
         /* Увеличиваем высоту перекрывающего элемента для мобильных устройств */
         body::after {
           height: 50px;
+        }
+
+        /* Стили для RainbowKit на мобильных устройствах */
+        [data-rk] div[class*="ConnectModal_walletList"] {
+          display: grid !important;
+          grid-template-columns: repeat(3, 1fr) !important;
+          gap: 8px !important;
+          width: 100% !important;
+        }
+
+        /* Стили для элементов кошельков в RainbowKit на мобильных устройствах */
+        [data-rk] div[class*="ConnectModal_wallet"] {
+          padding: 8px !important;
+        }
+
+        /* Уменьшаем размер иконок кошельков на мобильных устройствах */
+        [data-rk] div[class*="ConnectModal_wallet"] img {
+          width: 28px !important;
+          height: 28px !important;
+        }
+
+        /* Уменьшаем размер текста названий кошельков на мобильных устройствах */
+        [data-rk] div[class*="ConnectModal_wallet"] div {
+          font-size: 12px !important;
         }
       }
     </style>
@@ -125,15 +186,70 @@
           }
         }
 
-        // Вызываем функцию сразу и с задержкой
+        // Функция для применения стилей к RainbowKit
+        function applyRainbowKitStyles() {
+          // Находим все элементы RainbowKit
+          const rainbowKitElements = document.querySelectorAll('[data-rk]');
+
+          if (rainbowKitElements.length > 0) {
+            console.log('RainbowKit elements found, applying styles');
+
+            // Находим модальное окно с кошельками
+            const walletLists = document.querySelectorAll('[data-rk] div[class*="ConnectModal_walletList"]');
+            walletLists.forEach(list => {
+              list.style.display = 'grid';
+              list.style.gridTemplateColumns = window.innerWidth <= 576
+                ? 'repeat(3, 1fr)'
+                : 'repeat(auto-fill, minmax(100px, 1fr))';
+              list.style.gap = window.innerWidth <= 576 ? '8px' : '12px';
+              list.style.width = '100%';
+            });
+
+            // Находим элементы кошельков
+            const walletItems = document.querySelectorAll('[data-rk] div[class*="ConnectModal_wallet"]');
+            walletItems.forEach(item => {
+              item.style.width = '100%';
+              item.style.minWidth = '0';
+
+              if (window.innerWidth <= 576) {
+                item.style.padding = '8px';
+
+                // Находим изображения кошельков
+                const images = item.querySelectorAll('img');
+                images.forEach(img => {
+                  img.style.width = '28px';
+                  img.style.height = '28px';
+                });
+
+                // Находим названия кошельков
+                const texts = item.querySelectorAll('div');
+                texts.forEach(text => {
+                  text.style.fontSize = '12px';
+                  text.style.whiteSpace = 'nowrap';
+                  text.style.overflow = 'hidden';
+                  text.style.textOverflow = 'ellipsis';
+                });
+              }
+            });
+          }
+        }
+
+        // Вызываем функции сразу и с задержкой
         hideSplineFooter();
         setTimeout(hideSplineFooter, 500);
         setTimeout(hideSplineFooter, 1000);
         setTimeout(hideSplineFooter, 2000);
 
+        // Применяем стили к RainbowKit с задержкой
+        setTimeout(applyRainbowKitStyles, 500);
+        setTimeout(applyRainbowKitStyles, 1000);
+        setTimeout(applyRainbowKitStyles, 2000);
+        setTimeout(applyRainbowKitStyles, 3000);
+
         // Также добавляем наблюдатель за изменениями в DOM
         const observer = new MutationObserver(function(mutations) {
           hideSplineFooter();
+          applyRainbowKitStyles();
         });
 
         // Начинаем наблюдение за изменениями в DOM
@@ -149,6 +265,19 @@
           }
           originalConsoleError.apply(console, arguments);
         };
+
+        // Добавляем обработчик события для кнопки подключения кошелька
+        document.addEventListener('click', function(e) {
+          // Если кликнули по кнопке подключения или её потомкам
+          if (e.target.closest('[data-rk]')) {
+            console.log('RainbowKit button clicked');
+            // Применяем стили с задержкой после клика
+            setTimeout(applyRainbowKitStyles, 100);
+            setTimeout(applyRainbowKitStyles, 300);
+            setTimeout(applyRainbowKitStyles, 500);
+            setTimeout(applyRainbowKitStyles, 1000);
+          }
+        });
       });
     </script>
   </body>
