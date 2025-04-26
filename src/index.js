@@ -5,9 +5,6 @@ import {
   getDefaultConfig,
   RainbowKitProvider,
   darkTheme,
-  getDefaultWallets,
-  connectorsForWallets,
-  wallet,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider, http } from 'wagmi';
 import {
@@ -30,28 +27,6 @@ const iconUrl = typeof window !== 'undefined' ? `${window.location.origin}/logo1
 // Определяем список цепей
 const chains = [mainnet, polygon, polygonAmoy, bsc];
 
-// Получаем стандартные кошельки
-const { wallets: defaultWallets } = getDefaultWallets({
-  appName: 'Meta ART',
-  projectId: '386d6f1cb5083b6db1f57fe136dde79e',
-  chains
-});
-
-// Добавляем дополнительные кошельки
-const connectors = connectorsForWallets([
-  ...defaultWallets,
-  {
-    groupName: 'Популярные',
-    wallets: [
-      wallet.trust({ projectId: '386d6f1cb5083b6db1f57fe136dde79e', chains }),
-      wallet.ledger({ projectId: '386d6f1cb5083b6db1f57fe136dde79e', chains }),
-      wallet.zerion({ projectId: '386d6f1cb5083b6db1f57fe136dde79e', chains }),
-      wallet.exodus({ projectId: '386d6f1cb5083b6db1f57fe136dde79e', chains }),
-      wallet.phantom({ chains }),
-    ],
-  }
-]);
-
 // Создаем конфигурацию с правильными метаданными
 const config = getDefaultConfig({
   appName: 'Meta ART',
@@ -71,9 +46,7 @@ const config = getDefaultConfig({
     description: 'NFT Marketplace with Staking Rewards',
     url: siteUrl,
     icons: [iconUrl]
-  },
-  // Используем настроенные коннекторы
-  connectors
+  }
 });
 
 // Создаем QueryClient для React Query
