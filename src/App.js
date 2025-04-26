@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ChakraProvider, Box, Button, Center, VStack, useMediaQuery, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
-import { ethers } from 'ethers';
+import { useAccount, useConfig } from 'wagmi';
+import { createWalletClient, custom } from 'viem';
 import NFTMarketplace from './components/NFTMarketplace';
 
 // Импортируем глобальные стили для предотвращения мигания
@@ -24,6 +24,7 @@ function App() {
 
   // Получаем данные из RainbowKit/wagmi
   const { address, isConnected } = useAccount();
+  const config = useConfig();
 
   // Обновляем провайдер и аккаунт при подключении через RainbowKit
   useEffect(() => {
@@ -31,8 +32,28 @@ function App() {
       // Создаем провайдер, если доступен window.ethereum
       if (window.ethereum) {
         try {
-          const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
-          setProvider(ethersProvider);
+          // Создаем клиент кошелька с помощью viem
+          const walletClient = createWalletClient({
+            transport: custom(window.ethereum)
+          });
+
+          // Для совместимости с существующим кодом, создаем объект, похожий на ethers provider
+          const compatProvider = {
+            getSigner: () => ({
+              getAddress: async () => address,
+              sendTransaction: async (tx) => {
+                const hash = await walletClient.sendTransaction({
+                  account: address,
+                  to: tx.to,
+                  value: tx.value,
+                  data: tx.data,
+                });
+                return { hash };
+              }
+            })
+          };
+
+          setProvider(compatProvider);
           setAccount(address);
         } catch (error) {
           console.error("Error creating provider:", error);
@@ -42,7 +63,7 @@ function App() {
       setProvider(null);
       setAccount(null);
     }
-  }, [isConnected, address]);
+  }, [isConnected, address, config]);
 
 
 

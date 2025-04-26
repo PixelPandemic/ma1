@@ -4,8 +4,10 @@ import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
   RainbowKitProvider,
+  darkTheme,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
+import { http } from 'wagmi/transport';
 import {
   mainnet,
   polygon,
@@ -23,6 +25,12 @@ const config = getDefaultConfig({
   appName: 'Meta ART',
   projectId: '386d6f1cb5083b6db1f57fe136dde79e',
   chains: [mainnet, polygon, polygonAmoy, bsc],
+  transports: {
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [polygonAmoy.id]: http(),
+    [bsc.id]: http(),
+  },
   ssr: false, // Отключаем SSR, так как наше приложение не использует серверный рендеринг
 });
 
@@ -36,7 +44,17 @@ root.render(
   <React.StrictMode>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
+        <RainbowKitProvider
+          locale="ru-RU"
+          theme={darkTheme({
+            accentColor: '#805AD5', // purple.500 - фиолетовый акцент для соответствия дизайну
+            accentColorForeground: 'white',
+            borderRadius: 'medium',
+            fontStack: 'system',
+            overlayBlur: 'small',
+          })}
+          modalSize="compact" // Компактный размер для лучшего отображения на мобильных устройствах
+        >
           <App />
         </RainbowKitProvider>
       </QueryClientProvider>
