@@ -107,6 +107,11 @@ root.render(
           modalSize="compact" // Компактный размер для лучшего отображения на мобильных устройствах
           showRecentTransactions={true} // Включаем отображение недавних транзакций
           coolMode // Включаем крутой режим с анимацией конфетти при выборе кошелька
+          appInfo={{
+            appName: 'Meta ART',
+            learnMoreUrl: 'https://masnp.netlify.app',
+            disclaimer: 'Welcome to Meta ART!', // Кастомный текст вместо стандартного дисклеймера
+          }}
         >
           <App />
         </RainbowKitProvider>

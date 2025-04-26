@@ -8,6 +8,22 @@
   --rk-modal-wallet-grid-gap: 12px !important;
 }
 
+/* Скрываем стандартный текст в модальном окне */
+[data-rk] div[class*="ConnectModal_disclaimer"] {
+  display: none !important;
+}
+
+/* Заменяем стандартный текст на кастомный */
+[data-rk] div[class*="ConnectModal_disclaimer"]::before {
+  content: "Welcome to Meta ART!" !important;
+  display: block !important;
+  text-align: center !important;
+  font-weight: bold !important;
+  color: #805AD5 !important;
+  font-size: 16px !important;
+  margin-bottom: 10px !important;
+}
+
 /* Стили для модального окна RainbowKit */
 [data-rk] div[class*="Dialog-module_dialog"] {
   max-width: 420px !important;

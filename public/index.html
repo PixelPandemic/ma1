@@ -198,6 +198,22 @@
             text-overflow: ellipsis !important;
           }
 
+          /* Скрываем стандартный текст в модальном окне */
+          [data-rk] div[class*="ConnectModal_disclaimer"] {
+            display: none !important;
+          }
+
+          /* Заменяем стандартный текст на кастомный */
+          [data-rk] div[class*="ConnectModal_disclaimer"]::before {
+            content: "Welcome to Meta ART!" !important;
+            display: block !important;
+            text-align: center !important;
+            font-weight: bold !important;
+            color: #805AD5 !important;
+            font-size: 16px !important;
+            margin-bottom: 10px !important;
+          }
+
           /* Стили для мобильных устройств */
           @media (max-width: 576px) {
             /* Стили для RainbowKit на мобильных устройствах */
@@ -335,6 +351,18 @@
                   text.style.textOverflow = 'ellipsis';
                 });
               }
+            });
+
+            // Находим и изменяем текст дисклеймера
+            const disclaimers = document.querySelectorAll('[data-rk] div[class*="ConnectModal_disclaimer"]');
+            disclaimers.forEach(disclaimer => {
+              // Сохраняем оригинальный текст, если еще не сохранен
+              if (!disclaimer.dataset.originalText) {
+                disclaimer.dataset.originalText = disclaimer.innerHTML;
+              }
+
+              // Заменяем текст на "Welcome to Meta ART!"
+              disclaimer.innerHTML = '<div style="text-align: center; font-weight: bold; color: #805AD5; font-size: 16px; margin-bottom: 10px;">Welcome to Meta ART!</div>';
             });
           }
         }
