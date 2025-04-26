@@ -303,7 +303,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
 
         toast({
           title: "Bid placed",
-          description: `You have successfully placed a bid of ${bidAmount} MATIC on ${selectedAuction.name}`,
+          description: `You have successfully placed a bid of ${bidAmount} POL on ${selectedAuction.name}`,
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -328,7 +328,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
 
         toast({
           title: "Bid placed (Demo)",
-          description: `You have successfully placed a bid of ${bidAmount} MATIC on ${selectedAuction.name}`,
+          description: `You have successfully placed a bid of ${bidAmount} POL on ${selectedAuction.name}`,
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -390,7 +390,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
         // Показываем уведомление с кнопкой перехода в раздел "My NFTs"
         toast({
           title: "Покупка успешна",
-          description: `Вы успешно приобрели ${selectedAuction.name} за ${ethers.utils.formatEther(totalPrice)} MATIC (включая 10% премию)`,
+          description: `Вы успешно приобрели ${selectedAuction.name} за ${ethers.utils.formatEther(totalPrice)} POL (включая 10% премию)`,
           status: "success",
           duration: 10000,
           isClosable: true,
@@ -399,7 +399,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
             <Box p={3} bg="green.100" borderRadius="md" boxShadow="md">
               <VStack align="start" spacing={2}>
                 <Heading size="sm">Покупка успешна</Heading>
-                <Text>Вы успешно приобрели {selectedAuction.name} за {ethers.utils.formatEther(totalPrice)} MATIC.</Text>
+                <Text>Вы успешно приобрели {selectedAuction.name} за {ethers.utils.formatEther(totalPrice)} POL.</Text>
                 <HStack spacing={2}>
                   <Button
                     size="sm"
@@ -436,7 +436,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
         // Показываем уведомление с кнопкой перехода в раздел "My NFTs"
         toast({
           title: "Покупка успешна (Demo)",
-          description: `Вы успешно приобрели ${selectedAuction.name} за ${ethers.utils.formatEther(totalPrice)} MATIC (включая 10% премию)`,
+          description: `Вы успешно приобрели ${selectedAuction.name} за ${ethers.utils.formatEther(totalPrice)} POL (включая 10% премию)`,
           status: "success",
           duration: 10000,
           isClosable: true,
@@ -445,7 +445,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
             <Box p={3} bg="green.100" borderRadius="md" boxShadow="md">
               <VStack align="start" spacing={2}>
                 <Heading size="sm">Покупка успешна (Demo)</Heading>
-                <Text>Вы успешно приобрели {selectedAuction.name} за {ethers.utils.formatEther(totalPrice)} MATIC.</Text>
+                <Text>Вы успешно приобрели {selectedAuction.name} за {ethers.utils.formatEther(totalPrice)} POL.</Text>
                 <HStack spacing={2}>
                   <Button
                     size="sm"
@@ -675,7 +675,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
 
                 <Stat>
                   <StatLabel>Current Bid</StatLabel>
-                  <StatNumber>{ethers.utils.formatEther(auction.currentBid)} MATIC</StatNumber>
+                  <StatNumber>{ethers.utils.formatEther(auction.currentBid)} POL</StatNumber>
                   <StatHelpText>
                     {auction.highestBidder !== ethers.constants.AddressZero
                       ? `Highest bidder: ${auction.highestBidder.substring(0, 6)}...${auction.highestBidder.substring(38)}`
@@ -770,7 +770,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
               <>
                 <Text mb={4}>You are placing a bid on {selectedAuction.name}</Text>
                 <FormControl mb={4}>
-                  <FormLabel>Bid Amount (ETH)</FormLabel>
+                  <FormLabel>Bid Amount (POL)</FormLabel>
                   <NumberInput
                     min={ethers.utils.formatEther(selectedAuction.currentBid.add(ethers.utils.parseEther('0.01')))}
                     precision={3}
@@ -784,7 +784,7 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
                     </NumberInputStepper>
                   </NumberInput>
                   <Text fontSize="sm" color="gray.500" mt={1}>
-                    Minimum bid: {ethers.utils.formatEther(selectedAuction.currentBid.add(ethers.utils.parseEther('0.01')))} MATIC
+                    Minimum bid: {ethers.utils.formatEther(selectedAuction.currentBid.add(ethers.utils.parseEther('0.01')))} POL
                   </Text>
                 </FormControl>
               </>
@@ -810,10 +810,10 @@ const AuctionNFTs = ({ provider, account, nftContract, auctionAddress }) => {
               <>
                 <Text mb={4}>You are about to buy <strong>{selectedAuction.name}</strong> immediately.</Text>
                 <Box p={4} borderWidth="1px" borderRadius="md" mb={4}>
-                  <Text mb={2}>Current bid: {ethers.utils.formatEther(selectedAuction.currentBid)} MATIC</Text>
-                  <Text mb={2}>Premium (10%): {ethers.utils.formatEther(selectedAuction.currentBid.mul(10).div(100))} MATIC</Text>
+                  <Text mb={2}>Current bid: {ethers.utils.formatEther(selectedAuction.currentBid)} POL</Text>
+                  <Text mb={2}>Premium (10%): {ethers.utils.formatEther(selectedAuction.currentBid.mul(10).div(100))} POL</Text>
                   <Divider my={2} />
-                  <Text fontWeight="bold">Total price: {ethers.utils.formatEther(selectedAuction.currentBid.add(selectedAuction.currentBid.mul(10).div(100)))} MATIC</Text>
+                  <Text fontWeight="bold">Total price: {ethers.utils.formatEther(selectedAuction.currentBid.add(selectedAuction.currentBid.mul(10).div(100)))} POL</Text>
                 </Box>
                 <Text fontSize="sm" color="gray.500">
                   By buying now, you agree to pay a 10% premium on top of the current bid price to skip the auction process.

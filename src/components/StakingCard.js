@@ -276,7 +276,7 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
 
       toast({
         title: 'Auction Created',
-        description: `Auction for ${nft.name} has been created with starting price ${price} MATIC and duration ${auctionDuration} hours`,
+        description: `Auction for ${nft.name} has been created with starting price ${price} POL and duration ${auctionDuration} hours`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -384,10 +384,10 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
             <ModalBody>
               <Text mb={4}>Set auction parameters for {nft.name}</Text>
               <FormControl mb={4}>
-                <FormLabel>Starting Price (MATIC)</FormLabel>
+                <FormLabel>Starting Price (POL)</FormLabel>
                 <NumberInput defaultValue={0.1} min={0.001} precision={3} value={price || '0.1'} onChange={(valueString) => setPrice(valueString)}>
                   <NumberInputField
-                    placeholder="Enter starting price in MATIC"
+                    placeholder="Enter starting price in POL"
                   />
                   <NumberInputStepper>
                     <NumberIncrementStepper />

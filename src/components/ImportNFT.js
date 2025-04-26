@@ -53,9 +53,9 @@ const NFT_AUCTION_ABI = [
 ];
 
 // Адреса контрактов из файла .env
-const META_ART_NFT_ADDRESS = "0xDB2218a06F3e95C3bAFe7c21a07d120585259d2D";
-const AUCTION_ADDRESS = process.env.REACT_APP_AUCTION_ADDRESS || "0xEa1B11803b00EbeC0cF0f29525DB1011CB99a313";
-const STAKING_ADDRESS = process.env.REACT_APP_STAKING_CONTRACT_ADDRESS || "0xaB4dCef0797a0E2d4F7a3BEC53B78B8aeAbf5881";
+const META_ART_NFT_ADDRESS = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
+const AUCTION_ADDRESS = process.env.REACT_APP_AUCTION_ADDRESS;
+const STAKING_ADDRESS = process.env.REACT_APP_STAKING_CONTRACT_ADDRESS;
 
 // Логируем адреса контрактов для отладки
 console.log('ImportNFT - Staking Contract Address:', STAKING_ADDRESS);
@@ -532,7 +532,7 @@ const ImportNFT = ({ provider, account }) => {
 
       toast({
         title: 'Auction Created',
-        description: `Your NFT ${nft.name} is now on auction with starting price ${startingPrice} MATIC!`,
+        description: `Your NFT ${nft.name} is now on auction with starting price ${startingPrice} POL!`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -742,7 +742,7 @@ const ImportNFT = ({ provider, account }) => {
                 </Box>
 
                 <FormControl mb={4}>
-                  <FormLabel>Starting Price (MATIC)</FormLabel>
+                  <FormLabel>Starting Price (POL)</FormLabel>
                   <NumberInput
                     defaultValue={0.1}
                     min={0.001}
