@@ -1,0 +1,65 @@
+/* Переопределение стилей RainbowKit для мобильных устройств */
+
+/* Глобальные настройки RainbowKit */
+[data-rk] {
+  --rk-radii-modal: 12px !important;
+  --rk-fonts-body: 'Rajdhani', sans-serif !important;
+  --rk-modal-border-radius: 12px !important;
+  --rk-modal-wallet-grid-gap: 12px !important;
+}
+
+/* Стили для модального окна RainbowKit */
+[data-rk] div[class*="Dialog-module_dialog"] {
+  max-width: 420px !important;
+  width: 100% !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+/* Стили для сетки кошельков в RainbowKit */
+[data-rk] div[class*="ConnectModal_walletList"] {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+/* Стили для элементов кошельков в RainbowKit */
+[data-rk] div[class*="ConnectModal_wallet"] {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* Стили для названий кошельков в RainbowKit */
+[data-rk] div[class*="ConnectModal_wallet"] div {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Стили для мобильных устройств */
+@media (max-width: 576px) {
+  /* Стили для RainbowKit на мобильных устройствах */
+  [data-rk] div[class*="ConnectModal_walletList"] {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  /* Стили для элементов кошельков в RainbowKit на мобильных устройствах */
+  [data-rk] div[class*="ConnectModal_wallet"] {
+    padding: 8px !important;
+  }
+
+  /* Уменьшаем размер иконок кошельков на мобильных устройствах */
+  [data-rk] div[class*="ConnectModal_wallet"] img {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  /* Уменьшаем размер текста названий кошельков на мобильных устройствах */
+  [data-rk] div[class*="ConnectModal_wallet"] div {
+    font-size: 12px !important;
+  }
+}

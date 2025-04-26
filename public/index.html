@@ -23,6 +23,7 @@
     />
     <title>Meta ART</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="%PUBLIC_URL%/rainbowkit-override.css" rel="stylesheet">
     <style>
       /* Скрываем надпись "Built with Spline" - все возможные селекторы */
       spline-viewer::part(lib),
@@ -155,6 +156,110 @@
     <div id="root"></div>
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
     <script>
+      // Функция для динамического добавления стилей
+      function addRainbowKitStyles() {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'rainbowkit-override-styles';
+        styleElement.innerHTML = `
+          /* Глобальные настройки RainbowKit */
+          [data-rk] {
+            --rk-radii-modal: 12px !important;
+            --rk-fonts-body: 'Rajdhani', sans-serif !important;
+            --rk-modal-border-radius: 12px !important;
+            --rk-modal-wallet-grid-gap: 12px !important;
+          }
+
+          /* Стили для модального окна RainbowKit */
+          [data-rk] div[class*="Dialog-module_dialog"] {
+            max-width: 420px !important;
+            width: 100% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+          }
+
+          /* Стили для сетки кошельков в RainbowKit */
+          [data-rk] div[class*="ConnectModal_walletList"] {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+            gap: 12px !important;
+            width: 100% !important;
+          }
+
+          /* Стили для элементов кошельков в RainbowKit */
+          [data-rk] div[class*="ConnectModal_wallet"] {
+            width: 100% !important;
+            min-width: 0 !important;
+          }
+
+          /* Стили для названий кошельков в RainbowKit */
+          [data-rk] div[class*="ConnectModal_wallet"] div {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+          }
+
+          /* Стили для мобильных устройств */
+          @media (max-width: 576px) {
+            /* Стили для RainbowKit на мобильных устройствах */
+            [data-rk] div[class*="ConnectModal_walletList"] {
+              display: grid !important;
+              grid-template-columns: repeat(3, 1fr) !important;
+              gap: 8px !important;
+              width: 100% !important;
+            }
+
+            /* Стили для элементов кошельков в RainbowKit на мобильных устройствах */
+            [data-rk] div[class*="ConnectModal_wallet"] {
+              padding: 8px !important;
+            }
+
+            /* Уменьшаем размер иконок кошельков на мобильных устройствах */
+            [data-rk] div[class*="ConnectModal_wallet"] img {
+              width: 28px !important;
+              height: 28px !important;
+            }
+
+            /* Уменьшаем размер текста названий кошельков на мобильных устройствах */
+            [data-rk] div[class*="ConnectModal_wallet"] div {
+              font-size: 12px !important;
+            }
+          }
+        `;
+
+        // Удаляем существующий элемент стилей, если он есть
+        const existingStyle = document.getElementById('rainbowkit-override-styles');
+        if (existingStyle) {
+          existingStyle.remove();
+        }
+
+        // Добавляем новый элемент стилей в конец head
+        document.head.appendChild(styleElement);
+      }
+
+      // Добавляем стили при загрузке страницы
+      window.addEventListener('load', function() {
+        addRainbowKitStyles();
+
+        // Добавляем стили с задержкой
+        setTimeout(addRainbowKitStyles, 1000);
+        setTimeout(addRainbowKitStyles, 2000);
+        setTimeout(addRainbowKitStyles, 3000);
+
+        // Добавляем обработчик события для кнопки подключения кошелька
+        document.addEventListener('click', function(e) {
+          // Если кликнули по кнопке подключения или её потомкам
+          if (e.target.closest('[data-rk]')) {
+            console.log('RainbowKit button clicked, adding styles');
+            // Добавляем стили с задержкой после клика
+            addRainbowKitStyles();
+            setTimeout(addRainbowKitStyles, 100);
+            setTimeout(addRainbowKitStyles, 300);
+            setTimeout(addRainbowKitStyles, 500);
+            setTimeout(addRainbowKitStyles, 1000);
+          }
+        });
+      });
+
       // Скрипт для скрытия надписи "Built with Spline" и обработки ошибок WebGL
       document.addEventListener('DOMContentLoaded', function() {
         // Функция для скрытия надписи
@@ -250,10 +355,28 @@
         const observer = new MutationObserver(function(mutations) {
           hideSplineFooter();
           applyRainbowKitStyles();
+
+          // Проверяем, появились ли новые элементы RainbowKit
+          for (const mutation of mutations) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+              for (const node of mutation.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                  // Проверяем, есть ли у элемента или его потомков атрибут data-rk
+                  if (node.hasAttribute && node.hasAttribute('data-rk') ||
+                      node.querySelector && node.querySelector('[data-rk]')) {
+                    console.log('New RainbowKit element detected, applying styles');
+                    addRainbowKitStyles();
+                    setTimeout(addRainbowKitStyles, 100);
+                    setTimeout(addRainbowKitStyles, 300);
+                  }
+                }
+              }
+            }
+          }
         });
 
         // Начинаем наблюдение за изменениями в DOM
-        observer.observe(document.body, { childList: true, subtree: true });
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-rk'] });
 
         // Подавляем ошибки WebGL в консоли
         const originalConsoleError = console.error;
