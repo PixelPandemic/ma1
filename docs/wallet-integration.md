@@ -65,6 +65,8 @@ import {
   walletConnectWallet,
   bybitWallet,
   phantomWallet,
+  binanceWallet,
+  bitgetWallet,
   // Другие доступные кошельки в RainbowKit v2:
   // injectedWallet,
   // rainbowWallet,
@@ -106,6 +108,8 @@ const config = getDefaultConfig({
         walletConnectWallet,
         bybitWallet,
         phantomWallet,
+        binanceWallet,
+        bitgetWallet,
       ],
     },
   ],
@@ -153,6 +157,8 @@ wallets: [
       walletConnectWallet,
       bybitWallet,
       phantomWallet,
+      binanceWallet,
+      bitgetWallet,
     ],
   },
 ]

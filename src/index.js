@@ -15,6 +15,8 @@ import {
   walletConnectWallet,
   bybitWallet,
   phantomWallet,
+  binanceWallet,
+  bitgetWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { WagmiProvider, http } from 'wagmi';
 import {
@@ -70,6 +72,8 @@ const config = getDefaultConfig({
         walletConnectWallet,
         bybitWallet,
         phantomWallet,
+        binanceWallet,
+        bitgetWallet,
       ]
     }
   ]
