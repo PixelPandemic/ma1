@@ -32,12 +32,8 @@ const SUPPORTED_CHAINS = [
 
 // Инициализация Reown AppKit
 export const initReownAppKit = (wagmiConfig) => {
-  const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID;
-
-  if (!projectId) {
-    console.error('Missing REACT_APP_WALLETCONNECT_PROJECT_ID');
-    return;
-  }
+  // Используем хардкодированный ID проекта
+  const projectId = '386d6f1cb5083b6db1f57fe136dde79e';
 
   if (!wagmiConfig) {
     console.error('Missing wagmiConfig');
@@ -45,6 +41,9 @@ export const initReownAppKit = (wagmiConfig) => {
   }
 
   try {
+    console.log('Initializing Reown AppKit with projectId:', projectId);
+    console.log('WagmiConfig:', wagmiConfig);
+
     createAppKit({
       projectId,
       metadata: {
@@ -57,6 +56,8 @@ export const initReownAppKit = (wagmiConfig) => {
       enableAnalytics: false,
       enableTelemetry: false
     });
+
+    console.log('Reown AppKit initialized successfully');
   } catch (error) {
     console.error('Error initializing Reown AppKit:', error);
   }
