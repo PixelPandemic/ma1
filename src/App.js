@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChakraProvider, Box, Button, Center, VStack, useMediaQuery, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { ethers } from 'ethers';
 import NFTMarketplace from './components/NFTMarketplace';
 
@@ -24,7 +24,6 @@ function App() {
 
   // Получаем данные из RainbowKit/wagmi
   const { address, isConnected } = useAccount();
-  const { chain } = useNetwork();
 
   // Обновляем провайдер и аккаунт при подключении через RainbowKit
   useEffect(() => {
