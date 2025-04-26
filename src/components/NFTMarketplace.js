@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Grid, Box, Heading, Tabs, TabList, TabPanels, Tab, TabPanel, Divider, useToast, useMediaQuery, Text } from '@chakra-ui/react';
 import { ethers } from 'ethers';
-import { createPublicClient, http, createWalletClient, custom } from 'viem';
+import { createPublicClient, http } from 'viem';
 import { useAccount, useConfig } from 'wagmi';
 import StakingCard from './StakingCard';
 import StakedNFTs from './StakedNFTs';
@@ -64,11 +64,6 @@ const NFTMarketplace = ({ provider: externalProvider, account: externalAccount }
           // Создаем совместимый с ethers провайдер для работы с существующим кодом
           if (window.ethereum) {
             try {
-              // Создаем клиент кошелька с помощью viem
-              const walletClient = createWalletClient({
-                transport: custom(window.ethereum)
-              });
-
               // Создаем публичный клиент для чтения данных из блокчейна
               const publicClient = createPublicClient({
                 transport: http('https://rpc-amoy.polygon.technology')
@@ -94,27 +89,15 @@ const NFTMarketplace = ({ provider: externalProvider, account: externalAccount }
                 });
               }
 
-              // Создаем совместимый с ethers провайдер
-              const compatProvider = {
-                getSigner: () => ({
-                  getAddress: async () => account,
-                  sendTransaction: async (tx) => {
-                    const hash = await walletClient.sendTransaction({
-                      account,
-                      to: tx.to,
-                      value: tx.value,
-                      data: tx.data,
-                    });
-                    return { hash };
-                  }
-                })
-              };
+              // Создаем настоящий ethers провайдер
+              const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+              await ethersProvider.ready;
 
               // Сохраняем провайдер для использования в других компонентах
-              setEthersProvider(compatProvider);
+              setEthersProvider(ethersProvider);
 
               // Инициализируем контракты с помощью ethers
-              const signer = compatProvider.getSigner();
+              const signer = ethersProvider.getSigner();
 
               try {
                 const nftContractInstance = new ethers.Contract(nftAddress, MetaArtNFTABI, signer);
