@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Box, Button, HStack, Text, Icon, Menu, MenuButton, MenuList, MenuItem, Divider, Flex, useToast } from '@chakra-ui/react';
 import { FiPower, FiChevronDown } from 'react-icons/fi';
-import { useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/wagmi/react';
-import { useConfig, useChainId } from 'wagmi';
+import { useWeb3Modal, useWalletInfo } from '@web3modal/wagmi/react';
+import { useConfig, useChainId, useAccount, useConnect, useDisconnect } from 'wagmi';
 import { ethers } from 'ethers';
 
 // Поддерживаемые сети с цветами для UI
@@ -36,16 +36,23 @@ const Web3ModalConnect = ({ setProvider, setAccount }) => {
 
   // Web3Modal hooks
   const { open } = useWeb3Modal();
-  const { address, chainId, isConnected } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
+  const { address, isConnected } = useAccount();
+  const { walletInfo } = useWalletInfo();
   const currentChainId = useChainId();
 
   // Эффект для обновления провайдера и аккаунта при подключении
   useEffect(() => {
-    if (isConnected && walletProvider && address) {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
-      setProvider(ethersProvider);
-      setAccount(address);
+    if (isConnected && address) {
+      // Создаем провайдер, если доступен walletInfo
+      if (walletInfo?.provider) {
+        try {
+          const ethersProvider = new ethers.providers.Web3Provider(walletInfo.provider);
+          setProvider(ethersProvider);
+          setAccount(address);
+        } catch (error) {
+          console.error("Error creating provider:", error);
+        }
+      }
 
       // Получаем информацию о текущей сети
       const currentChainInfo = config.chains.find(c => c.id === currentChainId);
@@ -75,7 +82,7 @@ const Web3ModalConnect = ({ setProvider, setAccount }) => {
       setAccount(null);
       setCurrentChain(null);
     }
-  }, [isConnected, walletProvider, address, currentChainId, config.chains, setProvider, setAccount]);
+  }, [isConnected, walletInfo, address, currentChainId, config.chains, setProvider, setAccount]);
 
   // Обработчик подключения кошелька
   const connectWallet = async () => {
@@ -94,9 +101,10 @@ const Web3ModalConnect = ({ setProvider, setAccount }) => {
   };
 
   // Обработчик отключения кошелька
+  const { disconnect } = useDisconnect();
   const disconnectWallet = async () => {
     try {
-      await open({ view: 'Account' });
+      disconnect();
     } catch (error) {
       console.error('Error disconnecting wallet:', error);
     }
