@@ -14,6 +14,9 @@ import NFTStakingABI from '../contracts/NFTStakingABI.json';
 import MetaArtNFTABI from '../contracts/MetaArtNFTABI.json';
 import ARTTokenABI from '../contracts/ARTTokenABI.json';
 
+// Import config
+import { CONFIG } from '../config';
+
 const NFTMarketplace = ({ provider, account }) => {
   const [nfts, setNfts] = useState([]);
   const [stakedNfts, setStakedNfts] = useState([]);
@@ -31,11 +34,11 @@ const NFTMarketplace = ({ provider, account }) => {
   const [isLandscape] = useMediaQuery("(orientation: landscape) and (max-height: 500px)");
   const [isDesktop] = useMediaQuery("(min-width: 992px)");
 
-  // Contract addresses from environment variables
-  const stakingAddress = process.env.REACT_APP_STAKING_CONTRACT_ADDRESS;
-  const nftAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
-  const artTokenAddress = process.env.REACT_APP_ART_TOKEN_ADDRESS;
-  const auctionAddress = process.env.REACT_APP_AUCTION_ADDRESS;
+  // Contract addresses from config
+  const stakingAddress = CONFIG.STAKING_CONTRACT_ADDRESS;
+  const nftAddress = CONFIG.NFT_CONTRACT_ADDRESS;
+  const artTokenAddress = CONFIG.ART_TOKEN_ADDRESS;
+  const auctionAddress = CONFIG.AUCTION_ADDRESS;
 
   // Log contract addresses for debugging
   console.log('Staking Contract Address:', stakingAddress);

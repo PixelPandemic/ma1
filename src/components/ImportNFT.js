@@ -29,6 +29,7 @@ import {
   NumberDecrementStepper
 } from '@chakra-ui/react';
 import { ethers } from 'ethers';
+import { CONFIG } from '../config';
 
 // Упрощенный ABI для взаимодействия с NFT
 const NFT_ABI = [
@@ -52,10 +53,10 @@ const NFT_AUCTION_ABI = [
   "function auctions(uint256) view returns (uint256 id, address seller, address nftContract, uint256 tokenId, uint256 startingPrice, uint256 endTime, address highestBidder, uint256 highestBid, bool ended)"
 ];
 
-// Адреса контрактов из файла .env
-const META_ART_NFT_ADDRESS = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
-const AUCTION_ADDRESS = process.env.REACT_APP_AUCTION_ADDRESS;
-const STAKING_ADDRESS = process.env.REACT_APP_STAKING_CONTRACT_ADDRESS;
+// Адреса контрактов из config
+const META_ART_NFT_ADDRESS = CONFIG.NFT_CONTRACT_ADDRESS;
+const AUCTION_ADDRESS = CONFIG.AUCTION_ADDRESS;
+const STAKING_ADDRESS = CONFIG.STAKING_CONTRACT_ADDRESS;
 
 // Логируем адреса контрактов для отладки
 console.log('ImportNFT - Staking Contract Address:', STAKING_ADDRESS);

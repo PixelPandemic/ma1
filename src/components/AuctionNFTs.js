@@ -33,6 +33,7 @@ import {
   useDisclosure
 } from '@chakra-ui/react';
 import { ethers } from 'ethers';
+import { CONFIG } from '../config';
 
 // Импортируем ABI для взаимодействия с контрактом аукционов
 import NFTAuctionABI from '../contracts/NFTAuctionABI.json';

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Text, Button, VStack, HStack, Heading, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormLabel, Input, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from '@chakra-ui/react';
 import ShimmerButton from './ShimmerButton';
 import { ethers } from 'ethers';
+import { CONFIG } from '../config';
 
 const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSuccess, isMobile, isTablet, isLandscape }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,8 +15,8 @@ const StakingCard = ({ nft, stakingContract, nftContract, provider, onStakeSucce
 
   const toast = useToast();
 
-  // Адрес контракта аукциона из .env
-  const AUCTION_ADDRESS = process.env.REACT_APP_AUCTION_ADDRESS;
+  // Адрес контракта аукциона из config
+  const AUCTION_ADDRESS = CONFIG.AUCTION_ADDRESS;
 
   // Импортируем ABI для взаимодействия с контрактом аукционов
   const NFT_AUCTION_ABI = [
