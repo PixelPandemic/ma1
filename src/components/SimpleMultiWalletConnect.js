@@ -53,8 +53,8 @@ const SUPPORTED_CHAINS = [
     name: 'Polygon',
     chainId: '0x89',
     nativeCurrency: {
-      name: 'MATIC',
-      symbol: 'MATIC',
+      name: 'POL',
+      symbol: 'POL',
       decimals: 18
     },
     rpcUrls: ['https://polygon-rpc.com'],
