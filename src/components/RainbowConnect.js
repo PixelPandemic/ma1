@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, useToast } from '@chakra-ui/react';
+import { Box, useToast, Button, useDisclosure } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useDisconnect, useChainId } from 'wagmi';
 import { ethers } from 'ethers';
+import CustomConnectModal from './CustomConnectModal';
 
 const RainbowConnect = ({ setProvider, setAccount }) => {
   const toast = useToast();
@@ -10,6 +11,7 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
   const chainId = useChainId();
   const { disconnect } = useDisconnect();
   const connectButtonRef = useRef(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Функция для применения стилей к модальному окну RainbowKit
   const applyRainbowKitStyles = () => {
@@ -54,6 +56,18 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
             text.style.overflow = 'hidden';
             text.style.textOverflow = 'ellipsis';
           });
+        }
+      });
+
+      // Находим и изменяем текст дисклеймера
+      const disclaimers = document.querySelectorAll('[data-rk] div[class*="ConnectModal_disclaimer"]');
+      disclaimers.forEach(disclaimer => {
+        // Проверяем, был ли уже изменен текст
+        if (!disclaimer.classList.contains('modified-disclaimer')) {
+          // Очищаем содержимое
+          disclaimer.textContent = 'Welcome to Meta ART!';
+          // Добавляем класс, чтобы не изменять повторно
+          disclaimer.classList.add('modified-disclaimer');
         }
       });
     }
@@ -137,6 +151,9 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
   // Кастомизация кнопки подключения RainbowKit
   return (
     <Box>
+      {/* Наш кастомный модальный компонент */}
+      <CustomConnectModal isOpen={isOpen} onClose={onClose} />
+
       <ConnectButton.Custom>
         {({
           account,
@@ -159,14 +176,20 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
 
           // Функция для открытия модального окна подключения с применением стилей
           const handleOpenConnectModal = () => {
-            // Сначала открываем модальное окно
-            openConnectModal();
+            // Используем наш кастомный модальный компонент вместо стандартного
+            if (window.innerWidth <= 576) {
+              // На мобильных устройствах открываем наш кастомный модальный компонент
+              onOpen();
+            } else {
+              // На десктопах открываем стандартный модальный компонент RainbowKit
+              openConnectModal();
 
-            // Затем применяем стили с задержкой
-            setTimeout(applyRainbowKitStyles, 100);
-            setTimeout(applyRainbowKitStyles, 300);
-            setTimeout(applyRainbowKitStyles, 500);
-            setTimeout(applyRainbowKitStyles, 1000);
+              // Затем применяем стили с задержкой
+              setTimeout(applyRainbowKitStyles, 100);
+              setTimeout(applyRainbowKitStyles, 300);
+              setTimeout(applyRainbowKitStyles, 500);
+              setTimeout(applyRainbowKitStyles, 1000);
+            }
           };
 
           return (
@@ -204,9 +227,9 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
                       onClick={openChainModal}
                       style={{ display: 'flex', alignItems: 'center' }}
                       colorScheme={
-                        chain.name.includes('Polygon') ? 'purple' :
-                        chain.name.includes('Ethereum') ? 'blue' :
-                        chain.name.includes('Binance') ? 'yellow' : 'gray'
+                        chain.name?.includes('Polygon') ? 'purple' :
+                        chain.name?.includes('Ethereum') ? 'blue' :
+                        chain.name?.includes('Binance') ? 'yellow' : 'gray'
                       }
                       rightIcon={<ChevronDownIcon />}
                     >
@@ -230,7 +253,7 @@ const RainbowConnect = ({ setProvider, setAccount }) => {
                           )}
                         </Box>
                       )}
-                      {chain.name.includes('Polygon') ? `${chain.name} (POL)` : chain.name}
+                      {chain.name?.includes('Polygon') ? `${chain.name} (POL)` : chain.name}
                     </Button>
 
                     <Button onClick={openAccountModal}>
