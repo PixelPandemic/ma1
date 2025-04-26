@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Button, HStack, Text, Icon, Menu, MenuButton, MenuList, MenuItem, Divider, Flex, useToast } from '@chakra-ui/react';
 import { FiPower, FiChevronDown } from 'react-icons/fi';
-import { createReownAppKit } from '@reown/appkit';
+import { createAppKit } from '@reown/appkit';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { useAccount, useDisconnect, useConfig, useChainId } from 'wagmi';
 import { ethers } from 'ethers';
@@ -33,13 +33,13 @@ const SUPPORTED_CHAINS = [
 // Инициализация Reown AppKit
 export const initReownAppKit = () => {
   const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID;
-  
+
   if (!projectId) {
     console.error('Missing REACT_APP_WALLETCONNECT_PROJECT_ID');
     return;
   }
-  
-  createReownAppKit({
+
+  createAppKit({
     projectId,
     metadata: {
       name: 'Meta ART',
@@ -57,7 +57,7 @@ const ReownConnect = ({ setProvider, setAccount }) => {
   const [currentChain, setCurrentChain] = useState(null);
   const toast = useToast();
   const config = useConfig();
-  
+
   // Wagmi hooks
   const { address, isConnected } = useAccount();
   const currentChainId = useChainId();
@@ -76,11 +76,11 @@ const ReownConnect = ({ setProvider, setAccount }) => {
           console.error("Error creating provider:", error);
         }
       }
-      
+
       // Получаем информацию о текущей сети
       const currentChainInfo = config.chains.find(c => c.id === currentChainId);
       const uiChainInfo = SUPPORTED_CHAINS.find(c => c.id === currentChainId);
-      
+
       if (currentChainInfo) {
         setCurrentChain({
           id: currentChainInfo.id,
@@ -92,9 +92,9 @@ const ReownConnect = ({ setProvider, setAccount }) => {
           }
         });
       } else {
-        setCurrentChain({ 
-          id: currentChainId, 
-          name: `Unknown Network (${currentChainId})`, 
+        setCurrentChain({
+          id: currentChainId,
+          name: `Unknown Network (${currentChainId})`,
           color: 'gray',
           hoverColor: 'gray.600',
           nativeCurrency: { symbol: '???' }
@@ -120,10 +120,10 @@ const ReownConnect = ({ setProvider, setAccount }) => {
           const accounts = await window.ethereum.request({
             method: 'eth_requestAccounts',
           });
-          
+
           setProvider(provider);
           setAccount(accounts[0]);
-          
+
           toast({
             title: 'Wallet Connected',
             description: 'Your wallet has been connected successfully',
