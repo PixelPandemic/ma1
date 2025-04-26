@@ -198,20 +198,13 @@
             text-overflow: ellipsis !important;
           }
 
-          /* Скрываем стандартный текст в модальном окне */
+          /* Стили для кастомного текста в модальном окне */
           [data-rk] div[class*="ConnectModal_disclaimer"] {
-            display: none !important;
-          }
-
-          /* Заменяем стандартный текст на кастомный */
-          [data-rk] div[class*="ConnectModal_disclaimer"]::before {
-            content: "Welcome to Meta ART!" !important;
-            display: block !important;
             text-align: center !important;
             font-weight: bold !important;
             color: #805AD5 !important;
             font-size: 16px !important;
-            margin-bottom: 10px !important;
+            padding: 10px !important;
           }
 
           /* Стили для мобильных устройств */
@@ -252,14 +245,35 @@
         document.head.appendChild(styleElement);
       }
 
+      // Функция для изменения текста в модальном окне
+      function updateRainbowKitText() {
+        // Находим элементы с текстом дисклеймера
+        const disclaimers = document.querySelectorAll('[data-rk] div[class*="ConnectModal_disclaimer"]');
+        disclaimers.forEach(disclaimer => {
+          // Проверяем, был ли уже изменен текст
+          if (!disclaimer.classList.contains('modified-disclaimer')) {
+            // Очищаем содержимое
+            disclaimer.textContent = 'Welcome to Meta ART!';
+            // Добавляем класс, чтобы не изменять повторно
+            disclaimer.classList.add('modified-disclaimer');
+          }
+        });
+      }
+
       // Добавляем стили при загрузке страницы
       window.addEventListener('load', function() {
         addRainbowKitStyles();
+        updateRainbowKitText();
 
         // Добавляем стили с задержкой
         setTimeout(addRainbowKitStyles, 1000);
         setTimeout(addRainbowKitStyles, 2000);
         setTimeout(addRainbowKitStyles, 3000);
+
+        // Добавляем обновление текста с задержкой
+        setTimeout(updateRainbowKitText, 1000);
+        setTimeout(updateRainbowKitText, 2000);
+        setTimeout(updateRainbowKitText, 3000);
 
         // Добавляем обработчик события для кнопки подключения кошелька
         document.addEventListener('click', function(e) {
@@ -268,10 +282,15 @@
             console.log('RainbowKit button clicked, adding styles');
             // Добавляем стили с задержкой после клика
             addRainbowKitStyles();
+            updateRainbowKitText();
             setTimeout(addRainbowKitStyles, 100);
+            setTimeout(updateRainbowKitText, 100);
             setTimeout(addRainbowKitStyles, 300);
+            setTimeout(updateRainbowKitText, 300);
             setTimeout(addRainbowKitStyles, 500);
+            setTimeout(updateRainbowKitText, 500);
             setTimeout(addRainbowKitStyles, 1000);
+            setTimeout(updateRainbowKitText, 1000);
           }
         });
       });
@@ -356,13 +375,13 @@
             // Находим и изменяем текст дисклеймера
             const disclaimers = document.querySelectorAll('[data-rk] div[class*="ConnectModal_disclaimer"]');
             disclaimers.forEach(disclaimer => {
-              // Сохраняем оригинальный текст, если еще не сохранен
-              if (!disclaimer.dataset.originalText) {
-                disclaimer.dataset.originalText = disclaimer.innerHTML;
+              // Проверяем, был ли уже изменен текст
+              if (!disclaimer.classList.contains('modified-disclaimer')) {
+                // Очищаем содержимое
+                disclaimer.textContent = 'Welcome to Meta ART!';
+                // Добавляем класс, чтобы не изменять повторно
+                disclaimer.classList.add('modified-disclaimer');
               }
-
-              // Заменяем текст на "Welcome to Meta ART!"
-              disclaimer.innerHTML = '<div style="text-align: center; font-weight: bold; color: #805AD5; font-size: 16px; margin-bottom: 10px;">Welcome to Meta ART!</div>';
             });
           }
         }
@@ -394,8 +413,11 @@
                       node.querySelector && node.querySelector('[data-rk]')) {
                     console.log('New RainbowKit element detected, applying styles');
                     addRainbowKitStyles();
+                    updateRainbowKitText();
                     setTimeout(addRainbowKitStyles, 100);
+                    setTimeout(updateRainbowKitText, 100);
                     setTimeout(addRainbowKitStyles, 300);
+                    setTimeout(updateRainbowKitText, 300);
                   }
                 }
               }
@@ -423,10 +445,16 @@
           if (e.target.closest('[data-rk]')) {
             console.log('RainbowKit button clicked');
             // Применяем стили с задержкой после клика
+            applyRainbowKitStyles();
+            updateRainbowKitText();
             setTimeout(applyRainbowKitStyles, 100);
+            setTimeout(updateRainbowKitText, 100);
             setTimeout(applyRainbowKitStyles, 300);
+            setTimeout(updateRainbowKitText, 300);
             setTimeout(applyRainbowKitStyles, 500);
+            setTimeout(updateRainbowKitText, 500);
             setTimeout(applyRainbowKitStyles, 1000);
+            setTimeout(updateRainbowKitText, 1000);
           }
         });
       });

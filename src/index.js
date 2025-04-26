@@ -109,8 +109,7 @@ root.render(
           coolMode // Включаем крутой режим с анимацией конфетти при выборе кошелька
           appInfo={{
             appName: 'Meta ART',
-            learnMoreUrl: 'https://masnp.netlify.app',
-            disclaimer: 'Welcome to Meta ART!', // Кастомный текст вместо стандартного дисклеймера
+            learnMoreUrl: 'https://masnp.netlify.app'
           }}
         >
           <App />
