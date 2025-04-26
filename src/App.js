@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChakraProvider, Box, Button, Center, VStack, useMediaQuery, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
-import ReownConnect from './components/ReownConnect';
+import SimpleWalletConnector from './components/SimpleWalletConnector';
 import NFTMarketplace from './components/NFTMarketplace';
 
 // Импортируем глобальные стили для предотвращения мигания
@@ -341,7 +341,7 @@ function App() {
                 </div>
               </div>
               <Box ml={isMobile ? "0" : "auto"} mt={isMobile ? 4 : 0} position="relative">
-                <ReownConnect setProvider={setProvider} setAccount={setAccount} />
+                <SimpleWalletConnector setProvider={setProvider} setAccount={setAccount} />
               </Box>
             </Box>
           </Box>
