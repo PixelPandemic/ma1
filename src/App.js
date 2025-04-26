@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ChakraProvider, Box, Button, Center, VStack, useMediaQuery, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
+import { ChakraProvider, Box, Button, Center, VStack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Text, Checkbox, Heading, UnorderedList, ListItem, useDisclosure } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useConfig } from 'wagmi';
-import { createWalletClient, custom } from 'viem';
 import NFTMarketplace from './components/NFTMarketplace';
 
 // Импортируем глобальные стили для предотвращения мигания
@@ -13,8 +11,6 @@ import './styles/responsive.css';
 import './styles/notifications.css';
 
 function App() {
-  const [provider, setProvider] = useState(null);
-  const [account, setAccount] = useState(null);
   const [showMainContent, setShowMainContent] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
@@ -22,48 +18,7 @@ function App() {
   const [isAgreed, setIsAgreed] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Получаем данные из RainbowKit/wagmi
-  const { address, isConnected } = useAccount();
-  const config = useConfig();
-
-  // Обновляем провайдер и аккаунт при подключении через RainbowKit
-  useEffect(() => {
-    if (isConnected && address) {
-      // Создаем провайдер, если доступен window.ethereum
-      if (window.ethereum) {
-        try {
-          // Создаем клиент кошелька с помощью viem
-          const walletClient = createWalletClient({
-            transport: custom(window.ethereum)
-          });
-
-          // Для совместимости с существующим кодом, создаем объект, похожий на ethers provider
-          const compatProvider = {
-            getSigner: () => ({
-              getAddress: async () => address,
-              sendTransaction: async (tx) => {
-                const hash = await walletClient.sendTransaction({
-                  account: address,
-                  to: tx.to,
-                  value: tx.value,
-                  data: tx.data,
-                });
-                return { hash };
-              }
-            })
-          };
-
-          setProvider(compatProvider);
-          setAccount(address);
-        } catch (error) {
-          console.error("Error creating provider:", error);
-        }
-      }
-    } else {
-      setProvider(null);
-      setAccount(null);
-    }
-  }, [isConnected, address, config]);
+  // Убираем неиспользуемый код
 
 
 
@@ -314,10 +269,9 @@ function App() {
                 bgGradient: "linear(to-r, purple.600, pink.600)",
                 boxShadow: "xl"
               }}
-
               className="responsive-button"
             >
-              Visit Site
+              Enter
             </Button>
           </VStack>
         </Center>
@@ -405,54 +359,19 @@ function App() {
             maxW={isMobile ? "100%" : isTablet ? "95%" : "1400px"}
             mt={isMobile ? "80px" : "70px"} // Добавляем отступ сверху для фиксированного заголовка
           >
-            {provider && account ? (
-              <Box
-                width="100%"
-                flex="1"
-                display="flex"
-                flexDirection="column"
-                position="relative"
-                mb={isMobile ? 16 : 12}
-                height="auto"
-                minHeight="70vh"
-                overflowY="auto"
-              >
-                <NFTMarketplace />
-              </Box>
-            ) : (
-              <Box
-                textAlign="center"
-                p={isMobile ? 5 : isTablet ? 8 : 10}
-                bg="rgba(0, 0, 0, 0.8)"
-                backdropFilter="blur(10px)"
-                borderRadius={isMobile ? "lg" : "xl"}
-                boxShadow="0 4px 30px rgba(0, 0, 0, 0.1)"
-                mt={isMobile ? 2 : isTablet ? 4 : 6}
-                mb={isMobile ? 4 : 5}
-                className="card welcome-card"
-                width="100%"
-                flex="1"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <h2 style={{
-                  fontSize: isMobile ? '1.5rem' : isTablet ? '1.8rem' : '2rem',
-                  marginBottom: isMobile ? '1rem' : '1.5rem',
-                  color: '#4A5568'
-                }}>NFT Auction with Staking Rewards</h2>
-                <p style={{
-                  fontSize: isMobile ? '1rem' : isTablet ? '1.1rem' : '1.25rem',
-                  color: '#4A5568'
-                }}>Connect your wallet to start minting and staking NFTs</p>
-                <p style={{
-                  fontSize: isMobile ? '0.9rem' : isTablet ? '1rem' : '1.1rem',
-                  marginTop: '1rem',
-                  color: '#4A5568'
-                }}>Participate in our NFT auctions to buy unique digital assets or sell your NFTs to the highest bidder</p>
-              </Box>
-            )}
+            <Box
+              width="100%"
+              flex="1"
+              display="flex"
+              flexDirection="column"
+              position="relative"
+              mb={isMobile ? 16 : 12}
+              height="auto"
+              minHeight="70vh"
+              overflowY="auto"
+            >
+              <NFTMarketplace />
+            </Box>
           </Box>
         </Box>
       )}

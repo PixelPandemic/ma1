@@ -20,6 +20,11 @@ import {
 import App from './App';
 import './styles.css';
 // Настраиваем конфигурацию для RainbowKit и Wagmi
+// Определяем URL и иконку для метаданных
+const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://masnp.netlify.app';
+const iconUrl = typeof window !== 'undefined' ? `${window.location.origin}/logo192.png` : 'https://masnp.netlify.app/logo192.png';
+
+// Создаем конфигурацию с правильными метаданными
 const config = getDefaultConfig({
   appName: 'Meta ART',
   projectId: '386d6f1cb5083b6db1f57fe136dde79e',
@@ -31,6 +36,14 @@ const config = getDefaultConfig({
     [bsc.id]: http(),
   },
   ssr: false, // Отключаем SSR, так как наше приложение не использует серверный рендеринг
+  // Настройки WalletConnect
+  walletConnectProjectId: '386d6f1cb5083b6db1f57fe136dde79e',
+  metadata: {
+    name: 'Meta ART',
+    description: 'NFT Marketplace with Staking Rewards',
+    url: siteUrl,
+    icons: [iconUrl]
+  }
 });
 
 // Создаем QueryClient для React Query
