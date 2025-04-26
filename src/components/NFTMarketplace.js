@@ -8,6 +8,7 @@ import ImportNFT from './ImportNFT';
 import MarketplaceNFTs from './MarketplaceNFTs';
 import AuctionNFTs from './AuctionNFTs';
 import AIAgent from './AIAgent';
+import SimpleNetworkInfo from './SimpleNetworkInfo';
 
 // Import ABIs
 import NFTStakingABI from '../contracts/NFTStakingABI.json';
@@ -19,7 +20,6 @@ import { CONFIG } from '../config';
 
 const NFTMarketplace = ({ provider, account }) => {
   const [nfts, setNfts] = useState([]);
-  const [stakedNfts, setStakedNfts] = useState([]);
   const [stakingContract, setStakingContract] = useState(null);
   const [nftContract, setNftContract] = useState(null);
   const [artTokenContract, setArtTokenContract] = useState(null);
@@ -296,6 +296,7 @@ const NFTMarketplace = ({ provider, account }) => {
 
   return (
     <Box p={0} className="responsive-container" width="100%" overflow="visible">
+      <SimpleNetworkInfo />
       <Tabs
         isFitted
         variant="enclosed"
