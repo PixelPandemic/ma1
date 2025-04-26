@@ -31,20 +31,22 @@ const SUPPORTED_CHAINS = [
     },
     rpcUrls: ['https://rpc-amoy.polygon.technology'],
     blockExplorerUrls: ['https://amoy.polygonscan.com/'],
-    color: 'purple'
+    color: 'purple',
+    hoverColor: 'purple.600'
   },
   {
     id: 1,
     name: 'Ethereum',
     chainId: '0x1',
     nativeCurrency: {
-      name: 'Ether',
+      name: 'ETH',
       symbol: 'ETH',
       decimals: 18
     },
     rpcUrls: ['https://mainnet.infura.io/v3/'],
     blockExplorerUrls: ['https://etherscan.io'],
-    color: 'blue'
+    color: 'blue',
+    hoverColor: 'cyan.500'
   },
   {
     id: 137,
@@ -57,7 +59,8 @@ const SUPPORTED_CHAINS = [
     },
     rpcUrls: ['https://polygon-rpc.com'],
     blockExplorerUrls: ['https://polygonscan.com/'],
-    color: 'purple'
+    color: 'purple',
+    hoverColor: 'purple.600'
   },
   {
     id: 56,
@@ -70,7 +73,22 @@ const SUPPORTED_CHAINS = [
     },
     rpcUrls: ['https://bsc-dataseed.binance.org'],
     blockExplorerUrls: ['https://bscscan.com/'],
-    color: 'yellow'
+    color: 'yellow',
+    hoverColor: 'orange.500'
+  },
+  {
+    id: 999999, // Placeholder ID for Solana
+    name: 'Solana',
+    chainId: 'solana',
+    nativeCurrency: {
+      name: 'SOL',
+      symbol: 'SOL',
+      decimals: 9
+    },
+    rpcUrls: ['https://api.mainnet-beta.solana.com'],
+    blockExplorerUrls: ['https://explorer.solana.com/'],
+    color: 'blue',
+    hoverColor: 'blue.600'
   }
 ];
 
@@ -354,29 +372,39 @@ const SimpleMultiWalletConnect = ({ setProvider, setAccount }) => {
               colorScheme={currentChain?.color || 'gray'}
               rightIcon={<FiChevronDown />}
             >
-              {currentChain?.name || 'Unknown Network'}
+              {currentChain ? `${currentChain.name} (${currentChain.nativeCurrency.symbol})` : 'Unknown Network'}
             </MenuButton>
-            <MenuList>
-              <MenuItem fontWeight="bold" isDisabled>Switch Network</MenuItem>
-              <Divider my={1} />
+            <MenuList
+              bg="rgba(76, 29, 149, 0.9)"
+              backdropFilter="blur(10px)"
+              borderColor="rgba(255, 255, 255, 0.1)"
+              boxShadow="0 4px 12px rgba(0, 0, 0, 0.2)"
+            >
+              <MenuItem fontWeight="bold" isDisabled color="white" _disabled={{ color: "white", opacity: 0.8 }}>Switch Network</MenuItem>
+              <Divider my={1} borderColor="rgba(255, 255, 255, 0.2)" />
               {SUPPORTED_CHAINS.map((chain) => (
                 <MenuItem
                   key={chain.id}
                   onClick={() => handleSwitchNetwork(chain.id)}
                   isDisabled={currentChain?.id === chain.id}
+                  bg="transparent"
+                  color="black"
+                  _hover={{
+                    bg: chain.hoverColor,
+                    color: "white"
+                  }}
+                  _focus={{
+                    bg: chain.hoverColor,
+                    color: "white"
+                  }}
+                  transition="all 0.2s"
                 >
-                  <Flex align="center">
-                    <Badge
-                      colorScheme={chain.color}
-                      mr={2}
-                      px={2}
-                      py={1}
-                      borderRadius="md"
-                    >
-                      {chain.name}
-                    </Badge>
+                  <Flex align="center" width="100%" justifyContent="space-between">
+                    <Text fontWeight="medium">
+                      {chain.name} ({chain.nativeCurrency.symbol})
+                    </Text>
                     {currentChain?.id === chain.id && (
-                      <Text fontSize="xs" color="green.500" ml={1}>
+                      <Text fontSize="xs" color="green.300" ml={1}>
                         (Current)
                       </Text>
                     )}
