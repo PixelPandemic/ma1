@@ -14,6 +14,7 @@ import {
   bybitWallet,
   coinbaseWallet,
   ledgerWallet,
+  metaMaskWallet,
   phantomWallet,
   safeWallet,
   trustWallet,
@@ -65,6 +66,7 @@ const config = getDefaultConfig({
     {
       groupName: 'Основные',
       wallets: [
+        metaMaskWallet,
         binanceWallet,
         bitgetWallet,
         bybitWallet,
