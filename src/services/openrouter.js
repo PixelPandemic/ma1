@@ -53,7 +53,55 @@ async function generateDemoResponse(prompt, history = []) {
   // Имитируем задержку для реалистичности
   await new Promise(resolve => setTimeout(resolve, 1500));
 
-  // Анализируем запрос и генерируем соответствующий ответ
+  // Проверяем, включен ли режим Super Power
+  const isSuperPowerMode = history.some(msg =>
+    msg.role === 'system' && msg.content.includes('Super Power mode')
+  );
+
+  // Если включен режим Super Power, даем универсальные ответы
+  if (isSuperPowerMode) {
+    // Проверяем язык запроса
+    const isRussian = /[а-яА-ЯёЁ]/.test(prompt);
+
+    if (isRussian) {
+      return `[Super Power]
+
+Спасибо за ваш вопрос о "${prompt}".
+
+В режиме Super Power я могу отвечать на вопросы по любым темам и на разных языках. Я не ограничен только информацией о платформе Meta ART.
+
+Чем еще я могу вам помочь?`;
+    }
+
+    // Для запросов о программировании
+    if (prompt.toLowerCase().includes('code') || prompt.toLowerCase().includes('programming')) {
+      return `[Super Power]
+
+Here's a simple example related to your question about "${prompt}":
+
+\`\`\`javascript
+function greetUser(name) {
+  return \`Hello, \${name}! Welcome to the world of programming.\`;
+}
+
+// Example usage
+console.log(greetUser('Developer'));
+\`\`\`
+
+This is just a basic example. I can help with more complex programming tasks or explain any programming concept in detail. What specific aspect would you like to explore further?`;
+    }
+
+    // Общий ответ для других запросов в режиме Super Power
+    return `[Super Power]
+
+Thank you for your question about "${prompt}".
+
+In Super Power mode, I can provide information on virtually any topic, not just about the Meta ART platform. I can help with general knowledge questions, coding problems, creative writing, and much more.
+
+What else would you like to know about this topic?`;
+  }
+
+  // Если не включен режим Super Power, используем стандартные ответы о платформе
   const lowercasePrompt = prompt.toLowerCase();
   let response = '';
 
