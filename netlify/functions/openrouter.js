@@ -115,14 +115,14 @@ exports.handler = async function(event, context) {
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
     // Логируем информацию о запросе
-    console.log('Sending request to OpenRouter API with model: anthropic/claude-3-opus:beta');
+    console.log('Sending request to OpenRouter API with model: nvidia/llama-3.3-nemotron-super-49b-v1:free');
     console.log('Request messages:', JSON.stringify(messages));
 
     // Отправляем запрос к OpenRouter API
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'anthropic/claude-3-opus:beta', // Изменяем модель на Claude 3 Opus, которая более доступна
+        model: 'nvidia/llama-3.3-nemotron-super-49b-v1:free', // Используем новую модель Llama 3.3 Nemotron Super 49B
         messages: messages,
         max_tokens: 1000, // Увеличено для более подробных ответов
         temperature: 0.7,
