@@ -115,14 +115,14 @@ exports.handler = async function(event, context) {
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
     // Логируем информацию о запросе
-    console.log('Sending request to OpenRouter API with model: nvidia/llama-3.3-nemotron-super-49b-v1:free');
+    console.log('Sending request to OpenRouter API with model: anthropic/claude-3.7-sonnet');
     console.log('Request messages:', JSON.stringify(messages));
 
     // Отправляем запрос к OpenRouter API
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'nvidia/llama-3.3-nemotron-super-49b-v1:free', // Используем новую модель Llama 3.3 Nemotron Super 49B
+        model: 'anthropic/claude-3.7-sonnet', // Используем новую модель Claude 3.7 Sonnet от Anthropic
         messages: messages,
         max_tokens: 1000, // Увеличено для более подробных ответов
         temperature: 0.7,
@@ -153,6 +153,15 @@ exports.handler = async function(event, context) {
   } catch (error) {
     console.error('Error calling OpenRouter API:', error);
 
+    // Подробное логирование ошибки
+    if (error.response) {
+      console.error('Error response status:', error.response.status);
+      console.error('Error response data:', JSON.stringify(error.response.data));
+      console.error('Error response headers:', JSON.stringify(error.response.headers));
+    } else if (error.request) {
+      console.error('Error request:', JSON.stringify(error.request));
+    }
+
     // Формируем информативное сообщение об ошибке
     let errorMessage = 'Failed to get response from OpenRouter API';
     let errorDetails = error.message;
@@ -162,12 +171,14 @@ exports.handler = async function(event, context) {
       errorDetails = error.response.data;
     }
 
-    // Возвращаем ошибку
+    // Возвращаем ошибку с более подробной информацией
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: errorMessage,
-        details: errorDetails
+        details: errorDetails,
+        stack: error.stack,
+        fullError: JSON.stringify(error, Object.getOwnPropertyNames(error))
       }),
       headers: { 'Content-Type': 'application/json' }
     };
