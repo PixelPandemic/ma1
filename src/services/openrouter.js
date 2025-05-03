@@ -70,6 +70,15 @@ async function generateDemoResponse(prompt, history = []) {
     const isRussian = /[а-яА-ЯёЁ]/.test(prompt);
 
     if (isRussian) {
+      // Проверяем, является ли сообщение приветствием
+      const isGreeting = /привет|здравствуй|добрый день|доброе утро|добрый вечер|хай/i.test(prompt);
+
+      if (isGreeting) {
+        return `[Super Power]
+
+Привет! Рад вас видеть. Чем я могу вам помочь сегодня?`;
+      }
+
       return `[Super Power]
 
 Спасибо за ваш вопрос о "${prompt}".
@@ -77,6 +86,15 @@ async function generateDemoResponse(prompt, history = []) {
 В режиме Super Power я могу отвечать на вопросы по любым темам и на разных языках. Я не ограничен только информацией о платформе Meta ART.
 
 Чем еще я могу вам помочь?`;
+    }
+
+    // Проверяем, является ли сообщение приветствием на английском
+    const isEnglishGreeting = /^(hi|hello|hey|greetings|good morning|good afternoon|good evening)$/i.test(prompt.trim());
+
+    if (isEnglishGreeting) {
+      return `[Super Power]
+
+Hello! Nice to meet you. How can I help you today?`;
     }
 
     // Для запросов о программировании
