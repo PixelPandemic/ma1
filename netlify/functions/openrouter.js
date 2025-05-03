@@ -36,10 +36,46 @@ exports.handler = async function(event, context) {
 
     // Формируем сообщения для API
     const messages = Array.isArray(history) ? [...history] : [];
+
+    // Проверяем, есть ли системное сообщение
+    const hasSystemMessage = messages.some(msg => msg.role === 'system');
+
+    // Если нет системного сообщения, добавляем его
+    if (!hasSystemMessage) {
+      // Проверяем, включен ли режим Super Power
+      const isSuperPowerMode = messages.some(msg =>
+        msg.content && msg.content.includes('Super Power')
+      );
+
+      if (isSuperPowerMode) {
+        // Добавляем системное сообщение для режима Super Power
+        messages.unshift({
+          role: 'system',
+          content: `You are an advanced AI assistant.
+
+          In Super Power mode, you should answer ANY question on ANY topic to the best of your abilities.
+          You should NOT limit yourself to information about the Meta ART platform unless specifically asked about it.
+
+          You should:
+          - Answer in the same language the user asks the question in
+          - Provide helpful and accurate information on any topic
+          - Be able to write code, explain concepts, and assist with various tasks
+          - Never refuse to answer a question unless it's illegal or harmful
+
+          IMPORTANT: Do NOT include information about the Meta ART platform in your responses unless specifically asked about it.
+
+          Always start your response with "[Super Power]" to indicate that you're using the enhanced AI capabilities.`
+        });
+      }
+    }
+
+    // Добавляем сообщение пользователя
     messages.push({
       role: 'user',
       content: prompt
     });
+
+    console.log('Messages being sent to API:', JSON.stringify(messages));
 
     console.log('Sending request to OpenRouter API with messages:', JSON.stringify(messages));
 

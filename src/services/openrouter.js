@@ -55,8 +55,14 @@ async function generateDemoResponse(prompt, history = []) {
 
   // Проверяем, включен ли режим Super Power
   const isSuperPowerMode = history.some(msg =>
-    msg.role === 'system' && msg.content.includes('Super Power mode')
+    msg.role === 'system' && (
+      msg.content.includes('Super Power mode') ||
+      msg.content.includes('Super Power') ||
+      msg.content.includes('answer ANY question')
+    )
   );
+
+  console.log('Super Power mode detected:', isSuperPowerMode);
 
   // Если включен режим Super Power, даем универсальные ответы
   if (isSuperPowerMode) {
