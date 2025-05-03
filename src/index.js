@@ -33,6 +33,7 @@ import {
 } from "@tanstack/react-query";
 import App from './App';
 import './styles.css';
+import './styles/toast-fix.css'; // Импортируем стили для исправления toast-уведомлений
 // Настраиваем конфигурацию для RainbowKit и Wagmi
 // Определяем URL и иконку для метаданных
 const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://masnp.netlify.app';

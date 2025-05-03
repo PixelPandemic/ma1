@@ -1,0 +1,69 @@
+/* Фиксированные стили для toast-уведомлений */
+
+/* Увеличиваем z-index и добавляем большой отступ снизу для всех toast-контейнеров */
+.chakra-toast-container {
+  z-index: 10001 !important;
+}
+
+/* Специфичные стили для нижних toast-контейнеров */
+.chakra-toast-container[data-position="bottom"],
+.chakra-toast-container[data-position="bottom-right"],
+.chakra-toast-container[data-position="bottom-left"] {
+  bottom: 40px !important; /* Фиксированное позиционирование выше синей полоски */
+}
+
+/* Стили для мобильных устройств */
+@media (max-width: 576px) {
+  .chakra-toast-container[data-position="bottom"],
+  .chakra-toast-container[data-position="bottom-right"],
+  .chakra-toast-container[data-position="bottom-left"] {
+    bottom: 60px !important; /* Увеличенный отступ для мобильных устройств */
+  }
+}
+
+/* Стили для самих toast-уведомлений */
+.chakra-toast {
+  z-index: 10001 !important;
+  margin-bottom: 0 !important; /* Убираем стандартный отступ */
+  position: relative !important;
+}
+
+/* Стили для RainbowKit уведомлений */
+[data-rk] div[class*="Dialog-module_dialog"] {
+  z-index: 10001 !important;
+}
+
+/* Стили для всех всплывающих элементов */
+.chakra-portal {
+  z-index: 10001 !important;
+}
+
+/* Стили для модальных окон */
+.chakra-modal__content-container,
+.chakra-modal__content,
+.chakra-modal__overlay {
+  z-index: 10001 !important;
+}
+
+/* Стили для всплывающих меню */
+.chakra-menu,
+.chakra-menu__menu-list {
+  z-index: 10001 !important;
+}
+
+/* Стили для всплывающих подсказок */
+.chakra-tooltip {
+  z-index: 10001 !important;
+}
+
+/* Стили для уведомлений о переключении сети */
+.network-notification,
+.network-switched-notification,
+.wallet-notification {
+  z-index: 10001 !important;
+}
+
+/* Стили для кастомных toast-уведомлений */
+.custom-toast {
+  z-index: 10001 !important;
+}

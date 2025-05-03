@@ -45,17 +45,7 @@ spline-viewer {
   overflow: hidden;
 }
 
-/* Перекрывающий элемент для нижней части */
-body::after {
-  content: "";
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30px; /* Высота перекрывающего элемента */
-  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-  z-index: 9999;
-}
+/* Перекрывающий элемент для нижней части - отключен для предотвращения перекрытия уведомлений */
 
 /* Дополнительные стили для контейнера Spline */
 .spline-container {
@@ -68,16 +58,7 @@ body::after {
   overflow: hidden;
 }
 
-.spline-container::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30px;
-  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-  z-index: 9999;
-}
+/* Перекрывающий элемент для контейнера Spline - отключен для предотвращения перекрытия уведомлений */
 
 /* Скрываем все возможные варианты надписи "Built with Spline" */
 .spline-container a,

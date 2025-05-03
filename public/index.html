@@ -58,17 +58,8 @@
         overflow: hidden;
       }
 
-      /* Перекрывающий элемент для нижней части */
-      body::after {
-        content: "";
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 30px; /* Высота перекрывающего элемента */
-        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-        z-index: 9999;
-      }
+      /* Удаляем перекрывающий элемент для нижней части,
+         вместо этого добавим его через JavaScript для лучшего контроля */
 
       /* Стили для RainbowKit - глобальные настройки */
       [data-rk] {
@@ -120,10 +111,7 @@
           overflow: hidden;
         }
 
-        /* Увеличиваем высоту перекрывающего элемента для мобильных устройств */
-        body::after {
-          height: 50px;
-        }
+        /* Удалено: перекрывающий элемент для нижней части */
 
         /* Стили для RainbowKit на мобильных устройствах */
         [data-rk] div[class*="ConnectModal_walletList"] {
@@ -295,8 +283,19 @@
         });
       });
 
+      // Функция для создания синей полоски внизу экрана - отключена
+      function createBottomBar() {
+        // Функция отключена, чтобы избежать перекрытия уведомлений
+        console.log('Bottom bar creation disabled to prevent notification overlap');
+      }
+
       // Скрипт для скрытия надписи "Built with Spline" и обработки ошибок WebGL
       document.addEventListener('DOMContentLoaded', function() {
+        // Синяя полоска отключена, чтобы избежать перекрытия уведомлений
+        // createBottomBar();
+
+        // Обновление размера при изменении размера окна также отключено
+        // window.addEventListener('resize', createBottomBar);
         // Функция для скрытия надписи
         function hideSplineFooter() {
           // Попытка найти и скрыть все возможные элементы
