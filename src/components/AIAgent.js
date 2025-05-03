@@ -215,14 +215,29 @@ const AIAgent = ({ isMobile }) => {
           };
 
           // Отправляем запрос к OpenRouter API
+          console.log('Sending request to OpenRouter API with input:', input);
+          console.log('System message:', systemMessage);
+          console.log('Message history:', messageHistory);
+
           generateResponse(input, [systemMessage, ...messageHistory])
             .then(response => {
+              console.log('Received response from OpenRouter API:', response);
+
+              // Проверяем, не является ли ответ шаблонным
+              const isTemplateResponse = response.includes(`Thank you for your question about "${input}".`) &&
+                                        response.includes("In Super Power mode, I can provide information on virtually any topic");
+
+              if (isTemplateResponse) {
+                console.warn('Detected template response, this might indicate that the demo response was used instead of the real API');
+              }
+
               // Добавляем ответ в чат
               const assistantMessage = {
                 role: 'assistant',
                 content: response,
                 // Не добавляем suggestedTopics для ответов в режиме Super Power
-                isEnhanced: true // Пометка, что это ответ в режиме Super Power
+                isEnhanced: true, // Пометка, что это ответ в режиме Super Power
+                isTemplateResponse: isTemplateResponse // Добавляем флаг, если это шаблонный ответ
               };
               setMessages(prevMessages => [...prevMessages, assistantMessage]);
               setIsLoading(false);
@@ -393,9 +408,16 @@ You asked about "${input}". Please try again later when the connection is restor
                   />
                   <Box width="calc(100% - 24px)" overflow="visible" maxWidth="100%">
                     {message.isEnhanced && (
-                      <Badge colorScheme="green" mb={1} fontSize="xs" px={2} py={1} borderRadius="md" boxShadow="0 0 5px #48BB78">
-                        Super Power
-                      </Badge>
+                      <>
+                        <Badge colorScheme="green" mb={1} fontSize="xs" px={2} py={1} borderRadius="md" boxShadow="0 0 5px #48BB78">
+                          Super Power
+                        </Badge>
+                        {message.isTemplateResponse && (
+                          <Badge colorScheme="orange" ml={1} mb={1} fontSize="xs" px={2} py={1} borderRadius="md">
+                            Demo Response
+                          </Badge>
+                        )}
+                      </>
                     )}
                     <Text
                       wordBreak="normal"

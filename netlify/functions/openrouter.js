@@ -114,6 +114,10 @@ exports.handler = async function(event, context) {
     }
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
+    // Логируем информацию о запросе
+    console.log('Sending request to OpenRouter API with model: nvidia/llama-3.1-nemotron-ultra-253b-v1:free');
+    console.log('Request messages:', JSON.stringify(messages));
+
     // Отправляем запрос к OpenRouter API
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
@@ -121,7 +125,10 @@ exports.handler = async function(event, context) {
         model: 'nvidia/llama-3.1-nemotron-ultra-253b-v1:free', // Более мощная модель Llama 3.1 Nemotron Ultra 253B
         messages: messages,
         max_tokens: 1000, // Увеличено для более подробных ответов
-        temperature: 0.7
+        temperature: 0.7,
+        top_p: 0.9, // Добавляем параметр top_p для лучшего качества ответов
+        frequency_penalty: 0.0, // Добавляем параметр frequency_penalty
+        presence_penalty: 0.0 // Добавляем параметр presence_penalty
       },
       {
         headers: {
@@ -132,6 +139,10 @@ exports.handler = async function(event, context) {
         }
       }
     );
+
+    // Логируем информацию о ответе
+    console.log('Received response from OpenRouter API:', JSON.stringify(response.data));
+    console.log('Response content:', response.data.choices[0].message.content);
 
     // Возвращаем успешный ответ
     return {
