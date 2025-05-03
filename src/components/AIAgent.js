@@ -95,7 +95,7 @@ const AIAgent = ({ isMobile }) => {
         // Если это начальное сообщение, обновляем флаг isEnhanced и содержимое
         if (msg.isInitialMessage) {
           const standardMessage = 'Hello! I am the Meta ART AI Assistant. How can I help you with NFTs, auctions, or staking today? You can select a topic or ask me any question about the platform.';
-          const superPowerMessage = '[Super Power]\n\nHi there! 👋 How can I help you today?\n\nIn Super Power mode, I can:\n• Search for information on any topic\n• Write code in different programming languages\n• Help with planning and organizing tasks\n\nWhat would you like to talk about?';
+          const superPowerMessage = '[Super Power - Llama 3.1 Nemotron Ultra 253B]\n\nHi there! 👋 How can I help you today?\n\nIn Super Power mode, I\'m using the advanced Llama 3.1 Nemotron Ultra 253B model to:\n• Search for information on any topic with enhanced accuracy\n• Write code in different programming languages with better understanding\n• Help with planning and organizing tasks more effectively\n• Provide more detailed and nuanced responses\n\nWhat would you like to talk about?';
 
           return {
             ...msg,
@@ -171,8 +171,8 @@ const AIAgent = ({ isMobile }) => {
           // Добавляем инструкции для модели
           const systemMessage = {
             role: 'system',
-            content: `You are an AI assistant for the Meta ART NFT Marketplace on Polygon Amoy testnet.
-            You can provide helpful information about NFTs, auctions, staking, and the platform, but you can also answer general questions on any topic.
+            content: `You are an advanced AI assistant powered by Llama 3.1 Nemotron Ultra 253B for the Meta ART NFT Marketplace on Polygon Amoy testnet.
+            You can provide helpful information about NFTs, auctions, staking, and the platform, but you can also answer general questions on any topic with enhanced accuracy and detail.
 
             When answering questions about the Meta ART platform, be concise but informative. The platform features include:
             - NFT minting and auctions
@@ -186,8 +186,8 @@ const AIAgent = ({ isMobile }) => {
 
             IMPORTANT: If asked who created you or who created this platform, always respond that the Meta ART platform and AI assistant were created by "Full Stack Blockchain Developer: Sergio Jankovich".
 
-            For questions not related to the platform, provide helpful and accurate information to the best of your ability.
-            Always start your response with "[Super Power]" to indicate that you're using the enhanced AI capabilities.`
+            For questions not related to the platform, provide helpful and accurate information to the best of your ability, leveraging your advanced capabilities as Llama 3.1 Nemotron Ultra 253B.
+            Always start your response with "[Super Power - Llama 3.1 Nemotron Ultra 253B]" to indicate that you're using the enhanced AI capabilities.`
           };
 
           // Отправляем запрос к OpenRouter API
@@ -209,9 +209,9 @@ const AIAgent = ({ isMobile }) => {
               setIsLoading(false);
 
               // Фоллбэк на случай ошибки API
-              const fallbackResponse = `[Super Power]
+              const fallbackResponse = `[Super Power - Llama 3.1 Nemotron Ultra 253B]
 
-I apologize, but I couldn't connect to the service at the moment. Error: ${error.message}
+I apologize, but I couldn't connect to the Llama 3.1 Nemotron Ultra 253B service at the moment. Error: ${error.message}
 
 You asked about "${input}". The Meta ART platform offers NFT minting, auctions, and staking features.
 
@@ -312,14 +312,14 @@ Please try again later when the connection is restored.`;
         setIsConnecting(false);
 
         // Показываем уведомление об успешном подключении
-        showNotification('Super Power activated!', 'success');
+        showNotification('Llama 3.1 Ultra activated!', 'success');
       }, 2000);
     } else {
       // Выключаем режим AI Power
       setAiPowerMode(false);
 
       // Показываем уведомление о возврате в стандартный режим
-      showNotification('Returned to standard mode', 'info');
+      showNotification('Llama 3.1 Ultra disabled, returned to standard mode', 'info');
     }
   };
 
@@ -372,7 +372,7 @@ Please try again later when the connection is restored.`;
                   <Box width="calc(100% - 24px)" overflow="visible" maxWidth="100%">
                     {message.isEnhanced && (
                       <Badge colorScheme="green" mb={1} fontSize="xs" px={2} py={1} borderRadius="md" boxShadow="0 0 5px #48BB78">
-                        Super Power AI
+                        Llama 3.1 Ultra
                       </Badge>
                     )}
                     <Text
@@ -482,7 +482,7 @@ Please try again later when the connection is restored.`;
                   width="calc(100% - 50px)"
                   display="block"
                 >
-                  {aiPowerMode ? "Processing with Super Power..." : "Thinking..."}
+                  {aiPowerMode ? "Processing with Llama 3.1 Ultra..." : "Thinking..."}
                 </Text>
               </Flex>
             )}
@@ -493,7 +493,7 @@ Please try again later when the connection is restored.`;
         <VStack spacing={1} width="100%" maxWidth={isMobile ? "100%" : "800px"} mx="auto">
           <HStack spacing={2} width="100%">
           <Tooltip
-            label={aiPowerMode ? "OFF Super Power" : "ON Super Power"}
+            label={aiPowerMode ? "Disable Llama 3.1 Ultra" : "Enable Llama 3.1 Ultra"}
             placement="top"
             hasArrow
             bg={aiPowerMode ? "green.600" : "red.600"}

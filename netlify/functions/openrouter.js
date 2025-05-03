@@ -55,9 +55,9 @@ exports.handler = async function(event, context) {
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'openai/gpt-3.5-turbo', // Можно использовать другие модели
+        model: 'nvidia/llama-3.1-nemotron-ultra-253b-v1:free', // Более мощная модель Llama 3.1 Nemotron Ultra 253B
         messages: messages,
-        max_tokens: 500,
+        max_tokens: 1000, // Увеличено для более подробных ответов
         temperature: 0.7
       },
       {
