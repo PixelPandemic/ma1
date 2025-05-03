@@ -115,14 +115,14 @@ exports.handler = async function(event, context) {
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
     // Логируем информацию о запросе
-    console.log('Sending request to OpenRouter API with model: anthropic/claude-3-haiku');
+    console.log('Sending request to OpenRouter API with model: deepseek/deepseek-prover-v2:free');
     console.log('Request messages:', JSON.stringify(messages));
 
     // Отправляем запрос к OpenRouter API
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'anthropic/claude-3-haiku', // Используем более доступную модель Claude 3 Haiku от Anthropic
+        model: 'deepseek/deepseek-prover-v2:free', // Используем бесплатную модель DeepSeek Prover v2
         messages: messages,
         max_tokens: 1000, // Увеличено для более подробных ответов
         temperature: 0.7,

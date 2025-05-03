@@ -9,7 +9,7 @@ import MintNFT from './MintNFT';
 import ImportNFT from './ImportNFT';
 import MarketplaceNFTs from './MarketplaceNFTs';
 import AuctionNFTs from './AuctionNFTs';
-import AIAgent from './AIAgent';
+import AIAgent from './AIAgent'; // Компонент AI Assistant
 
 // Import ABIs
 import NFTStakingABI from '../contracts/NFTStakingABI.json';
@@ -552,7 +552,7 @@ const NFTMarketplace = ({ provider: externalProvider, account: externalAccount }
             borderRadius="md"
             mx={1}
           >
-            AI Agent
+            AI Assistant
           </Tab>
         </TabList>
 
