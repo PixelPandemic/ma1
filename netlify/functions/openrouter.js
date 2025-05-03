@@ -115,14 +115,14 @@ exports.handler = async function(event, context) {
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
     // Логируем информацию о запросе
-    console.log('Sending request to OpenRouter API with model: deepseek/deepseek-prover-v2:free');
+    console.log('Sending request to OpenRouter API with model: qwen/qwen3-235b-a22b:free');
     console.log('Request messages:', JSON.stringify(messages));
 
     // Отправляем запрос к OpenRouter API
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'deepseek/deepseek-prover-v2:free', // Используем бесплатную модель DeepSeek Prover v2
+        model: 'qwen/qwen3-235b-a22b:free', // Используем новую модель Qwen3 235B
         messages: messages,
         max_tokens: 1000, // Увеличено для более подробных ответов
         temperature: 0.7,
