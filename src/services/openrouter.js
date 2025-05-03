@@ -20,8 +20,13 @@ console.log('IS_DEVELOPMENT (forced to false for testing):', IS_DEVELOPMENT);
  * @returns {Promise<string>} - Ответ от API или имитация ответа
  */
 export const generateResponse = async (prompt, history = []) => {
+  // Логируем информацию о запросе
+  console.log('generateResponse called with prompt:', prompt);
+  console.log('generateResponse called with history:', JSON.stringify(history));
+
   // В режиме разработки всегда используем имитацию ответов
   if (IS_DEVELOPMENT) {
+    console.log('Using demo response because IS_DEVELOPMENT is true');
     return generateDemoResponse(prompt, history);
   }
 
@@ -37,12 +42,20 @@ export const generateResponse = async (prompt, history = []) => {
 
     console.log('Received response from Netlify Function:', response.data);
 
-    // Возвращаем текст ответа
-    return response.data.choices[0].message.content;
+    if (response.data && response.data.choices && response.data.choices[0] && response.data.choices[0].message) {
+      // Возвращаем текст ответа
+      const content = response.data.choices[0].message.content;
+      console.log('Returning API response content:', content);
+      return content;
+    } else {
+      console.error('Invalid response format from API:', response.data);
+      throw new Error('Invalid response format from API');
+    }
   } catch (error) {
     console.error('Error calling OpenRouter API via Netlify Function:', error);
 
     // Если произошла ошибка, используем фоллбэк с имитацией ответа
+    console.log('Using demo response as fallback due to error');
     return generateDemoResponse(prompt, history);
   }
 };
