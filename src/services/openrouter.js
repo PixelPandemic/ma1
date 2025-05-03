@@ -4,7 +4,14 @@ import axios from 'axios';
 const API_URL = '/api/openrouter';  // URL для продакшена
 
 // Флаг для определения режима разработки
-const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
+// В режиме разработки всегда используем имитацию ответов
+// В продакшене используем реальный API
+// Принудительно устанавливаем режим продакшена для тестирования реального API
+const IS_DEVELOPMENT = false; // process.env.NODE_ENV === 'development';
+
+// Для отладки
+console.log('Current NODE_ENV:', process.env.NODE_ENV);
+console.log('IS_DEVELOPMENT (forced to false for testing):', IS_DEVELOPMENT);
 
 /**
  * Отправляет запрос к OpenRouter API через Netlify Function или имитирует ответ
