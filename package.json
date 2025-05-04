@@ -10,7 +10,8 @@
     "lint": "eslint src",
     "predeploy": "npm run build",
     "deploy": "netlify deploy --prod",
-    "deploy:check": "node scripts/deploy-to-netlify.js"
+    "deploy:check": "node scripts/deploy-to-netlify.js",
+    "deploy:secondary": "node scripts/deploy-to-secondary-netlify.js"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.5.1",
