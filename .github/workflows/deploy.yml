@@ -1,15 +1,12 @@
 name: Build and Deploy
 
-# Временно отключен автоматический деплой
-# Раскомментируйте следующие строки, чтобы включить автоматический деплой
-# on:
-#   push:
-#     branches: [ main, master ]
-#   pull_request:
-#     branches: [ main, master ]
-
-# Пустой триггер, чтобы workflow не запускался автоматически
+# Автоматический деплой при пуше в основные ветки
 on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  # Также можно запустить вручную
   workflow_dispatch:
 
 jobs:
