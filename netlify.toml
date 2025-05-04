@@ -18,10 +18,10 @@
 
 # Настройки для автоматического деплоя
 [context.production]
-  environment = { NODE_VERSION = "18", NPM_FLAGS = "--legacy-peer-deps" }
+  environment = { NODE_VERSION = "18", NPM_FLAGS = "--legacy-peer-deps", CI = "false" }
 
 [context.deploy-preview]
-  environment = { NODE_VERSION = "18", NPM_FLAGS = "--legacy-peer-deps" }
+  environment = { NODE_VERSION = "18", NPM_FLAGS = "--legacy-peer-deps", CI = "false" }
 
 # Настройки для проверки сборки
 [build.processing]
