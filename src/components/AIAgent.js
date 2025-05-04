@@ -71,8 +71,8 @@ const AIAgent = ({ isMobile }) => {
     }
   ]);
 
-  // Используем конкретную модель Google Gemma
-  const gemmaModel = 'google/gemma-3-12b-it:free';
+  // Используем конкретную модель Google Gemma 3 27B
+  const gemmaModel = 'google/gemma-3-27b-it:free';
   // Резервные модели в случае ошибки
   const fallbackModels = ['anthropic/claude-3-haiku', 'openai/gpt-3.5-turbo', 'meta-llama/llama-3-8b-instruct'];
   const [isLoading, setIsLoading] = useState(false);
@@ -604,8 +604,6 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
             </Button>
           </Tooltip>
 
-          {/* Селектор модели убран, используется автоматический маршрутизатор */}
-
           {/* Уведомление рядом с кнопкой на одной линии */}
           {notification.show && (
             <Box
@@ -680,9 +678,9 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
                 Using:
               </Text>
               <Badge ml={2} colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>
-                Google Gemma 3 12B
+                Google Gemma 3 27B
               </Badge>
-              <Tooltip label="Instruction-tuned version of Google's Gemma 3 12B model">
+              <Tooltip label="Instruction-tuned version of Google's Gemma 3 27B model">
                 <Badge ml={2} colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>
                   Instruction Tuned
                 </Badge>

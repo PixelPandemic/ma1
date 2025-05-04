@@ -129,8 +129,8 @@ exports.handler = async function(event, context) {
       stream: false // Ensure we're not using streaming which could cause issues
     };
 
-    // Используем Google Gemma по умолчанию
-    const defaultModel = 'google/gemma-3-12b-it:free';
+    // Используем Google Gemma 3 27B по умолчанию
+    const defaultModel = 'google/gemma-3-27b-it:free';
 
     // Проверяем, переданы ли резервные модели
     if (models && Array.isArray(models) && models.length > 0) {
@@ -189,7 +189,7 @@ exports.handler = async function(event, context) {
               // If using multiple models, try with just the first one
               requestBody.model = requestBody.models[0];
               delete requestBody.models;
-            } else if (requestBody.model === 'google/gemma-3-12b-it:free') {
+            } else if (requestBody.model === 'google/gemma-3-27b-it:free') {
               // If using Gemma model, try with a reliable alternative
               requestBody.model = 'anthropic/claude-3-haiku'; // Try with a reliable model
             } else {
