@@ -115,14 +115,10 @@ exports.handler = async function(event, context) {
       key.includes('OPENROUTER') || key.includes('API_KEY')
     ));
 
-    // Если API ключ не найден, используем резервный ключ
-    let effectiveApiKey = apiKey;
-    if (!apiKey) {
-      console.warn('OpenRouter API key not found in environment variables, using fallback key');
-      // Используем резервный ключ (это временное решение, в продакшене лучше настроить переменные окружения)
-      effectiveApiKey = "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";
-      console.log('Using fallback API key');
-    }
+    // Всегда используем жестко закодированный ключ для отладки проблемы 502
+    // Это временное решение для устранения проблемы с API ключом
+    const effectiveApiKey = "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";
+    console.log('Using hardcoded API key for debugging');
 
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
@@ -141,8 +137,8 @@ exports.handler = async function(event, context) {
       stream: false // Ensure we're not using streaming which could cause issues
     };
 
-    // Используем автоматический маршрутизатор OpenRouter
-    const defaultModel = 'openrouter/auto';
+    // Используем модель OpenAI GPT-4.1 Mini
+    const defaultModel = 'openai/gpt-4.1-mini';
 
     // Список надежных моделей для резервного использования
     const reliableModels = [
@@ -209,21 +205,21 @@ exports.handler = async function(event, context) {
 
           // Упрощаем запрос для повторной попытки
           // Переключаемся на другую модель в зависимости от текущей
-          if (requestBody.model === 'openrouter/auto') {
-            // Если используем автоматический маршрутизатор, переключаемся на конкретную модель
-            requestBody.model = 'anthropic/claude-3-haiku';
-            console.log(`Switching from auto to specific model: ${requestBody.model}`);
-          } else if (requestBody.model === 'anthropic/claude-3-haiku') {
-            // Если уже используем Claude, переключаемся на GPT
+          if (requestBody.model === 'openai/gpt-4.1-mini') {
+            // Если используем GPT-4.1 Mini, переключаемся на GPT-3.5 Turbo
             requestBody.model = 'openai/gpt-3.5-turbo';
-            console.log(`Switching to alternative model: ${requestBody.model}`);
+            console.log(`Switching from GPT-4.1 Mini to GPT-3.5 Turbo: ${requestBody.model}`);
           } else if (requestBody.model === 'openai/gpt-3.5-turbo') {
-            // Если уже используем GPT, переключаемся на Llama
+            // Если уже используем GPT-3.5 Turbo, переключаемся на Claude
+            requestBody.model = 'anthropic/claude-3-haiku';
+            console.log(`Switching to alternative model: ${requestBody.model}`);
+          } else if (requestBody.model === 'anthropic/claude-3-haiku') {
+            // Если уже используем Claude, переключаемся на Llama
             requestBody.model = 'meta-llama/llama-3-8b-instruct';
             console.log(`Switching to alternative model: ${requestBody.model}`);
           } else {
-            // В остальных случаях используем Claude
-            requestBody.model = 'anthropic/claude-3-haiku';
+            // В остальных случаях используем GPT-3.5 Turbo
+            requestBody.model = 'openai/gpt-3.5-turbo';
             console.log(`Switching to reliable model: ${requestBody.model}`);
           }
 

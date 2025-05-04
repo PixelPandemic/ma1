@@ -71,8 +71,8 @@ const AIAgent = ({ isMobile }) => {
     }
   ]);
 
-  // Используем автоматический маршрутизатор OpenRouter
-  const defaultModel = 'openrouter/auto';
+  // Используем модель OpenAI GPT-4.1 Mini
+  const defaultModel = 'openai/gpt-4.1-mini';
   // Резервные модели в случае ошибки (в порядке предпочтения)
   const fallbackModels = [
     'openai/gpt-3.5-turbo',
@@ -682,11 +682,11 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
                 Using:
               </Text>
               <Badge ml={2} colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>
-                OpenRouter Auto
+                GPT-4.1 Mini
               </Badge>
-              <Tooltip label="Automatically selects the best available AI model">
+              <Tooltip label="OpenAI's compact but powerful GPT-4.1 model">
                 <Badge ml={2} colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>
-                  Smart Routing
+                  Fast & Efficient
                 </Badge>
               </Tooltip>
             </Flex>
