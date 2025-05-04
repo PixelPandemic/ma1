@@ -23,7 +23,7 @@ exports.handler = async function(event, context) {
   try {
     // Парсим тело запроса
     const requestBody = JSON.parse(event.body);
-    const { prompt, history } = requestBody;
+    const { prompt, history, model, models } = requestBody;
 
     // Проверяем наличие необходимых параметров
     if (!prompt) {
@@ -114,22 +114,38 @@ exports.handler = async function(event, context) {
     }
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
+    // Определяем модель для использования
+    const defaultModel = 'qwen/qwen3-235b-a22b:free';
+    const selectedModel = model || defaultModel;
+
     // Логируем информацию о запросе
-    console.log('Sending request to OpenRouter API with model: qwen/qwen3-235b-a22b:free');
+    console.log(`Sending request to OpenRouter API with model: ${selectedModel}`);
+    if (models) {
+      console.log(`Fallback models configured: ${JSON.stringify(models)}`);
+    }
     console.log('Request messages:', JSON.stringify(messages));
+
+    // Подготавливаем тело запроса
+    const requestBody = {
+      messages: messages,
+      max_tokens: 1000, // Увеличено для более подробных ответов
+      temperature: 0.7,
+      top_p: 0.9, // Добавляем параметр top_p для лучшего качества ответов
+      frequency_penalty: 0.0, // Добавляем параметр frequency_penalty
+      presence_penalty: 0.0 // Добавляем параметр presence_penalty
+    };
+
+    // Добавляем модель или массив моделей в зависимости от параметров
+    if (models && Array.isArray(models) && models.length > 0) {
+      requestBody.models = models;
+    } else {
+      requestBody.model = selectedModel;
+    }
 
     // Отправляем запрос к OpenRouter API
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
-      {
-        model: 'qwen/qwen3-235b-a22b:free', // Используем новую модель Qwen3 235B
-        messages: messages,
-        max_tokens: 1000, // Увеличено для более подробных ответов
-        temperature: 0.7,
-        top_p: 0.9, // Добавляем параметр top_p для лучшего качества ответов
-        frequency_penalty: 0.0, // Добавляем параметр frequency_penalty
-        presence_penalty: 0.0 // Добавляем параметр presence_penalty
-      },
+      requestBody,
       {
         headers: {
           'Content-Type': 'application/json',

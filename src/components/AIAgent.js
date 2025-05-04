@@ -19,6 +19,8 @@ import {
 } from '@chakra-ui/react';
 import { FiSend, FiUser, FiCpu, FiMessageCircle } from 'react-icons/fi';
 import { FaBrain } from 'react-icons/fa';
+import ModelSelector from './ModelSelector';
+import { OPENROUTER_MODELS, MODEL_PRESETS } from '../config/openrouter-models';
 
 // Стили для кнопок с темами
 const buttonHoverStyle = {
@@ -69,6 +71,11 @@ const AIAgent = ({ isMobile }) => {
       isInitialMessage: true // Пометка, что это начальное сообщение
     }
   ]);
+
+  // Состояние для выбора модели и маршрутизации
+  const [selectedModel, setSelectedModel] = useState(OPENROUTER_MODELS.qwen3.id);
+  const [selectedPreset, setSelectedPreset] = useState('default');
+  const [fallbackModels, setFallbackModels] = useState(MODEL_PRESETS.default.fallbacks);
   const [isLoading, setIsLoading] = useState(false);
   const [aiPowerMode, setAiPowerMode] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -214,12 +221,17 @@ const AIAgent = ({ isMobile }) => {
             Always start your response with "[Super Power]" to indicate that you're using the enhanced AI capabilities.`
           };
 
-          // Отправляем запрос к OpenRouter API
+          // Логируем информацию о выбранной модели
           console.log('Sending request to OpenRouter API with input:', input);
           console.log('System message:', systemMessage);
           console.log('Message history:', messageHistory);
+          console.log(`Using model: ${selectedModel}`);
+          if (fallbackModels && fallbackModels.length > 0) {
+            console.log(`Using fallback models: ${JSON.stringify(fallbackModels)}`);
+          }
 
-          generateResponse(input, [systemMessage, ...messageHistory])
+          // Отправляем запрос с выбранной моделью и резервными моделями
+          generateResponse(input, [systemMessage, ...messageHistory], selectedModel, fallbackModels.length > 0 ? fallbackModels : null)
             .then(response => {
               console.log('Received response from OpenRouter API:', response);
 
@@ -561,6 +573,19 @@ You asked about "${input}". Please try again later when the connection is restor
             </Button>
           </Tooltip>
 
+          {/* Селектор модели - показываем только в режиме Super Power */}
+          {aiPowerMode && (
+            <ModelSelector
+              selectedModel={selectedModel}
+              onModelChange={setSelectedModel}
+              selectedPreset={selectedPreset}
+              onPresetChange={setSelectedPreset}
+              customFallbacks={fallbackModels}
+              onFallbacksChange={setFallbackModels}
+              isMobile={isMobile}
+            />
+          )}
+
           {/* Уведомление рядом с кнопкой на одной линии */}
           {notification.show && (
             <Box
@@ -622,11 +647,37 @@ You asked about "${input}". Please try again later when the connection is restor
               In Super Power mode, the AI Assistant can help with a wide range of tasks beyond the Meta ART platform.
               Ask questions on any topic, request code examples, or get help with planning and organization.
             </Text>
-            <Flex mt={2} flexWrap="wrap" gap={2}>
+            <Flex mt={2} mb={2} flexWrap="wrap" gap={2}>
               <Badge colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>Information</Badge>
               <Badge colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>Code</Badge>
               <Badge colorScheme="purple" fontSize={isMobile ? "xs" : "sm"}>Planning</Badge>
               <Badge colorScheme="teal" fontSize={isMobile ? "xs" : "sm"}>Assistance</Badge>
+            </Flex>
+
+            {/* Информация о текущей модели */}
+            <Flex mt={2} alignItems="center" bg="rgba(0, 0, 0, 0.1)" p={2} borderRadius="md">
+              <Text fontSize={isMobile ? "xs" : "sm"} color="#4A5568" fontWeight="medium">
+                Current model:
+              </Text>
+              <Badge ml={2} colorScheme="teal" fontSize={isMobile ? "xs" : "sm"}>
+                {Object.values(OPENROUTER_MODELS).find(model => model.id === selectedModel)?.name || 'Default'}
+              </Badge>
+
+              {fallbackModels && fallbackModels.length > 0 && (
+                <Tooltip label={`Fallback models: ${fallbackModels.map(id =>
+                  Object.values(OPENROUTER_MODELS).find(model => model.id === id)?.name
+                ).join(', ')}`}>
+                  <Badge ml={2} colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>
+                    +{fallbackModels.length} fallbacks
+                  </Badge>
+                </Tooltip>
+              )}
+
+              {selectedPreset !== 'custom' && (
+                <Badge ml={2} colorScheme="purple" fontSize={isMobile ? "xs" : "sm"}>
+                  {MODEL_PRESETS[selectedPreset]?.name || 'Custom'} preset
+                </Badge>
+              )}
             </Flex>
           </>
         ) : (
