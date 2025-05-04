@@ -19,8 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { FiSend, FiUser, FiCpu, FiMessageCircle } from 'react-icons/fi';
 import { FaBrain } from 'react-icons/fa';
-import ModelSelector from './ModelSelector';
-import { OPENROUTER_MODELS, MODEL_PRESETS } from '../config/openrouter-models';
+// Используем конкретную модель вместо автоматического маршрутизатора
 
 // Стили для кнопок с темами
 const buttonHoverStyle = {
@@ -72,10 +71,10 @@ const AIAgent = ({ isMobile }) => {
     }
   ]);
 
-  // Using Auto Router by default
-  const autoRouterModel = 'openrouter/auto';
-  // Fallback models in case the primary model fails
-  const fallbackModels = ['anthropic/claude-3-5-sonnet', 'openai/gpt-3.5-turbo', 'meta-llama/llama-3-8b-instruct'];
+  // Используем конкретную модель Google Gemma
+  const gemmaModel = 'google/gemma-3-12b-it:free';
+  // Резервные модели в случае ошибки
+  const fallbackModels = ['anthropic/claude-3-haiku', 'openai/gpt-3.5-turbo', 'meta-llama/llama-3-8b-instruct'];
   const [isLoading, setIsLoading] = useState(false);
   const [aiPowerMode, setAiPowerMode] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -225,11 +224,11 @@ const AIAgent = ({ isMobile }) => {
           console.log('Sending request to OpenRouter API with input:', input);
           console.log('System message:', systemMessage);
           console.log('Message history:', messageHistory);
-          console.log('Using Auto Router with fallback models');
+          console.log(`Using Google Gemma model: ${gemmaModel}`);
           console.log(`Fallback models: ${JSON.stringify(fallbackModels)}`);
 
-          // Отправляем запрос с использованием Auto Router и резервных моделей
-          generateResponse(input, [systemMessage, ...messageHistory], 'openrouter/auto', fallbackModels)
+          // Отправляем запрос с использованием модели Google Gemma и резервных моделей
+          generateResponse(input, [systemMessage, ...messageHistory], gemmaModel, fallbackModels)
             .then(response => {
               console.log('Received response from OpenRouter API:', response);
 
@@ -680,12 +679,12 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
               <Text fontSize={isMobile ? "xs" : "sm"} color="#4A5568" fontWeight="medium">
                 Using:
               </Text>
-              <Badge ml={2} colorScheme="teal" fontSize={isMobile ? "xs" : "sm"}>
-                Auto Router
+              <Badge ml={2} colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>
+                Google Gemma 3 12B
               </Badge>
-              <Tooltip label="Automatically selects the best model for your query">
-                <Badge ml={2} colorScheme="purple" fontSize={isMobile ? "xs" : "sm"}>
-                  Smart Selection
+              <Tooltip label="Instruction-tuned version of Google's Gemma 3 12B model">
+                <Badge ml={2} colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>
+                  Instruction Tuned
                 </Badge>
               </Tooltip>
             </Flex>

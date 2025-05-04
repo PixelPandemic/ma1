@@ -129,22 +129,22 @@ exports.handler = async function(event, context) {
       stream: false // Ensure we're not using streaming which could cause issues
     };
 
-    // Используем Auto Router по умолчанию
-    const autoRouterModel = 'openrouter/auto';
+    // Используем Google Gemma по умолчанию
+    const defaultModel = 'google/gemma-3-12b-it:free';
 
     // Проверяем, переданы ли резервные модели
     if (models && Array.isArray(models) && models.length > 0) {
       // Используем параметр models для резервных моделей
       requestBody.models = models;
       console.log(`Using fallback models: ${JSON.stringify(models)}`);
-    } else if (model && model !== autoRouterModel) {
-      // Если передана конкретная модель (не Auto Router), используем её
+    } else if (model) {
+      // Если передана конкретная модель, используем её
       requestBody.model = model;
       console.log(`Using specific model: ${model}`);
     } else {
-      // По умолчанию используем Auto Router
-      requestBody.model = autoRouterModel;
-      console.log(`Using Auto Router: ${autoRouterModel}`);
+      // По умолчанию используем Google Gemma
+      requestBody.model = defaultModel;
+      console.log(`Using default model: ${defaultModel}`);
     }
 
     // Add retry logic for API requests
@@ -189,8 +189,8 @@ exports.handler = async function(event, context) {
               // If using multiple models, try with just the first one
               requestBody.model = requestBody.models[0];
               delete requestBody.models;
-            } else if (requestBody.model === 'openrouter/auto') {
-              // If using auto router, try with a specific model
+            } else if (requestBody.model === 'google/gemma-3-12b-it:free') {
+              // If using Gemma model, try with a reliable alternative
               requestBody.model = 'anthropic/claude-3-haiku'; // Try with a reliable model
             } else {
               // Try with a different model
