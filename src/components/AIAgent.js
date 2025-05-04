@@ -71,8 +71,8 @@ const AIAgent = ({ isMobile }) => {
     }
   ]);
 
-  // Используем модель OpenAI GPT-4.1 Mini
-  const defaultModel = 'openai/gpt-4.1-mini';
+  // Используем более надежную модель
+  const defaultModel = 'openai/gpt-3.5-turbo';
   // Резервные модели в случае ошибки (в порядке предпочтения)
   const fallbackModels = [
     'openai/gpt-3.5-turbo',
@@ -682,11 +682,11 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
                 Using:
               </Text>
               <Badge ml={2} colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>
-                GPT-4.1 Mini
+                GPT-3.5 Turbo
               </Badge>
-              <Tooltip label="OpenAI's compact but powerful GPT-4.1 model">
+              <Tooltip label="OpenAI's reliable and efficient GPT-3.5 model">
                 <Badge ml={2} colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>
-                  Fast & Efficient
+                  Fast & Reliable
                 </Badge>
               </Tooltip>
             </Flex>

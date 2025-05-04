@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // URL для Netlify Function
-const API_URL = '/api/openrouter';  // URL для продакшена
+const API_URL = '/.netlify/functions/openrouter';  // Прямой URL к функции Netlify
 
 // Флаг для определения режима разработки
 // В режиме разработки всегда используем имитацию ответов
