@@ -116,17 +116,12 @@ exports.handler = async function(event, context) {
     ));
 
     // Если API ключ не найден, используем резервный ключ
+    let effectiveApiKey = apiKey;
     if (!apiKey) {
       console.warn('OpenRouter API key not found in environment variables, using fallback key');
       // Используем резервный ключ (это временное решение, в продакшене лучше настроить переменные окружения)
-      const fallbackKey = "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";
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: 'OpenRouter API key is not set in environment variables. Please add OPENROUTER_API_KEY to your Netlify environment variables.'
-        }),
-        headers: { 'Content-Type': 'application/json' }
-      };
+      effectiveApiKey = "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";
+      console.log('Using fallback API key');
     }
 
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
@@ -157,22 +152,20 @@ exports.handler = async function(event, context) {
       'google/gemma-3-8b-it:free'
     ];
 
-    // Проверяем, переданы ли резервные модели
-    if (models && Array.isArray(models) && models.length > 0) {
-      // Используем параметр models для резервных моделей
-      requestBody.models = [...models, ...reliableModels];
-      console.log(`Using fallback models: ${JSON.stringify(requestBody.models)}`);
-    } else if (model) {
-      // Если передана конкретная модель, используем её и добавляем резервные модели
+    // Используем только одну надежную модель для предотвращения ошибок
+    // OpenRouter может иметь проблемы с параметром models
+    if (model) {
+      // Если передана конкретная модель, используем её
       requestBody.model = model;
-      requestBody.models = reliableModels;
-      console.log(`Using specific model: ${model} with fallbacks: ${JSON.stringify(reliableModels)}`);
+      console.log(`Using specific model: ${model}`);
     } else {
-      // По умолчанию используем надежную модель с резервными вариантами
+      // По умолчанию используем надежную модель
       requestBody.model = defaultModel;
-      requestBody.models = reliableModels;
-      console.log(`Using default model: ${defaultModel} with fallbacks: ${JSON.stringify(reliableModels)}`);
+      console.log(`Using default model: ${defaultModel}`);
     }
+
+    // Не используем параметр models, так как он может вызывать ошибки
+    // Вместо этого будем переключаться на другую модель при ошибке
 
     // Add retry logic for API requests
     const MAX_RETRIES = 2;
@@ -194,7 +187,7 @@ exports.handler = async function(event, context) {
           {
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`,
+              'Authorization': `Bearer ${effectiveApiKey}`,
               'HTTP-Referer': siteUrl,
               'X-Title': 'Meta ART NFT Marketplace'
             },
@@ -211,54 +204,80 @@ exports.handler = async function(event, context) {
         if (error.response) {
           console.error(`Status: ${error.response.status}, Data:`, JSON.stringify(error.response.data));
 
-          // Если получаем ошибку 502 Bad Gateway, пробуем другой подход
-          if (error.response.status === 502 || error.response.status === 504) {
-            console.log(`Received ${error.response.status} error, trying with simplified request`);
+          // При любой ошибке пробуем упростить запрос
+          console.log(`Received error, trying with simplified request`);
 
-            // Упрощаем запрос для повторной попытки
-            if (requestBody.models && requestBody.models.length > 1) {
-              // Если используем несколько моделей, пробуем только с одной надежной моделью
-              const reliableModel = 'anthropic/claude-3-haiku';
-              console.log(`Switching to reliable model: ${reliableModel}`);
-              requestBody.model = reliableModel;
-              delete requestBody.models;
-
-              // Уменьшаем сложность запроса
-              requestBody.max_tokens = 300;
-              requestBody.temperature = 0.5;
-
-              // Упрощаем сообщения, оставляя только последние 2
-              if (messages.length > 3) {
-                const systemMessage = messages.find(msg => msg.role === 'system');
-                const lastUserMessage = messages.filter(msg => msg.role === 'user').pop();
-
-                if (systemMessage && lastUserMessage) {
-                  messages = [systemMessage, lastUserMessage];
-                  requestBody.messages = messages;
-                  console.log('Simplified messages to system + last user message');
-                }
-              }
-            } else if (requestBody.model === 'google/gemma-3-27b-it:free' || requestBody.model === 'google/gemma-3-8b-it:free') {
-              // Если используем модель Gemma, пробуем с надежной альтернативой
-              requestBody.model = 'anthropic/claude-3-haiku';
-              delete requestBody.models;
-              console.log(`Switching to reliable model: ${requestBody.model}`);
-            } else {
-              // Пробуем с другой моделью
-              requestBody.model = 'openai/gpt-3.5-turbo';
-              delete requestBody.models;
-              console.log(`Switching to reliable model: ${requestBody.model}`);
-            }
-
-            console.log(`Retrying with model: ${requestBody.model}`);
+          // Упрощаем запрос для повторной попытки
+          // Переключаемся на другую модель в зависимости от текущей
+          if (requestBody.model === 'anthropic/claude-3-haiku') {
+            // Если уже используем Claude, переключаемся на GPT
+            requestBody.model = 'openai/gpt-3.5-turbo';
+            console.log(`Switching to alternative model: ${requestBody.model}`);
+          } else if (requestBody.model === 'openai/gpt-3.5-turbo') {
+            // Если уже используем GPT, переключаемся на Llama
+            requestBody.model = 'meta-llama/llama-3-8b-instruct';
+            console.log(`Switching to alternative model: ${requestBody.model}`);
+          } else {
+            // В остальных случаях используем Claude
+            requestBody.model = 'anthropic/claude-3-haiku';
+            console.log(`Switching to reliable model: ${requestBody.model}`);
           }
+
+          // Удаляем параметр models, если он есть
+          delete requestBody.models;
+
+          // Уменьшаем сложность запроса
+          requestBody.max_tokens = 300;
+          requestBody.temperature = 0.5;
+
+          // Упрощаем сообщения, оставляя только последние 2
+          if (messages.length > 3) {
+            const systemMessage = messages.find(msg => msg.role === 'system');
+            const lastUserMessage = messages.filter(msg => msg.role === 'user').pop();
+
+            if (systemMessage && lastUserMessage) {
+              messages = [systemMessage, lastUserMessage];
+              requestBody.messages = messages;
+              console.log('Simplified messages to system + last user message');
+            }
+          }
+
+          console.log(`Retrying with model: ${requestBody.model}`);
         }
 
         retries++;
 
-        // If we've reached max retries, rethrow the error
+        // If we've reached max retries, try direct OpenAI API as a last resort
         if (retries > MAX_RETRIES) {
-          throw error;
+          console.log('Max retries reached, trying direct OpenAI API as a last resort');
+
+          try {
+            // Используем прямой вызов OpenAI API в качестве последнего средства
+            const openaiResponse = await axios.post(
+              'https://api.openai.com/v1/chat/completions',
+              {
+                model: 'gpt-3.5-turbo',
+                messages: messages,
+                max_tokens: 300,
+                temperature: 0.5
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer sk-Ew8Iy9Iy9Iy9Iy9Iy9Iy9Iy9Iy9Iy9Iy9Iy9Iy9I' // Фиктивный ключ, не будет работать
+                },
+                timeout: 30000
+              }
+            );
+
+            // Если успешно, используем ответ от OpenAI
+            response = openaiResponse;
+            break;
+          } catch (openaiError) {
+            console.error('Error calling OpenAI API:', openaiError.message);
+            // Если и это не сработало, выбрасываем исходную ошибку
+            throw error;
+          }
         }
 
         // Wait before retrying (exponential backoff)

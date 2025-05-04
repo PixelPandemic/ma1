@@ -682,9 +682,9 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
                 Using:
               </Text>
               <Badge ml={2} colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>
-                Google Gemma 3 27B
+                Claude 3 Haiku
               </Badge>
-              <Tooltip label="Instruction-tuned version of Google's Gemma 3 27B model">
+              <Tooltip label="Fast and efficient AI model from Anthropic">
                 <Badge ml={2} colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>
                   Instruction Tuned
                 </Badge>
