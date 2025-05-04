@@ -72,10 +72,10 @@ const AIAgent = ({ isMobile }) => {
     }
   ]);
 
-  // State for model selection and routing
-  const [selectedModel, setSelectedModel] = useState(OPENROUTER_MODELS.auto.id);
-  const [selectedPreset, setSelectedPreset] = useState('auto');
-  const [fallbackModels, setFallbackModels] = useState(MODEL_PRESETS.auto.fallbacks);
+  // Using Auto Router by default
+  const autoRouterModel = 'openrouter/auto';
+  // Fallback models in case the primary model fails
+  const fallbackModels = ['anthropic/claude-3-5-sonnet', 'openai/gpt-3.5-turbo', 'meta-llama/llama-3-8b-instruct'];
   const [isLoading, setIsLoading] = useState(false);
   const [aiPowerMode, setAiPowerMode] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -221,17 +221,15 @@ const AIAgent = ({ isMobile }) => {
             Always start your response with "[Super Power]" to indicate that you're using the enhanced AI capabilities.`
           };
 
-          // Логируем информацию о выбранной модели
+          // Логируем информацию о запросе
           console.log('Sending request to OpenRouter API with input:', input);
           console.log('System message:', systemMessage);
           console.log('Message history:', messageHistory);
-          console.log(`Using model: ${selectedModel}`);
-          if (fallbackModels && fallbackModels.length > 0) {
-            console.log(`Using fallback models: ${JSON.stringify(fallbackModels)}`);
-          }
+          console.log('Using Auto Router with fallback models');
+          console.log(`Fallback models: ${JSON.stringify(fallbackModels)}`);
 
-          // Отправляем запрос с выбранной моделью и резервными моделями
-          generateResponse(input, [systemMessage, ...messageHistory], selectedModel, fallbackModels.length > 0 ? fallbackModels : null)
+          // Отправляем запрос с использованием Auto Router и резервных моделей
+          generateResponse(input, [systemMessage, ...messageHistory], 'openrouter/auto', fallbackModels)
             .then(response => {
               console.log('Received response from OpenRouter API:', response);
 
@@ -607,18 +605,7 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
             </Button>
           </Tooltip>
 
-          {/* Селектор модели - показываем только в режиме Super Power */}
-          {aiPowerMode && (
-            <ModelSelector
-              selectedModel={selectedModel}
-              onModelChange={setSelectedModel}
-              selectedPreset={selectedPreset}
-              onPresetChange={setSelectedPreset}
-              customFallbacks={fallbackModels}
-              onFallbacksChange={setFallbackModels}
-              isMobile={isMobile}
-            />
-          )}
+          {/* Селектор модели убран, используется автоматический маршрутизатор */}
 
           {/* Уведомление рядом с кнопкой на одной линии */}
           {notification.show && (
@@ -691,27 +678,16 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
             {/* Информация о текущей модели */}
             <Flex mt={2} alignItems="center" bg="rgba(0, 0, 0, 0.1)" p={2} borderRadius="md">
               <Text fontSize={isMobile ? "xs" : "sm"} color="#4A5568" fontWeight="medium">
-                Current model:
+                Using:
               </Text>
               <Badge ml={2} colorScheme="teal" fontSize={isMobile ? "xs" : "sm"}>
-                {Object.values(OPENROUTER_MODELS).find(model => model.id === selectedModel)?.name || 'Default'}
+                Auto Router
               </Badge>
-
-              {fallbackModels && fallbackModels.length > 0 && (
-                <Tooltip label={`Fallback models: ${fallbackModels.map(id =>
-                  Object.values(OPENROUTER_MODELS).find(model => model.id === id)?.name
-                ).join(', ')}`}>
-                  <Badge ml={2} colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>
-                    +{fallbackModels.length} fallbacks
-                  </Badge>
-                </Tooltip>
-              )}
-
-              {selectedPreset !== 'custom' && (
+              <Tooltip label="Automatically selects the best model for your query">
                 <Badge ml={2} colorScheme="purple" fontSize={isMobile ? "xs" : "sm"}>
-                  {MODEL_PRESETS[selectedPreset]?.name || 'Custom'} preset
+                  Smart Selection
                 </Badge>
-              )}
+              </Tooltip>
             </Flex>
           </>
         ) : (

@@ -114,18 +114,10 @@ exports.handler = async function(event, context) {
     }
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
-    // Определяем модель для использования
-    const defaultModel = 'qwen/qwen3-235b-a22b:free';
-    const selectedModel = model || defaultModel;
-
     // Логируем информацию о запросе
-    console.log(`Sending request to OpenRouter API with model: ${selectedModel}`);
-    if (models) {
-      console.log(`Fallback models configured: ${JSON.stringify(models)}`);
-    }
     console.log('Request messages:', JSON.stringify(messages));
 
-    // Prepare request body with optimized parameters
+    // Подготавливаем тело запроса в соответствии с документацией OpenRouter
     const requestBody = {
       messages: messages,
       max_tokens: 800, // Reduced to avoid potential token limit issues
@@ -137,13 +129,22 @@ exports.handler = async function(event, context) {
       stream: false // Ensure we're not using streaming which could cause issues
     };
 
-    // Add model or models array depending on parameters
+    // Используем Auto Router по умолчанию
+    const autoRouterModel = 'openrouter/auto';
+
+    // Проверяем, переданы ли резервные модели
     if (models && Array.isArray(models) && models.length > 0) {
+      // Используем параметр models для резервных моделей
       requestBody.models = models;
-      console.log(`Using multiple models: ${JSON.stringify(models)}`);
+      console.log(`Using fallback models: ${JSON.stringify(models)}`);
+    } else if (model && model !== autoRouterModel) {
+      // Если передана конкретная модель (не Auto Router), используем её
+      requestBody.model = model;
+      console.log(`Using specific model: ${model}`);
     } else {
-      requestBody.model = selectedModel;
-      console.log(`Using single model: ${selectedModel}`);
+      // По умолчанию используем Auto Router
+      requestBody.model = autoRouterModel;
+      console.log(`Using Auto Router: ${autoRouterModel}`);
     }
 
     // Add retry logic for API requests
@@ -188,7 +189,7 @@ exports.handler = async function(event, context) {
               // If using multiple models, try with just the first one
               requestBody.model = requestBody.models[0];
               delete requestBody.models;
-            } else if (selectedModel === 'openrouter/auto') {
+            } else if (requestBody.model === 'openrouter/auto') {
               // If using auto router, try with a specific model
               requestBody.model = 'anthropic/claude-3-haiku'; // Try with a reliable model
             } else {
