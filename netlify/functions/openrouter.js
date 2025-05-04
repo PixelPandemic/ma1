@@ -125,36 +125,92 @@ exports.handler = async function(event, context) {
     }
     console.log('Request messages:', JSON.stringify(messages));
 
-    // Подготавливаем тело запроса
+    // Prepare request body with optimized parameters
     const requestBody = {
       messages: messages,
-      max_tokens: 1000, // Увеличено для более подробных ответов
+      max_tokens: 800, // Reduced to avoid potential token limit issues
       temperature: 0.7,
-      top_p: 0.9, // Добавляем параметр top_p для лучшего качества ответов
-      frequency_penalty: 0.0, // Добавляем параметр frequency_penalty
-      presence_penalty: 0.0 // Добавляем параметр presence_penalty
+      top_p: 0.9,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0,
+      timeout: 60000, // 60 second timeout to prevent hanging requests
+      stream: false // Ensure we're not using streaming which could cause issues
     };
 
-    // Добавляем модель или массив моделей в зависимости от параметров
+    // Add model or models array depending on parameters
     if (models && Array.isArray(models) && models.length > 0) {
       requestBody.models = models;
+      console.log(`Using multiple models: ${JSON.stringify(models)}`);
     } else {
       requestBody.model = selectedModel;
+      console.log(`Using single model: ${selectedModel}`);
     }
 
-    // Отправляем запрос к OpenRouter API
-    const response = await axios.post(
-      'https://openrouter.ai/api/v1/chat/completions',
-      requestBody,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': process.env.URL || 'https://masnp.netlify.app', // Используем URL из переменных окружения или значение по умолчанию
-          'X-Title': 'Meta ART NFT Marketplace'
+    // Add retry logic for API requests
+    const MAX_RETRIES = 2;
+    let retries = 0;
+    let response;
+
+    while (retries <= MAX_RETRIES) {
+      try {
+        console.log(`Attempt ${retries + 1} to send request to OpenRouter API`);
+
+        // Send request to OpenRouter API with improved error handling
+        response = await axios.post(
+          'https://openrouter.ai/api/v1/chat/completions',
+          requestBody,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+              'HTTP-Referer': process.env.URL || 'https://meart.netlify.app', // Updated to use the new site URL
+              'X-Title': 'Meta ART NFT Marketplace'
+            },
+            // Add timeout to prevent hanging requests
+            timeout: 30000 // 30 second timeout
+          }
+        );
+
+        // If successful, break out of retry loop
+        break;
+      } catch (error) {
+        console.error(`Error on attempt ${retries + 1}:`, error.message);
+
+        if (error.response) {
+          console.error(`Status: ${error.response.status}, Data:`, JSON.stringify(error.response.data));
+
+          // If we get a 502 Bad Gateway error, try a different approach
+          if (error.response.status === 502) {
+            console.log('Received 502 error, trying with simplified request');
+
+            // Simplify the request for retry
+            if (requestBody.models) {
+              // If using multiple models, try with just the first one
+              requestBody.model = requestBody.models[0];
+              delete requestBody.models;
+            } else if (selectedModel === 'openrouter/auto') {
+              // If using auto router, try with a specific model
+              requestBody.model = 'anthropic/claude-3-haiku'; // Try with a reliable model
+            } else {
+              // Try with a different model
+              requestBody.model = 'openai/gpt-3.5-turbo';
+            }
+
+            console.log(`Retrying with model: ${requestBody.model}`);
+          }
         }
+
+        retries++;
+
+        // If we've reached max retries, rethrow the error
+        if (retries > MAX_RETRIES) {
+          throw error;
+        }
+
+        // Wait before retrying (exponential backoff)
+        await new Promise(resolve => setTimeout(resolve, 1000 * retries));
       }
-    );
+    }
 
     // Логируем информацию о ответе
     console.log('Received response from OpenRouter API:', JSON.stringify(response.data));

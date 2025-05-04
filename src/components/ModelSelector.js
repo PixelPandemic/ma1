@@ -41,14 +41,14 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
 
   // Получаем информацию о текущей модели
   const currentModel = Object.values(OPENROUTER_MODELS).find(model => model.id === selectedModel) || OPENROUTER_MODELS.qwen3;
-  
+
   // Получаем информацию о текущем пресете
   const currentPreset = MODEL_PRESETS[selectedPreset] || MODEL_PRESETS.default;
 
   // Обработчик изменения пресета
   const handlePresetChange = (presetId) => {
     setTempSelectedPreset(presetId);
-    
+
     if (presetId !== 'custom') {
       const preset = MODEL_PRESETS[presetId];
       setTempPrimaryModel(preset.primary);
@@ -107,7 +107,7 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
   return (
     <>
       <Menu closeOnSelect={false}>
-        <Tooltip label="Выбор модели AI" placement="top">
+        <Tooltip label="Select AI Model" placement="top">
           <MenuButton
             as={Button}
             rightIcon={<ChevronDownIcon />}
@@ -121,26 +121,26 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
           </MenuButton>
         </Tooltip>
         <MenuList zIndex={1000}>
-          <MenuGroup title="Быстрый выбор модели">
+          <MenuGroup title="Quick Model Selection">
             {getPrimaryModels().map(model => (
               <MenuItem key={model.id} onClick={() => handleQuickModelSelect(model.id)}>
                 <Flex alignItems="center" justifyContent="space-between" width="100%">
                   <Text>{model.name}</Text>
                   {model.id === selectedModel && (
-                    <Badge colorScheme="green" ml={2}>Активна</Badge>
+                    <Badge colorScheme="green" ml={2}>Active</Badge>
                   )}
                 </Flex>
               </MenuItem>
             ))}
           </MenuGroup>
           <MenuDivider />
-          <MenuGroup title="Пресеты маршрутизации">
+          <MenuGroup title="Routing Presets">
             {Object.entries(MODEL_PRESETS).map(([id, preset]) => (
               <MenuItem key={id} onClick={() => handleQuickPresetSelect(id)}>
                 <Flex alignItems="center" justifyContent="space-between" width="100%">
                   <Text>{preset.name}</Text>
                   {id === selectedPreset && (
-                    <Badge colorScheme="purple" ml={2}>Активен</Badge>
+                    <Badge colorScheme="purple" ml={2}>Active</Badge>
                   )}
                 </Flex>
               </MenuItem>
@@ -148,21 +148,21 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
           </MenuGroup>
           <MenuDivider />
           <MenuItem icon={<SettingsIcon />} onClick={onOpen}>
-            Расширенные настройки
+            Advanced Settings
           </MenuItem>
         </MenuList>
       </Menu>
 
-      {/* Модальное окно с расширенными настройками */}
+      {/* Advanced settings modal */}
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Настройки маршрутизации моделей</ModalHeader>
+          <ModalHeader>Model Routing Settings</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack spacing={4} align="stretch">
               <Box>
-                <Text fontWeight="bold" mb={2}>Выберите пресет:</Text>
+                <Text fontWeight="bold" mb={2}>Select a preset:</Text>
                 <RadioGroup onChange={handlePresetChange} value={tempSelectedPreset}>
                   <Stack direction="column" spacing={2}>
                     {Object.entries(MODEL_PRESETS).map(([id, preset]) => (
@@ -177,8 +177,8 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
                     ))}
                     <Radio value="custom">
                       <Flex alignItems="center">
-                        <Text fontWeight="medium">Пользовательский</Text>
-                        <Tooltip label="Настройте свою комбинацию моделей">
+                        <Text fontWeight="medium">Custom</Text>
+                        <Tooltip label="Configure your own model combination">
                           <InfoIcon ml={2} color="gray.500" />
                         </Tooltip>
                       </Flex>
@@ -190,7 +190,7 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
               {customMode && (
                 <>
                   <Box>
-                    <Text fontWeight="bold" mb={2}>Основная модель:</Text>
+                    <Text fontWeight="bold" mb={2}>Primary model:</Text>
                     <RadioGroup onChange={handlePrimaryModelChange} value={tempPrimaryModel}>
                       <Stack direction="column" spacing={2}>
                         {getAllModels().map(model => (
@@ -209,15 +209,15 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
 
                   <Box>
                     <HStack mb={2}>
-                      <Text fontWeight="bold">Резервные модели:</Text>
-                      <Tooltip label="Эти модели будут использоваться, если основная модель недоступна или возвращает ошибку">
+                      <Text fontWeight="bold">Fallback models:</Text>
+                      <Tooltip label="These models will be used if the primary model is unavailable or returns an error">
                         <InfoIcon color="gray.500" />
                       </Tooltip>
                     </HStack>
                     <VStack align="start" spacing={2}>
                       {getBackupModels().map(model => (
-                        <Checkbox 
-                          key={model.id} 
+                        <Checkbox
+                          key={model.id}
                           isChecked={tempCustomFallbacks.includes(model.id)}
                           onChange={() => handleFallbackToggle(model.id)}
                         >
@@ -237,24 +237,24 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
               <Box p={3} bg="gray.50" borderRadius="md">
                 <Flex alignItems="center" mb={2}>
                   <Icon as={FaExchangeAlt} color="purple.500" mr={2} />
-                  <Text fontWeight="bold">Текущая конфигурация:</Text>
+                  <Text fontWeight="bold">Current configuration:</Text>
                 </Flex>
                 <Text>
-                  {customMode 
-                    ? `Основная модель: ${getAllModels().find(m => m.id === tempPrimaryModel)?.name || 'Не выбрана'}`
-                    : `Пресет: ${MODEL_PRESETS[tempSelectedPreset]?.name || 'Не выбран'}`
+                  {customMode
+                    ? `Primary model: ${getAllModels().find(m => m.id === tempPrimaryModel)?.name || 'Not selected'}`
+                    : `Preset: ${MODEL_PRESETS[tempSelectedPreset]?.name || 'Not selected'}`
                   }
                 </Text>
                 {(customMode && tempCustomFallbacks.length > 0) && (
                   <Text mt={1}>
-                    Резервные модели: {tempCustomFallbacks.map(id => 
+                    Fallback models: {tempCustomFallbacks.map(id =>
                       getAllModels().find(m => m.id === id)?.name
                     ).join(', ')}
                   </Text>
                 )}
                 {(!customMode && MODEL_PRESETS[tempSelectedPreset]?.fallbacks?.length > 0) && (
                   <Text mt={1}>
-                    Резервные модели: {MODEL_PRESETS[tempSelectedPreset].fallbacks.map(id => 
+                    Fallback models: {MODEL_PRESETS[tempSelectedPreset].fallbacks.map(id =>
                       getAllModels().find(m => m.id === id)?.name
                     ).join(', ')}
                   </Text>
@@ -265,10 +265,10 @@ const ModelSelector = ({ selectedModel, onModelChange, selectedPreset, onPresetC
 
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>
-              Отмена
+              Cancel
             </Button>
             <Button colorScheme="teal" onClick={handleSaveSettings}>
-              Сохранить
+              Save
             </Button>
           </ModalFooter>
         </ModalContent>

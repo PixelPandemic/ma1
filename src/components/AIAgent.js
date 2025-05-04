@@ -72,10 +72,10 @@ const AIAgent = ({ isMobile }) => {
     }
   ]);
 
-  // Состояние для выбора модели и маршрутизации
-  const [selectedModel, setSelectedModel] = useState(OPENROUTER_MODELS.qwen3.id);
-  const [selectedPreset, setSelectedPreset] = useState('default');
-  const [fallbackModels, setFallbackModels] = useState(MODEL_PRESETS.default.fallbacks);
+  // State for model selection and routing
+  const [selectedModel, setSelectedModel] = useState(OPENROUTER_MODELS.auto.id);
+  const [selectedPreset, setSelectedPreset] = useState('auto');
+  const [fallbackModels, setFallbackModels] = useState(MODEL_PRESETS.auto.fallbacks);
   const [isLoading, setIsLoading] = useState(false);
   const [aiPowerMode, setAiPowerMode] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -256,21 +256,43 @@ const AIAgent = ({ isMobile }) => {
             })
             .catch(error => {
               console.error('Error getting AI response:', error);
-              showNotification(`Failed to get a response from OpenRouter: ${error.message}`, 'error');
+
+              // Extract the most relevant error message
+              let errorMessage = error.message;
+              if (error.response && error.response.data && error.response.data.error) {
+                errorMessage = error.response.data.error;
+              }
+
+              // Show a more user-friendly notification
+              showNotification(`Connection issue: ${errorMessage}`, 'error');
               setIsLoading(false);
 
-              // Фоллбэк на случай ошибки API
-              const fallbackResponse = `[Super Power]
+              // Create a more helpful fallback response
+              let fallbackResponse = `[Super Power]
 
-I apologize, but I couldn't connect to the AI service at the moment. Error: ${error.message}
+I apologize, but I'm having trouble connecting to the AI service at the moment.`;
 
-You asked about "${input}". Please try again later when the connection is restored.`;
+              // Add specific advice based on error type
+              if (error.message.includes('502') || error.message.includes('Gateway')) {
+                fallbackResponse += `\n\nThe server returned a 502 Bad Gateway error. This usually indicates a temporary issue with the service.`;
+              } else if (error.message.includes('timeout')) {
+                fallbackResponse += `\n\nThe request timed out. This could be due to high server load or network issues.`;
+              } else if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
+                fallbackResponse += `\n\nRate limit exceeded. Please wait a moment before trying again.`;
+              }
+
+              fallbackResponse += `\n\nYou asked about "${input}". Please try:
+
+1. Selecting a different AI model from the dropdown menu
+2. Refreshing the page and trying again
+3. Asking a shorter or simpler question
+4. Trying again in a few minutes`;
 
               const fallbackMessage = {
                 role: 'assistant',
                 content: fallbackResponse,
-                // Не добавляем suggestedTopics для ответов в режиме Super Power
-                isEnhanced: true
+                isEnhanced: true,
+                isError: true // Add a flag to identify error messages
               };
               setMessages(prevMessages => [...prevMessages, fallbackMessage]);
             });
@@ -421,8 +443,8 @@ You asked about "${input}". Please try again later when the connection is restor
                   <Box width="calc(100% - 24px)" overflow="visible" maxWidth="100%">
                     {message.isEnhanced && (
                       <>
-                        <Badge colorScheme="green" mb={1} fontSize="xs" px={2} py={1} borderRadius="md" boxShadow="0 0 5px #48BB78">
-                          Super Power
+                        <Badge colorScheme={message.isError ? "red" : "green"} mb={1} fontSize="xs" px={2} py={1} borderRadius="md" boxShadow={message.isError ? "0 0 5px #E53E3E" : "0 0 5px #48BB78"}>
+                          {message.isError ? "Connection Error" : "Super Power"}
                         </Badge>
                         {message.isTemplateResponse && (
                           <Badge colorScheme="orange" ml={1} mb={1} fontSize="xs" px={2} py={1} borderRadius="md">
@@ -439,9 +461,21 @@ You asked about "${input}". Please try again later when the connection is restor
                       width="100%"
                       display="block"
                       mb={message.suggestedTopics ? 3 : 0}
-                      borderLeft={message.isEnhanced ? "2px solid #48BB78" : "none"}
-                      pl={message.isEnhanced ? 2 : 0}
-                      bg={message.isEnhanced ? "rgba(72, 187, 120, 0.05)" : "transparent"}
+                      borderLeft={
+                        message.isError
+                          ? "2px solid #E53E3E"
+                          : message.isEnhanced
+                            ? "2px solid #48BB78"
+                            : "none"
+                      }
+                      pl={message.isEnhanced || message.isError ? 2 : 0}
+                      bg={
+                        message.isError
+                          ? "rgba(229, 62, 62, 0.05)"
+                          : message.isEnhanced
+                            ? "rgba(72, 187, 120, 0.05)"
+                            : "transparent"
+                      }
                     >
                       {message.content}
                     </Text>
