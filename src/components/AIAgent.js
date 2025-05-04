@@ -71,8 +71,8 @@ const AIAgent = ({ isMobile }) => {
     }
   ]);
 
-  // Используем более надежную модель по умолчанию
-  const defaultModel = 'anthropic/claude-3-haiku';
+  // Используем автоматический маршрутизатор OpenRouter
+  const defaultModel = 'openrouter/auto';
   // Резервные модели в случае ошибки (в порядке предпочтения)
   const fallbackModels = [
     'openai/gpt-3.5-turbo',
@@ -682,11 +682,11 @@ I apologize, but I'm having trouble connecting to the AI service at the moment.`
                 Using:
               </Text>
               <Badge ml={2} colorScheme="green" fontSize={isMobile ? "xs" : "sm"}>
-                Claude 3 Haiku
+                OpenRouter Auto
               </Badge>
-              <Tooltip label="Fast and efficient AI model from Anthropic">
+              <Tooltip label="Automatically selects the best available AI model">
                 <Badge ml={2} colorScheme="blue" fontSize={isMobile ? "xs" : "sm"}>
-                  Instruction Tuned
+                  Smart Routing
                 </Badge>
               </Tooltip>
             </Flex>

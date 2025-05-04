@@ -141,8 +141,8 @@ exports.handler = async function(event, context) {
       stream: false // Ensure we're not using streaming which could cause issues
     };
 
-    // Используем более надежную модель по умолчанию
-    const defaultModel = 'anthropic/claude-3-haiku';
+    // Используем автоматический маршрутизатор OpenRouter
+    const defaultModel = 'openrouter/auto';
 
     // Список надежных моделей для резервного использования
     const reliableModels = [
@@ -209,7 +209,11 @@ exports.handler = async function(event, context) {
 
           // Упрощаем запрос для повторной попытки
           // Переключаемся на другую модель в зависимости от текущей
-          if (requestBody.model === 'anthropic/claude-3-haiku') {
+          if (requestBody.model === 'openrouter/auto') {
+            // Если используем автоматический маршрутизатор, переключаемся на конкретную модель
+            requestBody.model = 'anthropic/claude-3-haiku';
+            console.log(`Switching from auto to specific model: ${requestBody.model}`);
+          } else if (requestBody.model === 'anthropic/claude-3-haiku') {
             // Если уже используем Claude, переключаемся на GPT
             requestBody.model = 'openai/gpt-3.5-turbo';
             console.log(`Switching to alternative model: ${requestBody.model}`);
