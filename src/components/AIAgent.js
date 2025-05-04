@@ -71,10 +71,14 @@ const AIAgent = ({ isMobile }) => {
     }
   ]);
 
-  // Используем конкретную модель Google Gemma 3 27B
-  const gemmaModel = 'google/gemma-3-27b-it:free';
-  // Резервные модели в случае ошибки
-  const fallbackModels = ['anthropic/claude-3-haiku', 'openai/gpt-3.5-turbo', 'meta-llama/llama-3-8b-instruct'];
+  // Используем более надежную модель по умолчанию
+  const defaultModel = 'anthropic/claude-3-haiku';
+  // Резервные модели в случае ошибки (в порядке предпочтения)
+  const fallbackModels = [
+    'openai/gpt-3.5-turbo',
+    'meta-llama/llama-3-8b-instruct',
+    'google/gemma-3-8b-it:free'
+  ];
   const [isLoading, setIsLoading] = useState(false);
   const [aiPowerMode, setAiPowerMode] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -224,11 +228,11 @@ const AIAgent = ({ isMobile }) => {
           console.log('Sending request to OpenRouter API with input:', input);
           console.log('System message:', systemMessage);
           console.log('Message history:', messageHistory);
-          console.log(`Using Google Gemma model: ${gemmaModel}`);
+          console.log(`Using primary model: ${defaultModel}`);
           console.log(`Fallback models: ${JSON.stringify(fallbackModels)}`);
 
-          // Отправляем запрос с использованием модели Google Gemma и резервных моделей
-          generateResponse(input, [systemMessage, ...messageHistory], gemmaModel, fallbackModels)
+          // Отправляем запрос с использованием надежной модели и резервных моделей
+          generateResponse(input, [systemMessage, ...messageHistory], defaultModel, fallbackModels)
             .then(response => {
               console.log('Received response from OpenRouter API:', response);
 

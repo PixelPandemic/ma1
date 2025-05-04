@@ -68,12 +68,43 @@ export const generateResponse = async (prompt, history = [], model = null, model
   } catch (error) {
     console.error('Error calling OpenRouter API via Netlify Function:', error);
 
-    // Если произошла ошибка, возвращаем сообщение об ошибке вместо демо-ответа
-    return `[Super Power]
+    // Если произошла ошибка, возвращаем информативное сообщение об ошибке
+    let errorMessage = error.message;
 
-I apologize, but I couldn't connect to the AI service at the moment. Error: ${error.message}
+    // Извлекаем более понятное сообщение об ошибке, если доступно
+    if (error.response && error.response.data) {
+      if (error.response.data.error) {
+        errorMessage = error.response.data.error;
+      } else if (typeof error.response.data === 'string') {
+        errorMessage = error.response.data;
+      } else if (error.response.status) {
+        errorMessage = `Request failed with status code ${error.response.status}`;
+      }
+    }
+
+    // Формируем понятное сообщение для пользователя
+    let userFriendlyMessage = `[Super Power]
+
+I apologize, but I couldn't connect to the AI service at the moment. Error: ${errorMessage}
 
 You asked about "${prompt}". Please try again later when the connection is restored.`;
+
+    // Добавляем рекомендации в зависимости от типа ошибки
+    if (errorMessage.includes('502') || errorMessage.includes('504') || errorMessage.includes('Gateway')) {
+      userFriendlyMessage += `\n\nThis appears to be a temporary server issue. Please try:
+1. Refreshing the page
+2. Asking a simpler question
+3. Trying again in a few minutes`;
+    } else if (errorMessage.includes('timeout')) {
+      userFriendlyMessage += `\n\nThe request timed out. This could be due to high server load. Please try:
+1. Asking a shorter question
+2. Trying again in a few minutes`;
+    } else if (errorMessage.includes('429') || errorMessage.includes('Too Many Requests')) {
+      userFriendlyMessage += `\n\nRate limit exceeded. Please wait a moment before trying again.`;
+    }
+
+    console.log('Returning error message to user:', userFriendlyMessage);
+    return userFriendlyMessage;
   }
 };
 

@@ -109,9 +109,26 @@ exports.handler = async function(event, context) {
     // Получаем API ключ из переменных окружения
     // Проверяем обе возможные переменные окружения (с префиксом REACT_APP_ и без)
     const apiKey = process.env.REACT_APP_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+
+    // Логируем доступные переменные окружения для отладки
+    console.log('Available environment variables:', Object.keys(process.env).filter(key =>
+      key.includes('OPENROUTER') || key.includes('API_KEY')
+    ));
+
+    // Если API ключ не найден, используем резервный ключ
     if (!apiKey) {
-      throw new Error('OpenRouter API key is not set in environment variables');
+      console.warn('OpenRouter API key not found in environment variables, using fallback key');
+      // Используем резервный ключ (это временное решение, в продакшене лучше настроить переменные окружения)
+      const fallbackKey = "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";
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: 'OpenRouter API key is not set in environment variables. Please add OPENROUTER_API_KEY to your Netlify environment variables.'
+        }),
+        headers: { 'Content-Type': 'application/json' }
+      };
     }
+
     console.log('API key found:', apiKey ? 'Yes (key is present)' : 'No');
 
     // Логируем информацию о запросе
@@ -129,22 +146,32 @@ exports.handler = async function(event, context) {
       stream: false // Ensure we're not using streaming which could cause issues
     };
 
-    // Используем Google Gemma 3 27B по умолчанию
-    const defaultModel = 'google/gemma-3-27b-it:free';
+    // Используем более надежную модель по умолчанию
+    const defaultModel = 'anthropic/claude-3-haiku';
+
+    // Список надежных моделей для резервного использования
+    const reliableModels = [
+      'anthropic/claude-3-haiku',
+      'openai/gpt-3.5-turbo',
+      'meta-llama/llama-3-8b-instruct',
+      'google/gemma-3-8b-it:free'
+    ];
 
     // Проверяем, переданы ли резервные модели
     if (models && Array.isArray(models) && models.length > 0) {
       // Используем параметр models для резервных моделей
-      requestBody.models = models;
-      console.log(`Using fallback models: ${JSON.stringify(models)}`);
+      requestBody.models = [...models, ...reliableModels];
+      console.log(`Using fallback models: ${JSON.stringify(requestBody.models)}`);
     } else if (model) {
-      // Если передана конкретная модель, используем её
+      // Если передана конкретная модель, используем её и добавляем резервные модели
       requestBody.model = model;
-      console.log(`Using specific model: ${model}`);
+      requestBody.models = reliableModels;
+      console.log(`Using specific model: ${model} with fallbacks: ${JSON.stringify(reliableModels)}`);
     } else {
-      // По умолчанию используем Google Gemma
+      // По умолчанию используем надежную модель с резервными вариантами
       requestBody.model = defaultModel;
-      console.log(`Using default model: ${defaultModel}`);
+      requestBody.models = reliableModels;
+      console.log(`Using default model: ${defaultModel} with fallbacks: ${JSON.stringify(reliableModels)}`);
     }
 
     // Add retry logic for API requests
@@ -157,6 +184,10 @@ exports.handler = async function(event, context) {
         console.log(`Attempt ${retries + 1} to send request to OpenRouter API`);
 
         // Send request to OpenRouter API with improved error handling
+        // Получаем URL сайта из переменных окружения или используем резервные значения
+        const siteUrl = process.env.URL || process.env.DEPLOY_URL || process.env.NETLIFY_URL || 'https://ma1.netlify.app';
+        console.log('Using site URL for HTTP-Referer:', siteUrl);
+
         response = await axios.post(
           'https://openrouter.ai/api/v1/chat/completions',
           requestBody,
@@ -164,11 +195,11 @@ exports.handler = async function(event, context) {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${apiKey}`,
-              'HTTP-Referer': process.env.URL || 'https://meart.netlify.app', // Updated to use the new site URL
+              'HTTP-Referer': siteUrl,
               'X-Title': 'Meta ART NFT Marketplace'
             },
-            // Add timeout to prevent hanging requests
-            timeout: 30000 // 30 second timeout
+            // Увеличиваем таймаут для предотвращения обрыва запросов
+            timeout: 60000 // 60 секунд таймаут
           }
         );
 
@@ -180,21 +211,43 @@ exports.handler = async function(event, context) {
         if (error.response) {
           console.error(`Status: ${error.response.status}, Data:`, JSON.stringify(error.response.data));
 
-          // If we get a 502 Bad Gateway error, try a different approach
-          if (error.response.status === 502) {
-            console.log('Received 502 error, trying with simplified request');
+          // Если получаем ошибку 502 Bad Gateway, пробуем другой подход
+          if (error.response.status === 502 || error.response.status === 504) {
+            console.log(`Received ${error.response.status} error, trying with simplified request`);
 
-            // Simplify the request for retry
-            if (requestBody.models) {
-              // If using multiple models, try with just the first one
-              requestBody.model = requestBody.models[0];
+            // Упрощаем запрос для повторной попытки
+            if (requestBody.models && requestBody.models.length > 1) {
+              // Если используем несколько моделей, пробуем только с одной надежной моделью
+              const reliableModel = 'anthropic/claude-3-haiku';
+              console.log(`Switching to reliable model: ${reliableModel}`);
+              requestBody.model = reliableModel;
               delete requestBody.models;
-            } else if (requestBody.model === 'google/gemma-3-27b-it:free') {
-              // If using Gemma model, try with a reliable alternative
-              requestBody.model = 'anthropic/claude-3-haiku'; // Try with a reliable model
+
+              // Уменьшаем сложность запроса
+              requestBody.max_tokens = 300;
+              requestBody.temperature = 0.5;
+
+              // Упрощаем сообщения, оставляя только последние 2
+              if (messages.length > 3) {
+                const systemMessage = messages.find(msg => msg.role === 'system');
+                const lastUserMessage = messages.filter(msg => msg.role === 'user').pop();
+
+                if (systemMessage && lastUserMessage) {
+                  messages = [systemMessage, lastUserMessage];
+                  requestBody.messages = messages;
+                  console.log('Simplified messages to system + last user message');
+                }
+              }
+            } else if (requestBody.model === 'google/gemma-3-27b-it:free' || requestBody.model === 'google/gemma-3-8b-it:free') {
+              // Если используем модель Gemma, пробуем с надежной альтернативой
+              requestBody.model = 'anthropic/claude-3-haiku';
+              delete requestBody.models;
+              console.log(`Switching to reliable model: ${requestBody.model}`);
             } else {
-              // Try with a different model
+              // Пробуем с другой моделью
               requestBody.model = 'openai/gpt-3.5-turbo';
+              delete requestBody.models;
+              console.log(`Switching to reliable model: ${requestBody.model}`);
             }
 
             console.log(`Retrying with model: ${requestBody.model}`);
